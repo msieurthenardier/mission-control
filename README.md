@@ -64,19 +64,24 @@ Two organizational layers execute and support flights:
 - **Mission Liaison** — Stakeholder communication, requirements refinement
 - **Technical Architects** — Architectural guidance and specialist expertise
 
-## Project Structure
+## Artifact Organization
+
+The hierarchy nests naturally:
 
 ```
-missions/
-└── {mission-slug}/
-    ├── mission.md
-    └── flights/
-        └── {flight-slug}/
-            ├── flight.md
-            ├── flight-log.md
-            └── legs/
-                └── {leg-slug}.md
+Mission
+└── Flight
+    ├── Flight Log
+    └── Leg
 ```
+
+How you store these artifacts depends on your project's needs. Flight Control supports multiple artifact systems:
+
+- **Markdown files** — Version-controlled documentation in your repository
+- **Issue trackers** — Jira, Linear, GitHub Issues with linked relationships
+- **Hybrid** — Missions in markdown, flights/legs as tickets
+
+Each project configures its artifact system during initialization. The methodology and Claude Code skills adapt to your choice.
 
 ## Claude Code Skills
 

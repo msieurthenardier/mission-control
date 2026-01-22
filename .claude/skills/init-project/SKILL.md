@@ -105,7 +105,7 @@ Add this section (adjusting the directory name to match the project's convention
 ```markdown
 ## Flight Operations
 
-This project uses the [Flight Control](https://github.com/anthropics/flight-control) methodology. See `{dir-name}/README.md` for workflow guidance.
+This project uses the [Flight Control](https://github.com/anthropics/flight-control) methodology. When implementing missions, flights, or legs, you MUST strictly follow the workflow defined in `{dir-name}/FLIGHT_OPERATIONS.md`.
 ```
 
 ### 7. Post-Sync Instructions

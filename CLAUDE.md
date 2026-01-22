@@ -48,9 +48,9 @@ The registry provides:
 - Git remote and branch
 - Optional stack and status information
 
-## Directory Structure
+## Default File Structure
 
-Within each target project:
+For projects using file-based artifacts:
 
 ```
 {target-project}/

@@ -12,20 +12,25 @@
 
 1. Read the relevant mission, flight, and leg documentation
 2. Read the flight-log.md for context from prior legs
-3. Review the leg for accuracy and completeness — verify against the flight, mission, prior legs, project documentation, and existing code; update the leg if corrections or additions are needed before proceeding
-4. Implement the leg requirements
-5. Run code review before marking any leg complete
-6. Address all Critical and Major issues from review
-7. Re-review until no Critical/Major issues remain
-8. Update documentation as needed:
+3. Review the leg for accuracy and completeness — verify against the flight, mission, prior legs, project documentation, and existing code
+4. Present a summary to the user before implementation:
+   - Overview of what the leg requires
+   - Any questions or ambiguities identified
+   - Recommended changes to the leg documentation (if any)
+   - Wait for user approval before proceeding
+5. Implement the leg requirements
+6. Run code review before marking any leg complete
+7. Address all Critical and Major issues from review
+8. Re-review until no Critical/Major issues remain
+9. Update documentation as needed:
    - Update internal code documentation
    - Update leg acceptance criteria if scope changed
    - Update flight plan acceptance criteria if requirements evolved
    - Update mission documentation if outcomes shifted
-9. Update flight-log.md with:
-   - Leg Progress entry (status, verification, review results)
-   - Session Notes with implementation details
-10. Mark leg complete and check off in the flight document
+10. Update flight-log.md with:
+    - Leg Progress entry (status, verification, review results)
+    - Session Notes with implementation details
+11. Mark leg complete and check off in the flight document
 
 ## Code Review Gate
 
