@@ -19,31 +19,46 @@
    - Recommended changes to the leg documentation (if any)
    - Wait for user approval before proceeding
 5. Implement the leg requirements
-6. Run code review before marking any leg complete
-7. Address all Critical and Major issues from review
-8. Re-review until no Critical/Major issues remain
-9. Update documentation as needed:
-   - Update internal code documentation
-   - Update leg acceptance criteria if scope changed
-   - Update flight plan acceptance criteria if requirements evolved
-   - Update mission documentation if outcomes shifted
-10. Update flight-log.md with:
+6. Run appropriate tests for the changes
+7. Run code review before marking any leg complete
+8. Address all Critical and Major issues from review
+9. Re-review until no Critical/Major issues remain
+10. Update documentation as needed:
+    - Update internal code documentation
+    - Update leg acceptance criteria if scope changed
+    - Update flight plan acceptance criteria if requirements evolved
+    - Update mission documentation if outcomes shifted
+11. Update flight-log.md with:
     - Leg Progress entry (status, verification, review results)
     - Session Notes with implementation details
-11. Mark leg complete and check off in the flight document
+    - Any deferred issues (test failures, minor code issues not addressed)
+12. Mark leg complete and check off in the flight document
 
 ## Code Review Gate
 
 ```
-Implement → Review → Fix Issues → Re-review → Complete
+Implement → Test → Review → Fix Issues → Re-review → Complete
 ```
 
 | Severity | Action |
 |----------|--------|
 | Critical | Must fix, no exceptions |
 | Major | Must fix before marking complete |
-| Minor | Present to user for decision |
-| Suggestions | Present to user for decision |
+| Minor | Fix if simple and safe; otherwise present to user |
+| Suggestions | Fix if simple and safe; otherwise present to user |
+
+**Existing Issues:** Pre-existing code issues discovered during review should be presented to the user to determine whether to address them now or defer. If deferred, note them in the flight log.
+
+## Test Verification
+
+Run tests appropriate to the changes made. Handle failures as follows:
+
+| Type | Action |
+|------|--------|
+| Related failures | Must fix before marking complete |
+| Unrelated failures | Present to user for decision |
+
+**Deferred test failures:** If the user decides not to address unrelated test failures, document them in the flight log with context for future resolution.
 
 ## Flight Plan Structure
 
