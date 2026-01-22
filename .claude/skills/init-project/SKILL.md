@@ -1,17 +1,17 @@
 ---
 name: init-project
-description: Initialize a project for Flight Control. Creates flight_operations directory with methodology reference and artifact configuration. Run before using /mission, /flight, /leg, or /flight-review on a new project.
+description: Initialize a project for Flight Control. Creates .flight-ops directory with methodology reference and artifact configuration. Run before using /mission, /flight, /leg, or /flight-review on a new project.
 ---
 
 # Project Initialization
 
-Prepare a project for Flight Control by creating the `flight_operations/` directory with methodology references and artifact configuration.
+Prepare a project for Flight Control by creating the `.flight-ops/` directory with methodology references and artifact configuration.
 
 ## When to Use
 
 Run `/init-project` when:
 - Starting to use Flight Control on a new project
-- You suspect the flight_operations reference may be outdated
+- You suspect the .flight-ops reference may be outdated
 - Another skill indicates the reference needs to be synced
 
 ## Workflow
@@ -25,26 +25,14 @@ Run `/init-project` when:
    - Brief description
 3. Optionally offer to add the project to `projects.md`
 
-### 2. Detect Directory Naming Convention
-
-Analyze the target project to determine the appropriate naming style:
-
-1. **Check existing directories** in project root for patterns:
-   - `snake_case` → use `flight_operations/`
-   - `kebab-case` → use `flight-operations/`
-   - `camelCase` → use `flightOperations/`
-   - `PascalCase` → use `FlightOperations/`
-2. **Check config files** for hints (package.json conventions, Cargo.toml, etc.)
-3. **Default to kebab-case** if no clear convention exists
-
-### 3. Check Sync Status
+### 2. Check Sync Status
 
 Run the hash comparison script to determine sync status:
 
 ```bash
 bash "${SKILL_DIR}/check-sync.sh" \
   "${SKILL_DIR}" \
-  "{target-project}/{detected-dir-name}"
+  "{target-project}/.flight-ops"
 ```
 
 The script outputs one of:
@@ -52,12 +40,12 @@ The script outputs one of:
 - `outdated` - Directory exists but files differ from source
 - `current` - All files are up-to-date
 
-### 4. Prompt and Sync Methodology Files
+### 3. Prompt and Sync Methodology Files
 
 Based on the status:
 
 **If `missing`**:
-> "Flight operations directory not found. Create `{project}/{dir-name}/` with methodology references?"
+> "Flight operations directory not found. Create `{project}/.flight-ops/` with methodology references?"
 
 **If `outdated`**:
 > "Flight operations references in {project} are outdated. Update?"
@@ -68,12 +56,12 @@ Based on the status:
 If the user confirms, create/update the directory:
 
 ```bash
-mkdir -p "{target-project}/{dir-name}"
-cp "${SKILL_DIR}/FLIGHT_OPERATIONS.md" "{target-project}/{dir-name}/"
-cp "${SKILL_DIR}/README.md" "{target-project}/{dir-name}/"
+mkdir -p "{target-project}/.flight-ops"
+cp "${SKILL_DIR}/FLIGHT_OPERATIONS.md" "{target-project}/.flight-ops/"
+cp "${SKILL_DIR}/README.md" "{target-project}/.flight-ops/"
 ```
 
-### 5. Configure Artifact System (New Projects Only)
+### 4. Configure Artifact System (New Projects Only)
 
 **Only if ARTIFACTS.md doesn't exist**, ask the user to select an artifact system:
 
@@ -87,12 +75,12 @@ Copy the selected template:
 
 ```bash
 cp "${SKILL_DIR}/templates/ARTIFACTS-{selection}.md" \
-   "{target-project}/{dir-name}/ARTIFACTS.md"
+   "{target-project}/.flight-ops/ARTIFACTS.md"
 ```
 
 **If ARTIFACTS.md already exists**, do not modify it — it's project-specific and may have been customized.
 
-### 6. Update CLAUDE.md
+### 5. Update CLAUDE.md
 
 Check if the project's `CLAUDE.md` file references the flight operations directory:
 
@@ -100,15 +88,15 @@ Check if the project's `CLAUDE.md` file references the flight operations directo
 2. **If CLAUDE.md exists but lacks a Flight Operations section**, append one
 3. **If CLAUDE.md already has a Flight Operations section**, leave it unchanged
 
-Add this section (adjusting the directory name to match the project's convention):
+Add this section:
 
 ```markdown
 ## Flight Operations
 
-This project uses the [Flight Control](https://github.com/anthropics/flight-control) methodology. When implementing missions, flights, or legs, you MUST strictly follow the workflow defined in `{dir-name}/FLIGHT_OPERATIONS.md`.
+This project uses the [Flight Control](https://github.com/anthropics/flight-control) methodology. When implementing missions, flights, or legs, you MUST strictly follow the workflow defined in `.flight-ops/FLIGHT_OPERATIONS.md`.
 ```
 
-### 7. Post-Sync Instructions
+### 6. Post-Sync Instructions
 
 After creating or updating the directory, inform the user:
 
@@ -123,7 +111,7 @@ This skill creates/updates the following at project root:
 ```
 {project}/
 ├── CLAUDE.md                  # Updated with Flight Operations section
-└── {flight-operations-dir}/   # Named per project convention
+└── .flight-ops/               # Hidden directory for Flight Control
     ├── README.md              # Explains the directory purpose
     ├── FLIGHT_OPERATIONS.md   # Quick reference for implementation (synced)
     └── ARTIFACTS.md           # Artifact system configuration (project-specific)
@@ -139,10 +127,6 @@ This skill creates/updates the following at project root:
 | ARTIFACTS.md | No | Created once from template, then project-specific |
 
 ## Guidelines
-
-### Detect Convention First
-
-Always analyze the project's naming patterns before suggesting a directory name. Consistency matters.
 
 ### Don't Over-Prompt
 

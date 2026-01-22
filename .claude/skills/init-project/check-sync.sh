@@ -1,5 +1,5 @@
 #!/bin/bash
-# check-sync.sh - Compare flight_operations directory between source and target
+# check-sync.sh - Compare .flight-ops directory between source and target
 #
 # Usage: check-sync.sh <source-dir> <target-dir>
 #

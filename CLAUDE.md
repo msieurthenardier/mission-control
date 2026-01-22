@@ -18,7 +18,7 @@ Five skills automate the planning and review workflow:
 
 | Skill | Purpose | Output (in target project) |
 |-------|---------|----------------------------|
-| `/init-project` | Initialize a project for Flight Control | Creates `{flight-operations}/` directory |
+| `/init-project` | Initialize a project for Flight Control | Creates `.flight-ops/` directory |
 | `/mission` | Create outcome-driven missions through research and interview | `missions/{slug}/mission.md` |
 | `/flight` | Create technical flight specs from missions | `missions/{slug}/flights/{NN}-{slug}/flight.md` |
 | `/leg` | Generate implementation guidance for LLM execution | `missions/{slug}/flights/{NN}-{slug}/legs/{NN}-{slug}.md` |
@@ -54,7 +54,7 @@ For projects using file-based artifacts:
 
 ```
 {target-project}/
-├── {flight-operations}/       # Named per project convention (kebab/snake/camel)
+├── .flight-ops/               # Hidden directory for Flight Control
 │   ├── README.md              # Directory purpose and usage
 │   ├── FLIGHT_OPERATIONS.md   # Quick reference for implementation (synced)
 │   └── ARTIFACTS.md           # Artifact system configuration (project-specific)
