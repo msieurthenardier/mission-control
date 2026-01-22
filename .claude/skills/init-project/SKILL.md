@@ -92,7 +92,23 @@ cp "${SKILL_DIR}/templates/ARTIFACTS-{selection}.md" \
 
 **If ARTIFACTS.md already exists**, do not modify it — it's project-specific and may have been customized.
 
-### 6. Post-Sync Instructions
+### 6. Update CLAUDE.md
+
+Check if the project's `CLAUDE.md` file references the flight operations directory:
+
+1. **If CLAUDE.md doesn't exist**, create it with a Flight Operations section
+2. **If CLAUDE.md exists but lacks a Flight Operations section**, append one
+3. **If CLAUDE.md already has a Flight Operations section**, leave it unchanged
+
+Add this section (adjusting the directory name to match the project's convention):
+
+```markdown
+## Flight Operations
+
+This project uses the [Flight Control](https://github.com/anthropics/flight-control) methodology. See `{dir-name}/README.md` for workflow guidance.
+```
+
+### 7. Post-Sync Instructions
 
 After creating or updating the directory, inform the user:
 
@@ -102,10 +118,11 @@ This ensures Claude Code loads the new files into its context when working in th
 
 ## Output
 
-This skill creates the following structure at project root:
+This skill creates/updates the following at project root:
 
 ```
 {project}/
+├── CLAUDE.md                  # Updated with Flight Operations section
 └── {flight-operations-dir}/   # Named per project convention
     ├── README.md              # Explains the directory purpose
     ├── FLIGHT_OPERATIONS.md   # Quick reference for implementation (synced)
@@ -116,6 +133,7 @@ This skill creates the following structure at project root:
 
 | File | Synced on update? | Notes |
 |------|-------------------|-------|
+| CLAUDE.md | Append only | Adds Flight Operations section if missing |
 | README.md | Yes | Methodology reference |
 | FLIGHT_OPERATIONS.md | Yes | Methodology reference |
 | ARTIFACTS.md | No | Created once from template, then project-specific |
