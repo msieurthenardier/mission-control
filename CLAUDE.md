@@ -16,17 +16,17 @@ This repository contains the methodology documentation and Claude Code skills fo
 
 Five skills automate the planning and review workflow:
 
-| Skill | Purpose | Output (in target project) |
-|-------|---------|----------------------------|
-| `/init-project` | Initialize a project for Flight Control | Creates `.flight-ops/` directory |
-| `/mission` | Create outcome-driven missions through research and interview | `missions/{slug}/mission.md` |
-| `/flight` | Create technical flight specs from missions | `missions/{slug}/flights/{NN}-{slug}/flight.md` |
-| `/leg` | Generate implementation guidance for LLM execution | `missions/{slug}/flights/{NN}-{slug}/legs/{NN}-{slug}.md` |
-| `/flight-review` | Post-flight analysis for continuous improvement | `missions/{slug}/flights/{NN}-{slug}/flight-review.md` |
+| Skill | Purpose |
+|-------|---------|
+| `/init-project` | Initialize a project for Flight Control (creates `.flight-ops/` directory) |
+| `/mission` | Create outcome-driven missions through research and interview |
+| `/flight` | Create technical flight specs from missions |
+| `/leg` | Generate implementation guidance for LLM execution |
+| `/flight-review` | Post-flight analysis for continuous improvement |
 
 Run `/init-project` before using the other skills on a new project to create the flight operations reference directory and configure the artifact system.
 
-**Artifact Systems:** Each project defines how artifacts are stored in `ARTIFACTS.md` (e.g., markdown files, Jira tickets). Skills read this configuration and adapt their output accordingly.
+**Artifact Systems:** Each project defines how artifacts are stored in `.flight-ops/ARTIFACTS.md`. Skills read this configuration and adapt their output accordingly.
 
 **IMPORTANT: Skills produce documentation only.** When running `/mission`, `/flight`, `/leg`, or `/flight-review`:
 - **NEVER implement code changes** — only create/update markdown documentation files
@@ -39,8 +39,8 @@ Run `/init-project` before using the other skills on a new project to create the
 The `projects.md` file in this repository catalogs all active projects on this device. When using the `/mission`, `/flight`, or `/leg` skills:
 
 1. **Read `projects.md` first** to find the target project's path, remote, and description
-2. **Create all artifacts in the target project** (`{target-project}/missions/...`) — not in mission-control
-3. **Use the project path from the registry** to locate existing missions or create new ones
+2. **Read `.flight-ops/ARTIFACTS.md`** in the target project to determine artifact locations
+3. **Create all artifacts in the target project** — not in mission-control
 
 The registry provides:
 - Project slug and description
@@ -48,30 +48,19 @@ The registry provides:
 - Git remote and branch
 - Optional stack and status information
 
-## Default File Structure
+## Flight Operations Directory
 
-For projects using file-based artifacts:
+Every project using Flight Control has a `.flight-ops/` directory:
 
 ```
 {target-project}/
-├── .flight-ops/               # Hidden directory for Flight Control
-│   ├── README.md              # Directory purpose and usage
-│   ├── FLIGHT_OPERATIONS.md   # Quick reference for implementation (synced)
-│   └── ARTIFACTS.md           # Artifact system configuration (project-specific)
-└── missions/                  # Default location for file-based artifacts
-    └── {mission-slug}/
-        ├── mission.md
-        ├── mission-review.md
-        └── flights/
-            └── {NN}-{flight-slug}/
-                ├── flight.md
-                ├── flight-log.md
-                ├── flight-review.md
-                └── legs/
-                    └── {NN}-{leg-slug}.md
+└── .flight-ops/
+    ├── README.md              # Directory purpose and usage
+    ├── FLIGHT_OPERATIONS.md   # Quick reference for implementation (synced)
+    └── ARTIFACTS.md           # Artifact system configuration (project-specific)
 ```
 
-**Note:** The `missions/` structure above is for file-based artifact storage. Projects using Jira or other systems will define their artifact locations in `ARTIFACTS.md`.
+The `ARTIFACTS.md` file defines where and how mission, flight, and leg artifacts are stored.
 
 ## Lifecycle States
 

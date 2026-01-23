@@ -18,14 +18,17 @@ Generate detailed implementation guidance for LLM execution.
 
 1. **Identify the target project**
    - Read `projects.md` to find the project's path, remote, and description
-   - All mission artifacts (missions, flights, legs) are stored in the **target project's** `missions/` directory, not in mission-control
 
-2. **Read the parent flight**
+2. **Read the artifact configuration**
+   - Read `{target-project}/.flight-ops/ARTIFACTS.md` for artifact locations and formats
+   - This defines where and how missions, flights, and legs are stored
+
+3. **Read the parent flight**
    - Understand the objective being achieved
    - Review design decisions and constraints
    - Note the technical approach defined
 
-3. **Read the flight log in detail** (critical if it exists)
+4. **Read the flight log in detail** (critical if it exists)
 
    **This step is essential.** The flight log captures ground truth from actual implementation—what worked, what didn't, and what changed. Skipping or skimming it leads to legs that ignore hard-won learnings.
 
@@ -43,13 +46,13 @@ Generate detailed implementation guidance for LLM execution.
    - Warnings or edge cases discovered during prior legs
    - Any "note for future legs" comments
 
-4. **Identify this leg's scope**
+5. **Identify this leg's scope**
    - Which leg from the flight's leg list?
    - What comes before and after this leg?
    - Are there dependencies on other legs?
    - How do prior leg outcomes (from flight log) affect this leg?
 
-5. **Identify environment constraints**
+6. **Identify environment constraints**
    - Does this leg require a specific execution environment (devcontainer, WSL, cloud)?
    - What user context is required (root, specific user, service account)?
    - What environment variables or shell setup is needed (`source ~/.cargo/env`, `nvm use`, etc.)?
@@ -58,7 +61,7 @@ Generate detailed implementation guidance for LLM execution.
 
 ### Phase 2: Implementation Analysis
 
-Deep dive into the specific implementation in the **target project** (from `projects.md`):
+Deep dive into the specific implementation in the **target project**:
 
 1. **Identify exact files to modify**
    - Read existing files that will be changed
@@ -184,9 +187,7 @@ For legs involving hardware, filesystem, networking, or other platform-specific 
 - **Windows/WSL**: {e.g., path separators, line endings, native vs WSL execution}
 ```
 
-**Output location**: `{target-project}/missions/{mission}/flights/{flight}/legs/{NN}-{slug}.md`
-
-Where `{NN}` is the two-digit leg number (01, 02, 03, etc.) based on the leg's position in the flight's legs list. The `{target-project}` path comes from `projects.md`.
+**Output location**: Defined in `.flight-ops/ARTIFACTS.md`.
 
 ## Guidelines
 
@@ -263,15 +264,4 @@ Once a leg is `in-progress`:
 
 ## Output
 
-Create the leg file in the **target project** at:
-```
-{target-project}/missions/{mission-slug}/flights/{NN}-{flight-slug}/legs/{NN}-{leg-slug}.md
-```
-
-Where:
-- `{target-project}` is the project path from `projects.md`
-- `{NN}` is the two-digit number (01, 02, 03, etc.) based on position
-- `{leg-slug}` matches the slug defined in the parent flight's legs list
-
-Example: For the bubblegum project's first leg `devcontainer`:
-`/home/user/projects/bubblegum/missions/practice-mode/flights/01-project-scaffolding/legs/01-devcontainer.md`
+Create the leg artifact in the **target project** using the location and format defined in `.flight-ops/ARTIFACTS.md`.

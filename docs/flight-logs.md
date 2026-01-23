@@ -177,17 +177,9 @@ When generating new legs with `/leg`, the flight log must be consulted to unders
 **Impact on next leg:**
 When creating the "Protected Routes" leg, the guidance must specify using `jose` patterns, not the originally planned `jsonwebtoken` approach. Without the flight log, this context would be lost.
 
-## File Location
+## Location
 
-Flight logs live alongside their flight document:
-
-```
-missions/{mission-slug}/flights/{NN}-{flight-slug}/
-├── flight.md
-├── flight-log.md    ← Flight log
-└── legs/
-    └── {NN}-{leg-slug}.md
-```
+Flight log location is defined in `.flight-ops/ARTIFACTS.md`. The artifact system determines where and how logs are stored.
 
 ## Best Practices
 

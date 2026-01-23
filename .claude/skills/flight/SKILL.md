@@ -18,21 +18,24 @@ Create a technical flight spec from a mission.
 
 1. **Identify the target project**
    - Read `projects.md` to find the project's path, remote, and description
-   - All flight artifacts are stored in the **target project's** `missions/` directory, not in mission-control
 
-2. **Read the parent mission**
+2. **Read the artifact configuration**
+   - Read `{target-project}/.flight-ops/ARTIFACTS.md` for artifact locations and formats
+   - This defines where and how missions, flights, and legs are stored
+
+3. **Read the parent mission**
    - Understand the outcome being pursued
    - Identify which success criteria this flight addresses
    - Note constraints that apply
 
-3. **Check existing flights**
+4. **Check existing flights**
    - What flights already exist for this mission?
    - What's been completed vs. in progress?
    - Are there dependencies on other flights?
 
 ### Phase 2: Code Interrogation
 
-Explore the **target project's codebase** (from `projects.md`) to inform the technical approach:
+Explore the **target project's codebase** to inform the technical approach:
 
 1. **Identify relevant code areas**
    - What existing code relates to this flight?
@@ -163,9 +166,7 @@ How to confirm the flight achieved its objective.
 (Filled after completion)
 ```
 
-**Output location**: `{target-project}/missions/{mission}/flights/{NN}-{slug}/flight.md`
-
-Where `{NN}` is the two-digit flight number (01, 02, 03, etc.) based on the flight's position in the mission. The `{target-project}` path comes from `projects.md`.
+**Output location**: Defined in `.flight-ops/ARTIFACTS.md`.
 
 ### Phase 5: Review and Iterate
 
@@ -222,73 +223,8 @@ Don't skip pre-flight:
 
 ## Output
 
-Create the following files and directories in the **target project**:
+Create the following artifacts in the **target project** using the locations and formats defined in `.flight-ops/ARTIFACTS.md`:
 
-### 1. Flight spec
-```
-{target-project}/missions/{mission-slug}/flights/{NN}-{flight-slug}/flight.md
-```
-
-### 2. Flight log (initial)
-```
-{target-project}/missions/{mission-slug}/flights/{NN}-{flight-slug}/flight-log.md
-```
-
-Initialize with this template:
-
-```markdown
-# Flight Log: {Flight Title}
-
-## Flight Reference
-[{Flight Title}](flight.md)
-
-## Summary
-Flight in planning phase. Log entries will be added as legs are executed.
-
----
-
-## Leg Progress
-
-(Entries added as legs are started and completed)
-
----
-
-## Decisions
-
-(Runtime decisions documented here)
-
----
-
-## Deviations
-
-(Departures from planned approach documented here)
-
----
-
-## Anomalies
-
-(Unexpected issues or behaviors documented here)
-
----
-
-## Session Notes
-
-(Chronological notes from work sessions)
-```
-
-### 3. Legs directory
-```
-{target-project}/missions/{mission-slug}/flights/{NN}-{flight-slug}/legs/
-```
-
-### Naming Convention
-
-Where:
-- `{target-project}` is the project path from `projects.md`
-- `{NN}` is the two-digit flight number (01, 02, 03, etc.) based on position in the mission
-- `{flight-slug}` is a lowercase, hyphenated version of the flight title
-
-Example: For the bubblegum project's first flight "Project Scaffolding":
-- `/home/user/projects/bubblegum/missions/practice-mode/flights/01-project-scaffolding/flight.md`
-- `/home/user/projects/bubblegum/missions/practice-mode/flights/01-project-scaffolding/flight-log.md`
-- `/home/user/projects/bubblegum/missions/practice-mode/flights/01-project-scaffolding/legs/`
+1. **Flight spec** — The flight plan document
+2. **Flight log** — Running record for execution (see [Flight Logs](../../../docs/flight-logs.md) for structure)
+3. **Legs container** — Where leg artifacts will be created

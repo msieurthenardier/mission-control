@@ -11,7 +11,7 @@
 ## Implementation Workflow
 
 1. Read the relevant mission, flight, and leg documentation
-2. Read the flight-log.md for context from prior legs
+2. Read the flight log for context from prior legs
 3. Review the leg for accuracy and completeness — verify against the flight, mission, prior legs, project documentation, and existing code
 4. Present a summary to the user before implementation:
    - Overview of what the leg requires
@@ -28,7 +28,7 @@
     - Update leg acceptance criteria if scope changed
     - Update flight plan acceptance criteria if requirements evolved
     - Update mission documentation if outcomes shifted
-11. Update flight-log.md with:
+11. Update the flight log with:
     - Leg Progress entry (status, verification, review results)
     - Session Notes with implementation details
     - Any deferred issues (test failures, minor code issues not addressed)
@@ -62,7 +62,7 @@ Run tests appropriate to the changes made. Handle failures as follows:
 
 ## Flight Plan Structure
 
-A flight plan (flight.md) contains:
+A flight plan contains:
 
 - **Overview** — Purpose, scope, and relationship to mission
 - **Pre-flight Checklist** — Prerequisites that must be verified before starting

@@ -18,20 +18,23 @@ Perform comprehensive post-flight analysis for continuous improvement.
 
 1. **Identify the target project**
    - Read `projects.md` to find the project's path, remote, and description
-   - All mission artifacts are in the **target project's** `missions/` directory
 
-2. **Load flight documentation**
+2. **Read the artifact configuration**
+   - Read `{target-project}/.flight-ops/ARTIFACTS.md` for artifact locations and formats
+   - This defines where and how missions, flights, and legs are stored
+
+3. **Load flight documentation**
    - Read the mission document for overall context and success criteria
    - Read the flight document for objectives, design decisions, and checkpoints
    - Read ALL leg documents to understand the planned implementation
    - Read the complete flight log for ground truth on what actually happened
 
-3. **Load project context**
+4. **Load project context**
    - Read the target project's `README.md` for project overview
    - Read the target project's `CLAUDE.md` for development conventions
    - Identify key implementation files from leg outputs and flight log
 
-4. **Review actual implementation**
+5. **Review actual implementation**
    - Read files created or modified during the flight (from flight log and leg outputs)
    - Compare intended implementation (from legs) vs actual implementation (from code)
    - Note any deviations, workarounds, or unexpected discoveries
@@ -200,7 +203,7 @@ Create a comprehensive flight review document with:
 {List of files examined during this review}
 ```
 
-**Output location**: `{target-project}/missions/{mission}/flights/{flight}/flight-review.md`
+**Output location**: Defined in `.flight-ops/ARTIFACTS.md`.
 
 ## Guidelines
 
@@ -232,9 +235,6 @@ The most valuable insights often relate to the methodology itself:
 
 ## Output
 
-Create the review file in the **target project** at:
-```
-{target-project}/missions/{mission-slug}/flights/{NN}-{flight-slug}/flight-review.md
-```
+Create the review artifact in the **target project** using the location and format defined in `.flight-ops/ARTIFACTS.md`.
 
 After creating the review, summarize the top 3-5 most impactful recommendations for immediate attention.

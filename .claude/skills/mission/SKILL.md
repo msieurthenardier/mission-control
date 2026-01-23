@@ -20,16 +20,19 @@ Before asking questions, gather context:
 1. **Identify the target project**
    - Read `projects.md` to find the project's path, remote, and description
    - If the project isn't listed, ask the user for details
-   - All mission artifacts are stored in the **target project's** `missions/` directory, not in mission-control
 
-2. **Explore the target project's codebase** to understand current state
+2. **Read the artifact configuration**
+   - Read `{target-project}/.flight-ops/ARTIFACTS.md` for artifact locations and formats
+   - This defines where and how missions, flights, and legs are stored
+
+3. **Explore the target project's codebase** to understand current state
    - Project structure and architecture
    - Existing patterns and conventions
    - Related functionality that might be affected
 
 4. **Read existing documentation**
    - README and project docs in the target project
-   - Any existing missions in `missions/` directory for this project
+   - Any existing missions (check ARTIFACTS.md for location)
    - Technical specs or design documents
 
 5. **Search external sources if needed**
@@ -106,9 +109,7 @@ Likely flights to execute this mission (typically 5-7):
 - ...
 ```
 
-**Output location**: `{target-project}/missions/{slug}/mission.md`
-
-The `{target-project}` path comes from `projects.md`.
+**Output location**: Defined in `.flight-ops/ARTIFACTS.md`.
 
 ### Phase 4: Review
 
@@ -151,11 +152,4 @@ Frame missions around results, not tasks:
 
 ## Output
 
-Create the mission file in the **target project** at:
-```
-{target-project}/missions/{mission-slug}/mission.md
-```
-
-Where:
-- `{target-project}` is the project path from `projects.md`
-- `{mission-slug}` is a lowercase, hyphenated version of the mission title
+Create the mission artifact in the **target project** using the location and format defined in `.flight-ops/ARTIFACTS.md`.
