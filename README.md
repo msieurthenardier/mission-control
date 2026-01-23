@@ -30,7 +30,7 @@ Mission (human-optimized)
 
 ## Why Aviation?
 
-Aviation succeeds through layered planning and clear handoffs. Pilots don't improvise routes mid-flight; they follow flight plans while retaining authority to adapt. Similarly, Flight Control separates strategic intent (missions) from tactical execution (legs), with flights serving as the translation layer.
+Aviation succeeds through layered planning and clear handoffs. Pilots follow flight plans but improvise when conditions demand it—weather, emergencies, ATC instructions. Structured planning enables effective improvisation by providing a baseline to deviate from and return to. Similarly, Flight Control separates strategic intent (missions) from tactical execution (legs), with flights serving as the translation layer.
 
 ## Quick Start
 
