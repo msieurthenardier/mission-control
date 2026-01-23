@@ -10,6 +10,8 @@
 
 ## Implementation Workflow
 
+Follow this workflow when implementing a leg:
+
 1. Read the relevant mission, flight, and leg documentation
 2. Read the flight log for context from prior legs
 3. Review the leg for accuracy and completeness — verify against the flight, mission, prior legs, project documentation, and existing code
