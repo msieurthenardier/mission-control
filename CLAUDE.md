@@ -87,10 +87,14 @@ Flight Control defines these business objects (artifacts):
 ## Key Principles
 
 1. **Outcome over activity**: Frame missions around results, not tasks
-2. **Immutability after start**: Never modify legs once `in-progress`; create new ones instead
-3. **Pre-flight rigor**: Resolve all open questions and verify prerequisites before execution
-4. **Explicit criteria**: Acceptance criteria must be binary, observable, and complete
-5. **Log during flight**: Record decisions, deviations, and anomalies in the flight log
+2. **Phase gates require confirmation**: Complete each planning phase before starting the next:
+   - Missions must be fully agreed before designing flights
+   - Flights must be fully agreed before designing legs
+   - Never skip ahead — get explicit user confirmation at each transition
+3. **Immutability after start**: Never modify legs once `in-progress`; create new ones instead
+4. **Pre-flight rigor**: Resolve all open questions and verify prerequisites before execution
+5. **Explicit criteria**: Acceptance criteria must be binary, observable, and complete
+6. **Log during flight**: Record decisions, deviations, and anomalies in the flight log
 
 ## Sizing Guidelines
 
