@@ -108,34 +108,86 @@ Flight Control includes Claude Code skills for interactive planning:
 | `/flight-debrief` | Post-flight analysis for continuous improvement |
 | `/mission-debrief` | Post-mission retrospective for outcomes assessment |
 
-### Skill Workflow
+## Recommended Workflow
 
-```
-/mission
-    │
-    ├── Research codebase and docs
-    ├── Interview for outcomes and constraints
-    ├── Draft mission with success criteria
-    └── Review and iterate
-           │
-           ▼
-/flight
-    │
-    ├── Load mission context
-    ├── Interrogate relevant code
-    ├── Interview for technical approach
-    ├── Draft flight spec with legs
-    └── Review and iterate
-           │
-           ▼
-/leg
-    │
-    ├── Load flight context
-    ├── Analyze implementation details
-    └── Generate detailed leg guidance
+Flight Control operates across two Claude sessions: **Mission Control** (planning and orchestration) and **Project** (implementation and review).
+
+### Context Strategy
+
+- **Mission Control**: Long-running session spanning an entire flight—accumulates knowledge across legs
+- **Project**: Fresh session per leg—relies on artifacts to carry forward knowledge
+
+Review the next leg's design *before* clearing context, while implementation knowledge is fresh. Implement in a clean context.
+
+### The Cycle
+
+```mermaid
+sequenceDiagram
+    participant MC as Mission Control
+    participant P as Project
+
+    Note over MC: Long-running context<br/>(entire flight)
+
+    MC->>MC: Design leg N
+    MC->>P: "Leg N has been designed,<br/>review for completeness"
+
+    Note over P: Context A
+
+    P->>P: Review leg N design
+    P->>P: Make changes to artifacts
+    P-->>MC: "Leg N has been updated"
+
+    MC->>MC: Review changes
+
+    alt Changes needed
+        MC->>P: "These items need attention"
+        P->>P: Review and update
+        P-->>MC: "Updated"
+    end
+
+    MC->>P: "Leg N confirmed"
+
+    P->>P: Implement leg N
+    P->>P: Update flight logs
+    P->>P: Propagate: update flight, mission,<br/>claude.md based on changes
+    P-->>MC: "Leg N complete"
+
+    MC->>MC: Review all changes
+
+    alt Changes needed
+        MC->>P: "These items need attention"
+        P->>P: Review and update
+        P-->>MC: "Updated"
+    end
+
+    MC->>MC: Design leg N+1
+    MC->>P: "Leg N+1 has been designed,<br/>review for completeness"
+
+    P->>P: Review leg N+1 design<br/>(while implementation knowledge fresh)
+    P->>P: Make changes to artifacts
+    P-->>MC: "Leg N+1 has been updated"
+
+    Note over P: Clear context
+
+    MC->>MC: Review changes
+    MC->>P: "Leg N+1 confirmed"
+
+    Note over P: Context B
+
+    P->>P: Implement leg N+1
+    P->>P: Propagate
+
+    Note over MC,P: Cycle repeats...
 ```
 
-Skills are adaptive—they ask clarifying questions and can update plans as understanding develops.
+### Why This Matters
+
+Implementation reveals reality. Without propagating that knowledge back into artifacts:
+- The next project session starts with stale assumptions
+- Mission Control's long-running context drifts from the code
+- Each leg operates on increasingly outdated plans
+
+The discipline of review-before-clear and propagate-before-complete keeps artifacts synchronized with truth.
 
 ## License
 
