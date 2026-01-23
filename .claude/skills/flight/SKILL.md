@@ -9,8 +9,8 @@ Create a technical flight spec from a mission.
 
 ## Prerequisites
 
+- Project must be initialized with `/init-project` (`.flight-ops/ARTIFACTS.md` must exist)
 - A mission must exist before creating a flight
-- **Flight Operations reference synced**: Run `/init-project` if needed
 
 ## Workflow
 
@@ -19,15 +19,20 @@ Create a technical flight spec from a mission.
 1. **Identify the target project**
    - Read `projects.md` to find the project's path
 
-2. **Read the artifact configuration**
+2. **Verify project is initialized**
+   - Check if `{target-project}/.flight-ops/ARTIFACTS.md` exists
+   - **If missing**: STOP and tell the user to run `/init-project` first
+   - Do not proceed without the artifact configuration
+
+3. **Read the artifact configuration**
    - Read `{target-project}/.flight-ops/ARTIFACTS.md` for artifact locations and formats
 
-3. **Read the parent mission**
+4. **Read the parent mission**
    - Understand the outcome being pursued
    - Identify which success criteria this flight addresses
    - Note constraints that apply
 
-4. **Check existing flights**
+5. **Check existing flights**
    - What flights already exist for this mission?
    - What's been completed vs. in progress?
    - Are there dependencies on other flights?

@@ -9,8 +9,8 @@ Generate detailed implementation guidance for LLM execution.
 
 ## Prerequisites
 
+- Project must be initialized with `/init-project` (`.flight-ops/ARTIFACTS.md` must exist)
 - A flight must exist before creating legs
-- **Flight Operations reference synced**: Run `/init-project` if needed
 
 ## Workflow
 
@@ -19,15 +19,20 @@ Generate detailed implementation guidance for LLM execution.
 1. **Identify the target project**
    - Read `projects.md` to find the project's path
 
-2. **Read the artifact configuration**
+2. **Verify project is initialized**
+   - Check if `{target-project}/.flight-ops/ARTIFACTS.md` exists
+   - **If missing**: STOP and tell the user to run `/init-project` first
+   - Do not proceed without the artifact configuration
+
+3. **Read the artifact configuration**
    - Read `{target-project}/.flight-ops/ARTIFACTS.md` for artifact locations and formats
 
-3. **Read the parent flight**
+4. **Read the parent flight**
    - Understand the objective being achieved
    - Review design decisions and constraints
    - Note the technical approach defined
 
-4. **Read the flight log in detail** (critical)
+5. **Read the flight log in detail** (critical)
 
    The flight log captures ground truth from actual implementation. Read it fully and extract:
    - Actual outcomes from completed legs
@@ -37,13 +42,13 @@ Generate detailed implementation guidance for LLM execution.
    - Decisions made during implementation
    - Workarounds for issues encountered
 
-5. **Identify this leg's scope**
+6. **Identify this leg's scope**
    - Which leg from the flight's leg list?
    - What comes before and after?
    - Dependencies on other legs?
    - How do prior leg outcomes affect this leg?
 
-6. **Identify environment constraints**
+7. **Identify environment constraints**
    - Execution environment (devcontainer, WSL, cloud)?
    - User context (root, specific user)?
    - Environment variables or shell setup needed?

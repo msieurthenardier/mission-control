@@ -9,8 +9,8 @@ Perform comprehensive post-flight analysis for continuous improvement.
 
 ## Prerequisites
 
+- Project must be initialized with `/init-project` (`.flight-ops/ARTIFACTS.md` must exist)
 - A flight must be completed (status `landed` or `diverted`) before debriefing
-- **Flight Operations reference synced**: Run `/init-project` if needed
 
 ## Workflow
 
@@ -19,20 +19,25 @@ Perform comprehensive post-flight analysis for continuous improvement.
 1. **Identify the target project**
    - Read `projects.md` to find the project's path
 
-2. **Read the artifact configuration**
+2. **Verify project is initialized**
+   - Check if `{target-project}/.flight-ops/ARTIFACTS.md` exists
+   - **If missing**: STOP and tell the user to run `/init-project` first
+   - Do not proceed without the artifact configuration
+
+3. **Read the artifact configuration**
    - Read `{target-project}/.flight-ops/ARTIFACTS.md` for artifact locations and formats
 
-3. **Load flight documentation**
+4. **Load flight documentation**
    - Read the mission for overall context and success criteria
    - Read the flight for objectives, design decisions, and checkpoints
    - Read ALL legs to understand the planned implementation
    - Read the complete flight log for ground truth on what happened
 
-4. **Load project context**
+5. **Load project context**
    - Read the target project's `README.md` and `CLAUDE.md`
    - Identify key implementation files from leg outputs and flight log
 
-5. **Examine actual implementation**
+6. **Examine actual implementation**
    - Read files created or modified during the flight
    - Compare intended vs actual implementation
    - Note deviations, workarounds, or unexpected discoveries

@@ -9,7 +9,7 @@ Create a new mission through research and collaborative discovery.
 
 ## Prerequisites
 
-- **Flight Operations reference synced**: Run `/init-project` if needed
+- Project must be initialized with `/init-project` (`.flight-ops/ARTIFACTS.md` must exist)
 
 ## Workflow
 
@@ -21,20 +21,25 @@ Before asking questions, gather context:
    - Read `projects.md` to find the project's path
    - If not listed, ask the user for details
 
-2. **Read the artifact configuration**
+2. **Verify project is initialized**
+   - Check if `{target-project}/.flight-ops/ARTIFACTS.md` exists
+   - **If missing**: STOP and tell the user to run `/init-project` first
+   - Do not proceed without the artifact configuration
+
+3. **Read the artifact configuration**
    - Read `{target-project}/.flight-ops/ARTIFACTS.md` for artifact locations and formats
 
-3. **Explore the target project's codebase**
+4. **Explore the target project's codebase**
    - Project structure and architecture
    - Existing patterns and conventions
    - Related functionality
 
-4. **Read existing documentation**
+5. **Read existing documentation**
    - README and project docs
    - Any existing missions
    - Technical specs or design documents
 
-5. **Search external sources if needed**
+6. **Search external sources if needed**
    - API documentation
    - Library documentation
    - Relevant patterns or best practices

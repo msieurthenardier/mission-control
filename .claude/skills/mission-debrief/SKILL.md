@@ -9,8 +9,8 @@ Perform comprehensive post-mission retrospective and methodology assessment.
 
 ## Prerequisites
 
+- Project must be initialized with `/init-project` (`.flight-ops/ARTIFACTS.md` must exist)
 - A mission must be completed (status `completed` or `aborted`) before debriefing
-- **Flight Operations reference synced**: Run `/init-project` if needed
 
 ## Workflow
 
@@ -19,16 +19,21 @@ Perform comprehensive post-mission retrospective and methodology assessment.
 1. **Identify the target project**
    - Read `projects.md` to find the project's path
 
-2. **Read the artifact configuration**
+2. **Verify project is initialized**
+   - Check if `{target-project}/.flight-ops/ARTIFACTS.md` exists
+   - **If missing**: STOP and tell the user to run `/init-project` first
+   - Do not proceed without the artifact configuration
+
+3. **Read the artifact configuration**
    - Read `{target-project}/.flight-ops/ARTIFACTS.md` for artifact locations and formats
 
-3. **Load mission documentation**
+4. **Load mission documentation**
    - Read the mission for original outcome, success criteria, and constraints
    - Read ALL flight documents for objectives and results
    - Read ALL flight debriefs for per-flight lessons learned
    - Read flight logs for execution details
 
-4. **Load project context**
+5. **Load project context**
    - Read the target project's `README.md` and `CLAUDE.md`
    - Understand what was built during this mission
 
