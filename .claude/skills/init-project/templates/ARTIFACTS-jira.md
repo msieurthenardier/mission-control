@@ -10,6 +10,15 @@ This project stores Flight Control artifacts as Jira issues.
 | Flight | Story | Child of Epic |
 | Leg | Sub-task | Child of Story |
 
+## Setup Questions
+
+Answer these questions when configuring Jira artifacts for your project:
+
+| Question | Answer |
+|----------|--------|
+| What is the Jira project key? | `PROJECT` |
+| JQL query for discovering flight documentation? | (e.g., `project = PROJECT AND labels = flight-control`) |
+
 ## Configuration
 
 | Property | Value |

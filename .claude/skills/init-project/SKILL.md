@@ -71,12 +71,25 @@ Available templates:
 - **files** — Markdown files in the repository (`templates/ARTIFACTS-files.md`)
 - **jira** — Jira issues: Epics, Stories, Sub-tasks (`templates/ARTIFACTS-jira.md`)
 
-Copy the selected template:
+#### 4a. Check for Setup Questions
+
+After the user selects a template, read the template file and check if it contains a `## Setup Questions` section with a table of questions.
+
+If setup questions exist:
+1. Parse the questions from the table (first column contains the questions)
+2. Ask the user each question interactively
+3. Replace the placeholder answers in the table with the user's responses
+
+#### 4b. Copy and Populate Template
+
+Copy the selected template, with answers populated if setup questions were asked:
 
 ```bash
 cp "${SKILL_DIR}/templates/ARTIFACTS-{selection}.md" \
    "{target-project}/.flight-ops/ARTIFACTS.md"
 ```
+
+If setup questions were answered, update the ARTIFACTS.md file to replace the placeholder answers with the user's responses.
 
 **If ARTIFACTS.md already exists**, do not modify it — it's project-specific and may have been customized.
 
