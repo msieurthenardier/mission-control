@@ -20,6 +20,42 @@ This project stores Flight Control artifacts as Jira issues.
 
 ---
 
+## Custom Fields
+
+<!-- Add your project's custom Jira fields here -->
+
+| Custom Field | Jira Field ID | Required | Used For | Notes |
+|--------------|---------------|----------|----------|-------|
+| (example) Team | `customfield_10001` | Yes | All issues | Select from predefined teams |
+| (example) Sprint | `customfield_10002` | No | Stories, Sub-tasks | Assign to sprint |
+
+## Project Rules
+
+<!-- Document project-specific Jira rules and conventions here -->
+
+### Required Fields by Issue Type
+
+**Epic (Mission):**
+- (list required fields for your project)
+
+**Story (Flight):**
+- (list required fields for your project)
+
+**Sub-task (Leg):**
+- (list required fields for your project)
+
+### Workflow Rules
+
+- (document any workflow restrictions or automation rules)
+- (e.g., "Stories cannot move to In Progress without Epic Link")
+
+### Naming Conventions
+
+- (document any naming patterns required by your project)
+- (e.g., "Epic summaries must start with [MISSION]")
+
+---
+
 ## Core Artifacts
 
 ### Mission → Epic
