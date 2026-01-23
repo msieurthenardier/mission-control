@@ -48,7 +48,7 @@ Each level tracks progress through defined states:
 
 - **Missions**: `planning` → `active` → `completed` (or `aborted`)
 - **Flights**: `planning` → `ready` → `in-flight` → `landed` (or `diverted`)
-- **Legs**: `queued` → `in-progress` → `completed` (or `blocked`)
+- **Legs**: `queued` → `in-progress` → `review` → `completed` (or `blocked`)
 
 ### Roles
 

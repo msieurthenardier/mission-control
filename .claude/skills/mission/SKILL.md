@@ -87,6 +87,13 @@ Present the draft and iterate:
 
 ## Guidelines
 
+### Role Engagement
+
+Consider involving these roles during mission creation:
+- **Mission Liaison**: Should participate in the interview phase to ensure stakeholder needs are captured
+- **Flight Director**: May need to approve mission scope and resource allocation
+- **Technical Architects**: Consult early if the mission has significant architectural implications
+
 ### Mission Sizing
 
 A well-sized mission:

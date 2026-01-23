@@ -77,6 +77,6 @@ Update acceptance criteria during implementation if requirements evolve, but doc
 ## Key Principles
 
 1. **Read the flight log first** — It's ground truth for what actually happened
-2. **Prefer new legs over modifications** — If scope changes significantly, consider creating new legs; document any modifications or aborted legs in the flight log
+2. **Never modify legs once `in-progress`** — Create new legs instead; modifications are only allowed while `queued`
 3. **Binary acceptance criteria** — Met or not met, no judgment calls
 4. **Log everything** — Decisions, deviations, anomalies go in the flight log

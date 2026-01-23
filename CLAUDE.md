@@ -14,7 +14,7 @@ This repository contains the methodology documentation and Claude Code skills fo
 
 ## Claude Code Skills
 
-Seven skills automate the planning and debrief workflow:
+Six skills automate the planning and debrief workflow:
 
 | Skill | Purpose |
 |-------|---------|
@@ -82,7 +82,7 @@ Flight Control defines these business objects (artifacts):
 
 - **Missions**: `planning` → `active` → `completed` (or `aborted`)
 - **Flights**: `planning` → `ready` → `in-flight` → `landed` (or `diverted`)
-- **Legs**: `queued` → `in-progress` → `completed` (or `blocked`)
+- **Legs**: `queued` → `in-progress` → `review` → `completed` (or `blocked`)
 
 ## Key Principles
 

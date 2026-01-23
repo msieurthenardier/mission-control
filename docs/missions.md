@@ -95,12 +95,40 @@ Who cares about this outcome and why.
 ## Constraints
 Non-negotiable boundaries (budget, timeline, technology).
 
+## Environment Requirements
+Development environment, runtime dependencies, special tooling.
+
 ## Open Questions
 Unknowns that need resolution during execution.
 
 ## Flights
 Links to flights executing this mission.
 ```
+
+## Mission Briefing
+
+Before execution begins, create a **mission briefing** to align stakeholders:
+
+```markdown
+# Mission Briefing: {Title}
+
+## Outcome
+What success looks like.
+
+## Scope
+What's included and excluded.
+
+## Flight Plan
+Overview of planned flights and their dependencies.
+
+## Key Risks
+Major risks and mitigation strategies.
+
+## Stakeholders
+Who needs progress updates.
+```
+
+The briefing is a snapshot for communication—it doesn't replace the mission document.
 
 ## Mission Lifecycle
 
@@ -179,6 +207,34 @@ Missions should not prescribe *how*:
 > Users can securely authenticate across sessions without re-entering credentials
 
 Save implementation details for flights.
+
+## Mission Debrief
+
+After a mission completes (or aborts), create a **mission debrief** for retrospective learning:
+
+```markdown
+# Mission Debrief: {Title}
+
+## Success Criteria Results
+Which criteria were met, partially met, or not met.
+
+## Flight Summary
+Overview of how each flight contributed.
+
+## What Went Well
+Effective patterns and successes.
+
+## What Could Be Improved
+Process and execution improvements.
+
+## Lessons Learned
+Insights to carry forward.
+
+## Methodology Feedback
+Improvements to Flight Control itself.
+```
+
+The debrief captures organizational learning and informs future missions.
 
 ## Relationship to Flights
 

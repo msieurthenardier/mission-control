@@ -270,6 +270,11 @@ This project stores Flight Control artifacts as Jira issues.
 ## Key Learnings
 {Insights for future flights}
 
+## Recommendations
+1. {Most impactful recommendation}
+2. {Second recommendation}
+3. {Third recommendation}
+
 ## Action Items
 - [ ] {action}
 ```
@@ -380,6 +385,7 @@ This project stores Flight Control artifacts as Jira issues.
 |----------------|-------------|
 | queued | To Do |
 | in-progress | In Progress |
+| review | In Review |
 | completed | Done |
 | blocked | Blocked |
 

@@ -99,6 +99,13 @@ Also create the flight log artifact (empty, ready for execution notes).
 
 ## Guidelines
 
+### Role Engagement
+
+Consider involving these roles during flight planning:
+- **Technical Architects**: Consult on design decisions, especially for architectural changes
+- **Mission Liaison**: Clarify requirements and answer questions about stakeholder needs
+- **Flight Engineer**: May provide input on testing strategy and review approach
+
 ### Flight Sizing
 
 A well-sized flight:

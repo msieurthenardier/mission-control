@@ -367,6 +367,18 @@ When circumstances change:
 
 ## Handling Diversions
 
+### When to Divert vs. Create New Flight
+
+**Divert the current flight when:**
+- The objective remains the same but the approach must change
+- External factors (security issues, API changes) invalidate the current plan
+- Discovered complexity requires re-planning but the goal is unchanged
+
+**Create a new flight when:**
+- A completely new objective emerges
+- The discovered work is independent of the current flight's goal
+- The new work serves different mission success criteria
+
 ### Flight Diversion
 
 When a flight must change direction:

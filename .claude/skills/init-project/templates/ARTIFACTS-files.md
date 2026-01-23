@@ -175,7 +175,7 @@ How to confirm the flight achieved its objective.
 ```markdown
 # Leg: {slug}
 
-**Status**: queued | in-progress | completed | blocked
+**Status**: queued | in-progress | review | completed | blocked
 **Flight**: [{Flight Title}](../flight.md)
 
 ## Objective
@@ -385,6 +385,11 @@ Chronological notes from work sessions.
 ## Key Learnings
 {Insights for future flights}
 
+## Recommendations
+1. {Most impactful recommendation}
+2. {Second recommendation}
+3. {Third recommendation}
+
 ## Action Items
 - [ ] {Immediate actions}
 - [ ] {Near-term improvements}
@@ -499,7 +504,7 @@ States are tracked in the frontmatter or status field of each artifact:
 |----------|--------|
 | Mission | `planning` → `active` → `completed` (or `aborted`) |
 | Flight | `planning` → `ready` → `in-flight` → `landed` (or `diverted`) |
-| Leg | `queued` → `in-progress` → `completed` (or `blocked`) |
+| Leg | `queued` → `in-progress` → `review` → `completed` (or `blocked`) |
 
 ## Conventions
 

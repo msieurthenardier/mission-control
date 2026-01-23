@@ -6,6 +6,8 @@ Flight logs are living records created during flight execution. They capture wha
 
 A flight log is the authoritative record of a flight's execution. While the flight document describes the *plan*, the flight log documents *reality*. There is exactly one flight log per flight, updated continuously during execution.
 
+**Important**: Flight logs are **append-only** during execution. Never delete or modify existing entries—only add new ones. This preserves the historical record and ensures nothing is lost when revisiting decisions later.
+
 ### Flight Log vs. Other Artifacts
 
 | Artifact | Purpose | When Written | Updates |

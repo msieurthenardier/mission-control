@@ -156,6 +156,34 @@ The gate check before execution:
 
 When all items are checked, the flight moves from `planning` to `ready`.
 
+## Flight Briefing
+
+Before execution begins, create a **flight briefing** to align the crew:
+
+```markdown
+# Flight Briefing: {Title}
+
+## Mission Context
+How this flight contributes to the mission.
+
+## Objective
+What this flight will accomplish.
+
+## Key Decisions
+Critical design decisions the crew should know.
+
+## Risks
+Known risks and mitigation strategies.
+
+## Legs Overview
+Summary of legs with complexity notes.
+
+## Success Criteria
+How we'll know the flight succeeded.
+```
+
+The briefing is created when the flight moves to `ready` status.
+
 ## In-Flight Phase
 
 In-flight is execution. Legs are being worked, progress is tracked in the [flight log](flight-logs.md).
@@ -300,9 +328,8 @@ Flights progress through defined states:
 
 ```
 planning ──► ready ──► in-flight ──► landed
-                │          │
-                │          └──► diverted
-                └──► (back to planning if issues found)
+                           │
+                           └──► diverted ──► planning
 ```
 
 **planning**
@@ -319,6 +346,18 @@ Post-flight checklist complete. Verification passed. Flight achieved its objecti
 
 **diverted**
 Flight changed direction due to circumstances. This isn't failure—it's adaptation. Document why and what changed.
+
+### When to Divert vs. Create New Flight
+
+**Divert the current flight when:**
+- The objective remains the same but the approach must change
+- External factors (security issues, API changes) invalidate the current plan
+- Discovered complexity requires re-planning but the goal is unchanged
+
+**Create a new flight when:**
+- A completely new objective emerges
+- The discovered work is independent of the current flight's goal
+- The new work serves different mission success criteria
 
 ### State Transitions
 
@@ -387,6 +426,34 @@ When circumstances change, adapt the plan. Flights that ignore reality become fi
 ### Skipping Post-Flight
 
 Post-flight isn't bureaucracy—it's learning. Retrospective notes prevent repeating mistakes. Verification confirms the flight actually succeeded.
+
+## Flight Debrief
+
+After a flight lands (or diverts), create a **flight debrief** for retrospective analysis:
+
+```markdown
+# Flight Debrief: {Title}
+
+## Outcome Assessment
+What the flight accomplished and which mission criteria it advanced.
+
+## What Went Well
+Effective patterns during execution.
+
+## What Could Be Improved
+Process and technical recommendations.
+
+## Deviations and Lessons
+What changed from the plan and why.
+
+## Recommendations
+Top 3-5 most impactful improvements.
+
+## Action Items
+Follow-up work and improvements.
+```
+
+The debrief enables continuous improvement and informs future flights.
 
 ## Next Steps
 

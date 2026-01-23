@@ -213,6 +213,8 @@ Cannot proceed. Needs intervention. Common blockers:
 | review | in-progress | Issues found, needs fixes |
 | blocked | queued | Blocker resolved |
 
+Note: Legs may only be modified while in `queued` state. Once `in-progress`, create new legs instead of modifying existing ones.
+
 ## Patterns for AI Consumption
 
 ### Be Explicit, Not Implicit
