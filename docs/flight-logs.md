@@ -31,7 +31,7 @@ When creating new legs, the flight log reveals:
 - Discovered complexity that should inform estimates
 - Patterns or anti-patterns emerging from execution
 
-### For Post-Flight Review
+### For Post-Flight Debrief
 
 The flight log enables meaningful retrospectives by capturing:
 - Actual vs. planned progression

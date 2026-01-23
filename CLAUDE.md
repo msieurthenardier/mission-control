@@ -14,7 +14,7 @@ This repository contains the methodology documentation and Claude Code skills fo
 
 ## Claude Code Skills
 
-Five skills automate the planning and review workflow:
+Seven skills automate the planning and debrief workflow:
 
 | Skill | Purpose |
 |-------|---------|
@@ -22,21 +22,22 @@ Five skills automate the planning and review workflow:
 | `/mission` | Create outcome-driven missions through research and interview |
 | `/flight` | Create technical flight specs from missions |
 | `/leg` | Generate implementation guidance for LLM execution |
-| `/flight-review` | Post-flight analysis for continuous improvement |
+| `/flight-debrief` | Post-flight analysis for continuous improvement |
+| `/mission-debrief` | Post-mission retrospective for outcomes assessment |
 
 Run `/init-project` before using the other skills on a new project to create the flight operations reference directory and configure the artifact system.
 
 **Artifact Systems:** Each project defines how artifacts are stored in `.flight-ops/ARTIFACTS.md`. Skills read this configuration and adapt their output accordingly.
 
-**IMPORTANT: Skills produce documentation only.** When running `/mission`, `/flight`, `/leg`, or `/flight-review`:
-- **NEVER implement code changes** — only create/update markdown documentation files
+**IMPORTANT: Skills produce documentation only.** When running these skills:
+- **NEVER implement code changes** — only create/update artifacts
 - **NEVER modify source files** in the target project (no `.rs`, `.ts`, `.tsx`, `.json`, etc.)
 - The leg document contains implementation guidance for a separate execution phase
 - Implementation happens later, in a dedicated session within the target project
 
 ## Projects Registry
 
-The `projects.md` file in this repository catalogs all active projects on this device. When using the `/mission`, `/flight`, or `/leg` skills:
+The `projects.md` file in this repository catalogs all active projects on this device. When using skills:
 
 1. **Read `projects.md` first** to find the target project's path, remote, and description
 2. **Read `.flight-ops/ARTIFACTS.md`** in the target project to determine artifact locations
@@ -60,13 +61,28 @@ Every project using Flight Control has a `.flight-ops/` directory:
     └── ARTIFACTS.md           # Artifact system configuration (project-specific)
 ```
 
-The `ARTIFACTS.md` file defines where and how mission, flight, and leg artifacts are stored.
+The `ARTIFACTS.md` file defines where and how all artifacts are stored.
+
+## Business Objects
+
+Flight Control defines these business objects (artifacts):
+
+| Object | Purpose |
+|--------|---------|
+| Mission | Outcome-driven goal definition |
+| Mission Briefing | Pre-mission summary for stakeholder alignment |
+| Mission Debrief | Post-mission retrospective |
+| Flight | Technical specification with checklists |
+| Flight Log | Running record during execution |
+| Flight Briefing | Pre-flight summary for crew alignment |
+| Flight Debrief | Post-flight analysis |
+| Leg | Atomic implementation step |
 
 ## Lifecycle States
 
 - **Missions**: `planning` → `active` → `completed` (or `aborted`)
 - **Flights**: `planning` → `ready` → `in-flight` → `landed` (or `diverted`)
-- **Legs**: `queued` → `in-progress` → `review` → `completed` (or `blocked`)
+- **Legs**: `queued` → `in-progress` → `completed` (or `blocked`)
 
 ## Key Principles
 
@@ -74,7 +90,7 @@ The `ARTIFACTS.md` file defines where and how mission, flight, and leg artifacts
 2. **Immutability after start**: Never modify legs once `in-progress`; create new ones instead
 3. **Pre-flight rigor**: Resolve all open questions and verify prerequisites before execution
 4. **Explicit criteria**: Acceptance criteria must be binary, observable, and complete
-5. **Log during flight**: Record decisions, deviations, and anomalies in the flight log for continuity and future leg creation
+5. **Log during flight**: Record decisions, deviations, and anomalies in the flight log
 
 ## Sizing Guidelines
 

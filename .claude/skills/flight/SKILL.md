@@ -1,6 +1,6 @@
 ---
 name: flight
-description: Create technical flight specifications from missions. Use when breaking down a mission into implementable work, planning technical approach, or creating flight specs. Triggers on "create flight", "new flight", "plan flight", "flight spec".
+description: Create technical flight specifications from missions. Use when breaking down a mission into implementable work or planning technical approach.
 ---
 
 # Flight Specification
@@ -9,19 +9,18 @@ Create a technical flight spec from a mission.
 
 ## Prerequisites
 
-- A mission must exist before creating a flight. If no mission context is provided, ask which mission this flight supports.
-- **Flight Operations reference synced**: Run `/init-project` if this is a new project or if you haven't recently verified the reference is current
+- A mission must exist before creating a flight
+- **Flight Operations reference synced**: Run `/init-project` if needed
 
 ## Workflow
 
 ### Phase 1: Context Gathering
 
 1. **Identify the target project**
-   - Read `projects.md` to find the project's path, remote, and description
+   - Read `projects.md` to find the project's path
 
 2. **Read the artifact configuration**
    - Read `{target-project}/.flight-ops/ARTIFACTS.md` for artifact locations and formats
-   - This defines where and how missions, flights, and legs are stored
 
 3. **Read the parent mission**
    - Understand the outcome being pursued
@@ -35,7 +34,7 @@ Create a technical flight spec from a mission.
 
 ### Phase 2: Code Interrogation
 
-Explore the **target project's codebase** to inform the technical approach:
+Explore the target project's codebase to inform the technical approach:
 
 1. **Identify relevant code areas**
    - What existing code relates to this flight?
@@ -62,113 +61,31 @@ Ask technical questions to resolve the approach:
    - "Are there performance considerations?"
 
 2. **Open questions**
-   - Surface any ambiguities in requirements
+   - Surface ambiguities in requirements
    - Clarify edge cases
-   - Identify unknowns that need resolution
+   - Identify unknowns
 
 3. **Design decisions**
    - Document choices and rationale
    - Get agreement on trade-offs
-   - Note any constraints discovered
+   - Note constraints discovered
 
 4. **Prerequisites verification**
    - "Is [dependency] ready?"
    - "Do we have access to [resource]?"
-   - "Has [blocking work] been completed?"
 
 5. **Environment capabilities**
-   - "What environment will this run in?" (devcontainer, local, CI, cloud)
+   - "What environment will this run in?"
    - "Is GUI available for visual verification?"
-   - "Are there hardware requirements?" (audio, GPU, specific ports)
-   - "What commands need special context?" (docker exec, sudo, specific users)
+   - "Are there hardware requirements?"
 
 ### Phase 4: Spec Creation
 
-Create the flight document with this structure:
+Create the flight artifact using the format defined in `.flight-ops/ARTIFACTS.md`.
 
-```markdown
-# Flight: {Title}
+Also create the flight log artifact (empty, ready for execution notes).
 
-## Mission Link
-
-**Mission**: [{Mission Title}](../mission.md)
-
-**Contributing to criteria**:
-- [ ] {Relevant success criterion 1}
-- [ ] {Relevant success criterion 2}
-
----
-
-## Pre-Flight
-
-### Objective
-What this flight accomplishes (one paragraph).
-
-### Open Questions
-- [ ] Question needing resolution
-- [x] Resolved question → see Design Decisions
-
-### Design Decisions
-
-**{Decision Title}**: {Choice made}
-- Rationale: Why this choice
-- Trade-off: What we're giving up
-- Decided by: Who made this call
-
-### Prerequisites
-- [ ] {What must be true before execution}
-
-### Pre-Flight Checklist
-- [ ] All open questions resolved
-- [ ] Design decisions documented
-- [ ] Prerequisites verified
-- [ ] Environment capabilities confirmed (GUI, audio, network, etc.)
-- [ ] Acceptance criteria achievable in target environment
-- [ ] Legs defined
-
----
-
-## In-Flight
-
-### Technical Approach
-How the objective will be achieved (numbered steps).
-
-### Checkpoints
-- [ ] {Milestone 1}
-- [ ] {Milestone 2}
-
-### Adaptation Criteria
-
-**Divert if**:
-- {Condition requiring re-planning}
-
-**Acceptable variations**:
-- {Minor changes that don't require diversion}
-
-### Legs
-- [ ] `{leg-slug}` - {Brief description}
-- [ ] `{leg-slug}` - {Brief description}
-
----
-
-## Post-Flight
-
-### Completion Checklist
-- [ ] All legs completed
-- [ ] Code merged
-- [ ] Tests passing
-- [ ] Documentation updated
-
-### Verification
-How to confirm the flight achieved its objective.
-
-### Retrospective Notes
-(Filled after completion)
-```
-
-**Output location**: Defined in `.flight-ops/ARTIFACTS.md`.
-
-### Phase 5: Review and Iterate
+### Phase 5: Iterate
 
 1. Walk through the spec with the crew
 2. Validate technical approach is sound
@@ -196,35 +113,25 @@ Break flights into legs based on technical boundaries:
 - Consider dependencies between legs
 - Group related changes together
 
-**For scaffolding/foundation flights**: Always include a final `verify-integration` leg that:
-- Confirms all components work together
-- Tests end-to-end flows (e.g., frontend calls backend)
-- Fixes any integration issues discovered
-- Validates the build/deploy process
+**For scaffolding flights**: Include a final `verify-integration` leg
 
-**For flights that modify shared interfaces**: Include interface changes in the leg list:
-- Note which interfaces are added, changed, or removed
-- Identify consumers that need updates
-- Either update consumers in the same leg or create explicit follow-up legs
+**For interface changes**: Identify consumers that need updates
 
 ### Pre-Flight Rigor
 
-Don't skip pre-flight:
 - Open questions MUST be resolved before execution
 - Design decisions MUST be documented with rationale
 - Prerequisites MUST be verified, not assumed
 
 ### Adaptive Planning
 
-- Flights can be modified during the `planning` state
+- Flights can be modified during `planning` state
 - Once `in-flight`, create diversions rather than editing
-- Ask: "Have circumstances changed that affect this flight?"
 - New legs can be added if scope grows
 
 ## Output
 
-Create the following artifacts in the **target project** using the locations and formats defined in `.flight-ops/ARTIFACTS.md`:
+Create the following artifacts using locations and formats from `.flight-ops/ARTIFACTS.md`:
 
-1. **Flight spec** — The flight plan document
-2. **Flight log** — Running record for execution (see [Flight Logs](../../../docs/flight-logs.md) for structure)
-3. **Legs container** — Where leg artifacts will be created
+1. **Flight spec** — The flight plan
+2. **Flight log** — Empty, ready for execution notes

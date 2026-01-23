@@ -2,7 +2,7 @@
 
 This project stores Flight Control artifacts as Jira issues.
 
-## Mapping
+## Issue Type Mapping
 
 | Flight Control | Jira Issue Type | Hierarchy |
 |----------------|-----------------|-----------|
@@ -18,35 +18,304 @@ This project stores Flight Control artifacts as Jira issues.
 | Board | (specify board name or ID) |
 | Labels | `flight-control` |
 
-## Artifact Definitions
+---
+
+## Core Artifacts
 
 ### Mission → Epic
 
 | Field | Mapping |
 |-------|---------|
 | Summary | Mission title |
-| Description | Mission overview, success criteria, constraints |
+| Description | See format below |
 | Labels | `flight-control`, `mission` |
-| Custom fields | (add project-specific mappings) |
+
+**Description Format:**
+
+```
+## Outcome
+{What success looks like in human terms}
+
+## Context
+{Why this mission matters now}
+
+## Success Criteria
+- [ ] {Criterion 1}
+- [ ] {Criterion 2}
+
+## Stakeholders
+{Who cares about this outcome}
+
+## Constraints
+{Non-negotiable boundaries}
+
+## Environment Requirements
+{Development and runtime requirements}
+
+## Open Questions
+{Unknowns needing resolution}
+```
+
+---
 
 ### Flight → Story
 
 | Field | Mapping |
 |-------|---------|
 | Summary | Flight title |
-| Description | Flight objective, pre-flight checklist, post-flight criteria |
+| Description | See format below |
 | Epic Link | Parent mission epic |
 | Labels | `flight-control`, `flight` |
-| Acceptance Criteria | Post-flight checklist items |
+
+**Description Format:**
+
+```
+## Objective
+{What this flight accomplishes}
+
+## Contributing to Criteria
+- {Relevant success criterion 1}
+- {Relevant success criterion 2}
+
+## Design Decisions
+{Key technical decisions and rationale}
+
+## Prerequisites
+- [ ] {What must be true before execution}
+
+## Technical Approach
+{How the objective will be achieved}
+
+## Legs
+- [ ] {leg-slug} - {description}
+- [ ] {leg-slug} - {description}
+
+## Verification
+{How to confirm success}
+```
+
+---
 
 ### Leg → Sub-task
 
 | Field | Mapping |
 |-------|---------|
 | Summary | Leg title |
-| Description | Implementation guidance, acceptance criteria |
+| Description | See format below |
 | Parent | Flight story |
 | Labels | `flight-control`, `leg` |
+
+**Description Format:**
+
+```
+## Objective
+{Single sentence: what this leg accomplishes}
+
+## Context
+{Design decisions and learnings from prior legs}
+
+## Inputs
+{What must exist before this leg runs}
+
+## Outputs
+{What exists after completion}
+
+## Acceptance Criteria
+- [ ] {Criterion 1}
+- [ ] {Criterion 2}
+
+## Implementation Guidance
+{Step-by-step guidance}
+
+## Files Affected
+{List of files to modify}
+```
+
+---
+
+## Supporting Artifacts
+
+### Flight Log → Story Comments
+
+| Property | Value |
+|----------|-------|
+| Location | Comments on the Flight (Story) |
+| Format | Timestamped comments with prefix |
+| Update pattern | Append new comments during execution |
+
+**Comment Format:**
+
+```
+[Flight Log] {YYYY-MM-DD HH:MM}
+
+## {Entry Type}: {Title}
+
+{Content based on entry type - see below}
+```
+
+**Entry Types:**
+
+- `Leg Progress` - Status updates for leg completion
+- `Decision` - Runtime decisions not in original plan
+- `Deviation` - Departures from planned approach
+- `Anomaly` - Unexpected issues encountered
+- `Session Notes` - General progress notes
+
+---
+
+### Flight Briefing → Story Comment
+
+| Property | Value |
+|----------|-------|
+| Location | Comment on the Flight (Story) |
+| Created | Before flight execution begins |
+| Label | `[Flight Briefing]` |
+
+**Comment Format:**
+
+```
+[Flight Briefing] {YYYY-MM-DD}
+
+## Mission Context
+{How this flight contributes to mission}
+
+## Objective
+{What this flight will accomplish}
+
+## Key Decisions
+{Critical decisions crew should know}
+
+## Risks
+| Risk | Mitigation |
+|------|------------|
+| {risk} | {mitigation} |
+
+## Legs Overview
+1. {leg} - {description}
+2. {leg} - {description}
+
+## Success Criteria
+{How we'll know the flight succeeded}
+```
+
+---
+
+### Flight Debrief → Story Comment
+
+| Property | Value |
+|----------|-------|
+| Location | Comment on the Flight (Story) |
+| Created | After flight lands or diverts |
+| Label | `[Flight Debrief]` |
+
+**Comment Format:**
+
+```
+[Flight Debrief] {YYYY-MM-DD}
+
+**Status**: {landed | diverted}
+**Duration**: {start} - {end}
+**Legs Completed**: {X of Y}
+
+## Outcome Assessment
+{What the flight accomplished}
+
+## What Went Well
+{Effective patterns}
+
+## What Could Be Improved
+{Recommendations}
+
+## Deviations
+| Deviation | Reason | Standardize? |
+|-----------|--------|--------------|
+| {what} | {why} | {yes/no} |
+
+## Key Learnings
+{Insights for future flights}
+
+## Action Items
+- [ ] {action}
+```
+
+---
+
+### Mission Briefing → Epic Comment
+
+| Property | Value |
+|----------|-------|
+| Location | Comment on the Mission (Epic) |
+| Created | Before mission execution begins |
+| Label | `[Mission Briefing]` |
+
+**Comment Format:**
+
+```
+[Mission Briefing] {YYYY-MM-DD}
+
+## Outcome
+{What success looks like}
+
+## Scope
+{What's included and excluded}
+
+## Flight Plan
+| # | Flight | Objective |
+|---|--------|-----------|
+| 01 | {name} | {objective} |
+
+## Key Risks
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| {risk} | {impact} | {mitigation} |
+
+## Stakeholders
+{Who needs progress updates}
+```
+
+---
+
+### Mission Debrief → Epic Comment
+
+| Property | Value |
+|----------|-------|
+| Location | Comment on the Mission (Epic) |
+| Created | After mission completes or aborts |
+| Label | `[Mission Debrief]` |
+
+**Comment Format:**
+
+```
+[Mission Debrief] {YYYY-MM-DD}
+
+**Status**: {completed | aborted}
+**Duration**: {start} - {end}
+**Flights Completed**: {X of Y}
+
+## Success Criteria Results
+| Criterion | Status | Notes |
+|-----------|--------|-------|
+| {criterion} | {met/not met} | {notes} |
+
+## Flight Summary
+| Flight | Status | Outcome |
+|--------|--------|---------|
+| {flight} | {status} | {outcome} |
+
+## What Went Well
+{Successes}
+
+## What Could Be Improved
+{Improvements}
+
+## Lessons Learned
+{Insights}
+
+## Action Items
+- [ ] {action}
+```
+
+---
 
 ## State Mapping
 
@@ -75,50 +344,15 @@ This project stores Flight Control artifacts as Jira issues.
 |----------------|-------------|
 | queued | To Do |
 | in-progress | In Progress |
-| review | In Review |
 | completed | Done |
 | blocked | Blocked |
 
-## Supporting Artifacts
-
-### Flight Log
-
-| Property | Value |
-|----------|-------|
-| Location | Comments on the Flight (Story) |
-| Purpose | Running record of decisions, progress, and anomalies during flight execution |
-| Format | Timestamped comments, one per significant event |
-
-Example comment:
-```
-[Flight Log] 2024-01-15 14:30
-
-Completed leg 01-setup-database. Minor deviation: used PostgreSQL 16 instead of 15 due to availability.
-
-Next: Starting leg 02-api-endpoints.
-```
-
-### Flight Review
-
-| Property | Value |
-|----------|-------|
-| Location | Comment on the Mission (Epic) |
-| Purpose | Post-flight analysis: what worked, what didn't, lessons learned |
-| Created | After flight lands or diverts |
-| Label comment | `[Flight Review: {flight-name}]` |
-
-### Mission Review
-
-| Property | Value |
-|----------|-------|
-| Location | Comment on the Mission (Epic) |
-| Purpose | Post-mission retrospective: outcomes achieved, methodology improvements |
-| Created | After mission completes or aborts |
-| Label comment | `[Mission Review]` |
+---
 
 ## Conventions
 
-- **Naming**: Use clear, action-oriented summaries (e.g., "Implement user authentication flow")
-- **Linking**: Always link Stories to their parent Epic, Sub-tasks to their parent Story
-- **Labels**: Apply `flight-control` label to all artifacts for easy filtering
-- **Immutability**: Never modify Sub-tasks once In Progress; create new ones instead
+- **Naming**: Use clear, action-oriented summaries
+- **Linking**: Always link Stories to Epic, Sub-tasks to Story
+- **Labels**: Apply `flight-control` label to all artifacts
+- **Immutability**: Never modify Sub-tasks once In Progress; create new ones
+- **Comments**: Use prefixes (`[Flight Log]`, `[Flight Briefing]`, etc.) for filtering

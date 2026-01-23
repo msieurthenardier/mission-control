@@ -1,6 +1,6 @@
 ---
 name: init-project
-description: Initialize a project for Flight Control. Creates .flight-ops directory with methodology reference and artifact configuration. Run before using /mission, /flight, /leg, or /flight-review on a new project.
+description: Initialize a project for Flight Control. Creates .flight-ops directory with methodology reference and artifact configuration. Run before using other Flight Control skills on a new project.
 ---
 
 # Project Initialization

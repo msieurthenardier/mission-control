@@ -2,48 +2,221 @@
 
 This project stores Flight Control artifacts as markdown files in the repository.
 
-## Structure
+## Directory Structure
 
 ```
 {project}/
 └── missions/
     └── {mission-slug}/
         ├── mission.md
-        ├── mission-review.md
+        ├── mission-briefing.md
+        ├── mission-debrief.md
         └── flights/
             └── {NN}-{flight-slug}/
                 ├── flight.md
                 ├── flight-log.md
-                ├── flight-review.md
+                ├── flight-briefing.md
+                ├── flight-debrief.md
                 └── legs/
                     └── {NN}-{leg-slug}.md
 ```
 
-## Artifact Definitions
+## Naming Conventions
+
+- **Slugs**: Lowercase, kebab-case, derived from title (e.g., "User Authentication" → `user-authentication`)
+- **Sequence numbers**: Flights and legs use two-digit prefixes (`01`, `02`, etc.) for ordering
+
+---
+
+## Core Artifacts
 
 ### Mission
 
 | Property | Value |
 |----------|-------|
 | Location | `missions/{slug}/mission.md` |
-| Format | Markdown |
-| Naming | Kebab-case slug derived from mission title |
+| Created | During mission planning |
+| Updated | Until status changes to `active` |
+
+**Format:**
+
+```markdown
+# Mission: {Title}
+
+**Status**: planning | active | completed | aborted
+
+## Outcome
+What success looks like in human terms.
+
+## Context
+Why this mission matters now. Background information.
+
+## Success Criteria
+- [ ] Criterion 1 (observable, binary)
+- [ ] Criterion 2
+- [ ] Criterion 3
+
+## Stakeholders
+Who cares about this outcome and why.
+
+## Constraints
+Non-negotiable boundaries.
+
+## Environment Requirements
+- Development environment (devcontainer, local toolchain, cloud IDE)
+- Runtime requirements (GUI, audio hardware, network access)
+- Special tooling (Docker, specific CLI versions)
+
+## Open Questions
+Unknowns that need resolution during execution.
+
+## Flights
+- [ ] Flight 1: {description}
+- [ ] Flight 2: {description}
+```
+
+---
 
 ### Flight
 
 | Property | Value |
 |----------|-------|
 | Location | `missions/{mission}/flights/{NN}-{slug}/flight.md` |
-| Format | Markdown |
-| Naming | Two-digit sequence number + kebab-case slug |
+| Created | During flight planning |
+| Updated | Until status changes to `in-flight` |
+
+**Format:**
+
+```markdown
+# Flight: {Title}
+
+**Status**: planning | ready | in-flight | landed | diverted
+**Mission**: [{Mission Title}](../../mission.md)
+
+## Contributing to Criteria
+- [ ] {Relevant success criterion 1}
+- [ ] {Relevant success criterion 2}
+
+---
+
+## Pre-Flight
+
+### Objective
+What this flight accomplishes (one paragraph).
+
+### Open Questions
+- [ ] Question needing resolution
+- [x] Resolved question → see Design Decisions
+
+### Design Decisions
+
+**{Decision Title}**: {Choice made}
+- Rationale: Why this choice
+- Trade-off: What we're giving up
+
+### Prerequisites
+- [ ] {What must be true before execution}
+
+### Pre-Flight Checklist
+- [ ] All open questions resolved
+- [ ] Design decisions documented
+- [ ] Prerequisites verified
+- [ ] Legs defined
+
+---
+
+## In-Flight
+
+### Technical Approach
+How the objective will be achieved.
+
+### Checkpoints
+- [ ] {Milestone 1}
+- [ ] {Milestone 2}
+
+### Adaptation Criteria
+
+**Divert if**:
+- {Condition requiring re-planning}
+
+**Acceptable variations**:
+- {Minor changes that don't require diversion}
+
+### Legs
+- [ ] `{leg-slug}` - {Brief description}
+- [ ] `{leg-slug}` - {Brief description}
+
+---
+
+## Post-Flight
+
+### Completion Checklist
+- [ ] All legs completed
+- [ ] Code merged
+- [ ] Tests passing
+- [ ] Documentation updated
+
+### Verification
+How to confirm the flight achieved its objective.
+```
+
+---
 
 ### Leg
 
 | Property | Value |
 |----------|-------|
 | Location | `missions/{mission}/flights/{flight}/legs/{NN}-{slug}.md` |
-| Format | Markdown |
-| Naming | Two-digit sequence number + kebab-case slug |
+| Created | Before leg execution |
+| Updated | Never once `in-progress` (immutable) |
+
+**Format:**
+
+```markdown
+# Leg: {slug}
+
+**Status**: queued | in-progress | completed | blocked
+**Flight**: [{Flight Title}](../flight.md)
+
+## Objective
+Single sentence: what this leg accomplishes.
+
+## Context
+- Relevant design decisions from the flight
+- How this fits into the broader technical approach
+- Key learnings from prior legs (from flight log)
+
+## Inputs
+What exists before this leg runs:
+- Files that must exist
+- State that must be true
+
+## Outputs
+What exists after this leg completes:
+- Files created or modified
+- State changes
+
+## Acceptance Criteria
+- [ ] Criterion 1 (specific, observable)
+- [ ] Criterion 2
+- [ ] Criterion 3
+
+## Implementation Guidance
+
+1. **{First step}**
+   - Details about what to do
+
+2. **{Second step}**
+   - Details
+
+## Edge Cases
+- **{Edge case 1}**: How to handle
+
+## Files Affected
+- `path/to/file.ext` - {What changes}
+```
+
+---
 
 ## Supporting Artifacts
 
@@ -52,36 +225,285 @@ This project stores Flight Control artifacts as markdown files in the repository
 | Property | Value |
 |----------|-------|
 | Location | `missions/{mission}/flights/{flight}/flight-log.md` |
-| Purpose | Running record of decisions, progress, and anomalies during flight execution |
-| Update pattern | Append-only during execution |
+| Created | When flight is created |
+| Updated | Continuously during execution (append-only) |
 
-### Flight Review
+**Format:**
+
+```markdown
+# Flight Log: {Flight Title}
+
+**Flight**: [{Flight Title}](flight.md)
+
+## Summary
+Brief overview of execution status and key outcomes.
+
+---
+
+## Leg Progress
+
+### {Leg Name}
+**Status**: completed | in-progress | blocked
+**Started**: {timestamp}
+**Completed**: {timestamp}
+
+#### Changes Made
+- {Summary of what was implemented}
+
+#### Notes
+{Observations during execution}
+
+---
+
+## Decisions
+Runtime decisions not in original plan.
+
+### {Decision Title}
+**Context**: Why needed
+**Decision**: What was chosen
+**Impact**: Effect on flight or future legs
+
+---
+
+## Deviations
+Departures from planned approach.
+
+### {Deviation Title}
+**Planned**: What the flight specified
+**Actual**: What was done instead
+**Reason**: Why the deviation was necessary
+
+---
+
+## Anomalies
+Unexpected issues encountered.
+
+### {Anomaly Title}
+**Observed**: What happened
+**Severity**: blocking | degraded | cosmetic
+**Resolution**: How handled or "unresolved"
+
+---
+
+## Session Notes
+Chronological notes from work sessions.
+```
+
+---
+
+### Flight Briefing
 
 | Property | Value |
 |----------|-------|
-| Location | `missions/{mission}/flights/{flight}/flight-review.md` |
-| Purpose | Post-flight analysis: what worked, what didn't, lessons learned |
+| Location | `missions/{mission}/flights/{flight}/flight-briefing.md` |
+| Created | Before flight execution begins |
+| Purpose | Pre-flight summary for crew alignment |
+
+**Format:**
+
+```markdown
+# Flight Briefing: {Flight Title}
+
+**Date**: {briefing date}
+**Flight**: [{Flight Title}](flight.md)
+**Status**: Flight is ready for execution
+
+## Mission Context
+{Brief reminder of mission outcome and how this flight contributes}
+
+## Objective
+{What this flight will accomplish}
+
+## Key Decisions
+{Summary of critical design decisions crew should know}
+
+## Risks and Mitigations
+| Risk | Mitigation |
+|------|------------|
+| {risk} | {mitigation} |
+
+## Legs Overview
+1. `{leg-slug}` - {description} - {estimated complexity}
+2. `{leg-slug}` - {description} - {estimated complexity}
+
+## Environment Requirements
+{Any special setup needed before starting}
+
+## Success Criteria
+{How we'll know the flight succeeded}
+```
+
+---
+
+### Flight Debrief
+
+| Property | Value |
+|----------|-------|
+| Location | `missions/{mission}/flights/{flight}/flight-debrief.md` |
 | Created | After flight lands or diverts |
+| Purpose | Post-flight analysis and lessons learned |
 
-### Mission Review
+**Format:**
+
+```markdown
+# Flight Debrief: {Flight Title}
+
+**Date**: {debrief date}
+**Flight**: [{Flight Title}](flight.md)
+**Status**: {landed | diverted}
+**Duration**: {start} - {end}
+**Legs Completed**: {X of Y}
+
+## Outcome Assessment
+
+### Objectives Achieved
+{What the flight accomplished}
+
+### Mission Criteria Advanced
+{Which success criteria this flight contributed to}
+
+## What Went Well
+{Specific things that worked effectively}
+
+## What Could Be Improved
+
+### Process
+- {Recommendations for flight execution}
+
+### Technical
+- {Code quality, architecture, debt}
+
+### Documentation
+- {Gaps identified}
+
+## Deviations and Lessons Learned
+
+| Deviation | Reason | Standardize? |
+|-----------|--------|--------------|
+| {what changed} | {why} | {yes/no} |
+
+## Key Learnings
+{Insights for future flights}
+
+## Action Items
+- [ ] {Immediate actions}
+- [ ] {Near-term improvements}
+```
+
+---
+
+### Mission Briefing
 
 | Property | Value |
 |----------|-------|
-| Location | `missions/{mission}/mission-review.md` |
-| Purpose | Post-mission retrospective: outcomes achieved, methodology improvements |
+| Location | `missions/{mission}/mission-briefing.md` |
+| Created | Before mission execution begins |
+| Purpose | Pre-mission summary for stakeholder alignment |
+
+**Format:**
+
+```markdown
+# Mission Briefing: {Mission Title}
+
+**Date**: {briefing date}
+**Mission**: [{Mission Title}](mission.md)
+**Status**: Mission is ready to begin
+
+## Outcome
+{What success looks like}
+
+## Scope
+{What's included and excluded}
+
+## Success Criteria Summary
+{High-level criteria for mission success}
+
+## Flight Plan
+| # | Flight | Objective | Dependencies |
+|---|--------|-----------|--------------|
+| 01 | {name} | {objective} | {deps} |
+| 02 | {name} | {objective} | {deps} |
+
+## Key Risks
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| {risk} | {impact} | {mitigation} |
+
+## Stakeholders
+{Who needs to be informed of progress}
+
+## Constraints Reminder
+{Critical boundaries to respect}
+```
+
+---
+
+### Mission Debrief
+
+| Property | Value |
+|----------|-------|
+| Location | `missions/{mission}/mission-debrief.md` |
 | Created | After mission completes or aborts |
+| Purpose | Post-mission retrospective and methodology improvements |
 
-## Conventions
+**Format:**
 
-- **Sequence numbers**: Flights and legs use `01`, `02`, etc. for ordering
-- **Slugs**: Lowercase, kebab-case, derived from title (e.g., "User Authentication" → `user-authentication`)
-- **Flight log**: Single file per flight, append-only during execution
-- **Immutability**: Never modify legs once in-progress; create new ones instead
+```markdown
+# Mission Debrief: {Mission Title}
+
+**Date**: {debrief date}
+**Mission**: [{Mission Title}](mission.md)
+**Status**: {completed | aborted}
+**Duration**: {start} - {end}
+**Flights Completed**: {X of Y}
+
+## Outcome Assessment
+
+### Success Criteria Results
+| Criterion | Status | Notes |
+|-----------|--------|-------|
+| {criterion} | {met/not met} | {notes} |
+
+### Overall Outcome
+{Did we achieve what we set out to do?}
+
+## Flight Summary
+| Flight | Status | Key Outcome |
+|--------|--------|-------------|
+| {flight} | {landed/diverted} | {outcome} |
+
+## What Went Well
+{Effective patterns and successes}
+
+## What Could Be Improved
+{Process, planning, execution improvements}
+
+## Lessons Learned
+{Insights to carry forward}
+
+## Methodology Feedback
+{Improvements to Flight Control process itself}
+
+## Action Items
+- [ ] {Follow-up work}
+- [ ] {Process improvements}
+```
+
+---
 
 ## State Tracking
 
-States are tracked in the frontmatter or status section of each artifact:
+States are tracked in the frontmatter or status field of each artifact:
 
-- **Mission**: `status: planning | active | completed | aborted`
-- **Flight**: `status: planning | ready | in-flight | landed | diverted`
-- **Leg**: `status: queued | in-progress | review | completed | blocked`
+| Artifact | States |
+|----------|--------|
+| Mission | `planning` → `active` → `completed` (or `aborted`) |
+| Flight | `planning` → `ready` → `in-flight` → `landed` (or `diverted`) |
+| Leg | `queued` → `in-progress` → `completed` (or `blocked`) |
+
+## Conventions
+
+- **Immutability**: Never modify legs once `in-progress`; create new ones instead
+- **Append-only logs**: Flight logs are append-only during execution
+- **Briefings**: Created before execution, not modified after
+- **Debriefs**: Created after completion, may be updated with follow-up notes

@@ -48,7 +48,7 @@ Each level tracks progress through defined states:
 
 - **Missions**: `planning` → `active` → `completed` (or `aborted`)
 - **Flights**: `planning` → `ready` → `in-flight` → `landed` (or `diverted`)
-- **Legs**: `queued` → `in-progress` → `review` → `completed` (or `blocked`)
+- **Legs**: `queued` → `in-progress` → `completed` (or `blocked`)
 
 ### Roles
 
@@ -70,8 +70,12 @@ The hierarchy nests naturally:
 
 ```
 Mission
+├── Mission Briefing
+├── Mission Debrief
 └── Flight
     ├── Flight Log
+    ├── Flight Briefing
+    ├── Flight Debrief
     └── Leg
 ```
 
@@ -92,6 +96,8 @@ Flight Control includes Claude Code skills for interactive planning:
 | `/mission` | Create outcome-driven missions through research and interview |
 | `/flight` | Create technical flight specs from missions |
 | `/leg` | Generate implementation guidance for LLM execution |
+| `/flight-debrief` | Post-flight analysis for continuous improvement |
+| `/mission-debrief` | Post-mission retrospective for outcomes assessment |
 
 ### Skill Workflow
 
