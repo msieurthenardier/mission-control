@@ -2,6 +2,18 @@
 
 An AI-first software development lifecycle methodology using aviation metaphors to bridge human intent and AI execution.
 
+## What is Mission Control?
+
+This repository is a **centralized command center** for managing multiple projects in parallel. Each project may have its own stack, systems, and constraints, but mission-control provides a consistent workflow and orchestration layer across all of them.
+
+- **Project registry** — Track active projects with paths, remotes, and configurations
+- **Shared methodology** — Apply structured planning regardless of project differences
+- **Claude Code skills** — Interactive tools for mission, flight, and leg creation
+
+Artifacts (missions, flights, legs) are created in target projects, not here. Mission-control holds the methodology, skills, and coordination—your projects hold the work.
+
+Development crews remain essential. AI can automate much of the implementation, but technical oversight ensures quality and alignment with intent.
+
 ## The Aviation Model
 
 Flight Control organizes work into three hierarchical levels, each optimized for its primary audience:
@@ -52,17 +64,13 @@ Each level tracks progress through defined states:
 
 ### Roles
 
-Two organizational layers execute and support flights:
+Flight Control scales from solo developers to full teams:
 
-**Crew** (executes flights, always 1:1 pairing):
-- **Commander** — Drives implementation via AI-assisted development
-- **Flight Engineer** — Real-time code review, testing, research, support
+**Solo** — One person fills all roles, using AI as their crew. The methodology provides structure and continuity across sessions.
 
-**Mission Control** (oversees operations):
-- **Flight Director** — Executive authority over all missions
-- **Ops Director** — Scheduling, briefings, monitoring active flights
-- **Mission Liaison** — Stakeholder communication, requirements refinement
-- **Technical Architects** — Architectural guidance and specialist expertise
+**Team** — Roles split across people:
+- **Crew** executes flights (Commander + Flight Engineer, 1:1 pairing)
+- **Mission Control** oversees operations (Flight Director, Ops Director, Technical Architects)
 
 ## Artifact Organization
 
@@ -93,6 +101,7 @@ Flight Control includes Claude Code skills for interactive planning:
 
 | Skill | Purpose |
 |-------|---------|
+| `/init-project` | Initialize a project for Flight Control |
 | `/mission` | Create outcome-driven missions through research and interview |
 | `/flight` | Create technical flight specs from missions |
 | `/leg` | Generate implementation guidance for LLM execution |
@@ -127,13 +136,6 @@ Flight Control includes Claude Code skills for interactive planning:
 ```
 
 Skills are adaptive—they ask clarifying questions and can update plans as understanding develops.
-
-## Roadmap
-
-- [ ] Mission/flight/leg templates
-- [x] Claude Code skills for flight control workflow
-- [ ] MCP server for state management
-- [ ] Automated leg generation from flights
 
 ## License
 
