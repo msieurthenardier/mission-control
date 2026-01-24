@@ -132,8 +132,15 @@ sequenceDiagram
     MC->>P: "Mission created,<br/>review for alignment"
     P->>P: Review mission
     P->>P: Make changes to artifacts
-    P-->>MC: "Mission updated"
+    P-->>MC: "Mission updated, validate"
     MC->>MC: Review changes
+
+    alt Changes needed
+        MC->>P: "These items need attention"
+        P->>P: Review and update
+        P-->>MC: "Updated"
+    end
+
     MC->>P: "Mission confirmed"
 
     Note over MC,P: ─── Flight Planning ───
@@ -142,8 +149,15 @@ sequenceDiagram
     MC->>P: "Flight created,<br/>review for completeness"
     P->>P: Review flight spec
     P->>P: Make changes to artifacts
-    P-->>MC: "Flight updated"
+    P-->>MC: "Flight updated, validate"
     MC->>MC: Review changes
+
+    alt Changes needed
+        MC->>P: "These items need attention"
+        P->>P: Review and update
+        P-->>MC: "Updated"
+    end
+
     MC->>P: "Flight confirmed"
 
     Note over MC,P: ─── Leg Cycle (repeats) ───
@@ -156,7 +170,7 @@ sequenceDiagram
 
     P->>P: Review leg N design
     P->>P: Make changes to artifacts
-    P-->>MC: "Leg N updated"
+    P-->>MC: "Leg N updated, validate"
 
     MC->>MC: Review changes
 
@@ -167,6 +181,10 @@ sequenceDiagram
     end
 
     MC->>P: "Leg N confirmed"
+
+    Note over P: Clear context
+
+    Note over P: Context A+1
 
     P->>P: "Let's implement leg N"
     P->>P: Update flight logs
@@ -186,7 +204,7 @@ sequenceDiagram
 
     P->>P: Review leg N+1 design<br/>(while implementation knowledge fresh)
     P->>P: Make changes to artifacts
-    P-->>MC: "Leg N+1 updated"
+    P-->>MC: "Leg N+1 updated, validate"
 
     Note over P: Clear context
 
