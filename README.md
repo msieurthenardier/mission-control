@@ -166,7 +166,7 @@ sequenceDiagram
     MC->>MC: "Let's design the next leg"
     MC->>P: "Leg N designed,<br/>review for completeness"
 
-    Note over P: Context A
+    Note over P: Clear context
 
     P->>P: Review leg N design
     P->>P: Make changes to artifacts
@@ -183,8 +183,6 @@ sequenceDiagram
     MC->>P: "Leg N confirmed"
 
     Note over P: Clear context
-
-    Note over P: Context A+1
 
     P->>P: "Let's implement leg N"
     P->>P: Update flight logs
@@ -211,7 +209,7 @@ sequenceDiagram
     MC->>MC: Review changes
     MC->>P: "Leg N+1 confirmed"
 
-    Note over P: Context B
+    Note over P: Clear context
 
     P->>P: "Let's implement leg N+1"
     P->>P: Propagate
