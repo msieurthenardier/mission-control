@@ -126,58 +126,82 @@ sequenceDiagram
     participant MC as Mission Control
     participant P as Project
 
-    Note over MC: Long-running context<br/>(entire flight)
+    Note over MC: Long-running context<br/>(mission + flight scope)
 
-    MC->>MC: Design leg N
-    MC->>P: "Leg N has been designed,<br/>review for completeness"
-
-    Note over P: Context A
-
-    P->>P: Review leg N design
-    P->>P: Make changes to artifacts
-    P-->>MC: "Leg N has been updated"
-
-    MC->>MC: Review changes
-
-    alt Changes needed
-        MC->>P: "These items need attention"
-        P->>P: Review and update
-        P-->>MC: "Updated"
+    rect rgb(240, 248, 255)
+        Note over MC,P: Mission Planning
+        MC->>MC: "Let's create our first mission"
+        MC->>MC: Research, interview, define outcomes
+        MC->>P: "Mission created,<br/>review for alignment"
+        P->>P: Review mission
+        P-->>MC: "Mission confirmed"
     end
 
-    MC->>P: "Leg N confirmed"
-
-    P->>P: Implement leg N
-    P->>P: Update flight logs
-    P->>P: Propagate: update flight, mission,<br/>claude.md based on changes
-    P-->>MC: "Leg N complete"
-
-    MC->>MC: Review all changes
-
-    alt Changes needed
-        MC->>P: "These items need attention"
-        P->>P: Review and update
-        P-->>MC: "Updated"
+    rect rgb(255, 248, 240)
+        Note over MC,P: Flight Planning
+        MC->>MC: "Let's design the first flight"
+        MC->>MC: Create technical spec, checklists
+        MC->>P: "Flight created,<br/>review for completeness"
+        P->>P: Review flight spec
+        P-->>MC: "Flight confirmed"
     end
 
-    MC->>MC: Design leg N+1
-    MC->>P: "Leg N+1 has been designed,<br/>review for completeness"
+    rect rgb(240, 255, 240)
+        Note over MC,P: Leg Cycle (repeats per leg)
 
-    P->>P: Review leg N+1 design<br/>(while implementation knowledge fresh)
-    P->>P: Make changes to artifacts
-    P-->>MC: "Leg N+1 has been updated"
+        MC->>MC: "Let's design the next leg"
+        MC->>P: "Leg N designed,<br/>review for completeness"
 
-    Note over P: Clear context
+        Note over P: Context A
 
-    MC->>MC: Review changes
-    MC->>P: "Leg N+1 confirmed"
+        P->>P: Review leg N design
+        P->>P: Make changes to artifacts
+        P-->>MC: "Leg N updated"
 
-    Note over P: Context B
+        MC->>MC: Review changes
 
-    P->>P: Implement leg N+1
-    P->>P: Propagate
+        alt Changes needed
+            MC->>P: "These items need attention"
+            P->>P: Review and update
+            P-->>MC: "Updated"
+        end
 
-    Note over MC,P: Cycle repeats...
+        MC->>P: "Leg N confirmed"
+
+        P->>P: "Let's implement leg N"
+        P->>P: Update flight logs
+        P->>P: Propagate: update flight, mission,<br/>claude.md based on changes
+        P-->>MC: "Leg N complete"
+
+        MC->>MC: Review all changes
+
+        alt Changes needed
+            MC->>P: "These items need attention"
+            P->>P: Review and update
+            P-->>MC: "Updated"
+        end
+
+        MC->>MC: "Let's design the next leg"
+        MC->>P: "Leg N+1 designed,<br/>review for completeness"
+
+        P->>P: Review leg N+1 design<br/>(while implementation knowledge fresh)
+        P->>P: Make changes to artifacts
+        P-->>MC: "Leg N+1 updated"
+
+        Note over P: Clear context
+
+        MC->>MC: Review changes
+        MC->>P: "Leg N+1 confirmed"
+
+        Note over P: Context B
+
+        P->>P: "Let's implement leg N+1"
+        P->>P: Propagate
+
+        Note over P: Leg cycle repeats...
+    end
+
+    Note over MC,P: When flight lands:<br/>"Let's design the next flight"
 ```
 
 ### Why This Matters
