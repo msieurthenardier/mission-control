@@ -69,8 +69,7 @@ Flight Control defines these business objects (artifacts):
 
 | Object | Purpose |
 |--------|---------|
-| Mission | Outcome-driven goal definition |
-| Mission Briefing | Pre-mission summary for stakeholder alignment |
+| Mission | Outcome-driven goal definition (serves as its own briefing) |
 | Mission Debrief | Post-mission retrospective |
 | Flight | Technical specification with checklists |
 | Flight Log | Running record during execution |

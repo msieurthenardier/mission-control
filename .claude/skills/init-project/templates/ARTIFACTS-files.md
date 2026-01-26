@@ -9,7 +9,6 @@ This project stores Flight Control artifacts as markdown files in the repository
 └── missions/
     └── {mission-slug}/
         ├── mission.md
-        ├── mission-briefing.md
         ├── mission-debrief.md
         └── flights/
             └── {NN}-{flight-slug}/
@@ -397,52 +396,6 @@ Chronological notes from work sessions.
 
 ---
 
-### Mission Briefing
-
-| Property | Value |
-|----------|-------|
-| Location | `missions/{mission}/mission-briefing.md` |
-| Created | Before mission execution begins |
-| Purpose | Pre-mission summary for stakeholder alignment |
-
-**Format:**
-
-```markdown
-# Mission Briefing: {Mission Title}
-
-**Date**: {briefing date}
-**Mission**: [{Mission Title}](mission.md)
-**Status**: Mission is ready to begin
-
-## Outcome
-{What success looks like}
-
-## Scope
-{What's included and excluded}
-
-## Success Criteria Summary
-{High-level criteria for mission success}
-
-## Flight Plan
-| # | Flight | Objective | Dependencies |
-|---|--------|-----------|--------------|
-| 01 | {name} | {objective} | {deps} |
-| 02 | {name} | {objective} | {deps} |
-
-## Key Risks
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| {risk} | {impact} | {mitigation} |
-
-## Stakeholders
-{Who needs to be informed of progress}
-
-## Constraints Reminder
-{Critical boundaries to respect}
-```
-
----
-
 ### Mission Debrief
 
 | Property | Value |
@@ -510,5 +463,6 @@ States are tracked in the frontmatter or status field of each artifact:
 
 - **Immutability**: Never modify legs once `in-progress`; create new ones instead
 - **Append-only logs**: Flight logs are append-only during execution
-- **Briefings**: Created before execution, not modified after
+- **Flight briefings**: Created before execution, not modified after
 - **Debriefs**: Created after completion, may be updated with follow-up notes
+- **Mission as briefing**: The mission.md document serves as both definition and briefing (no separate mission-briefing.md)

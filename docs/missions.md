@@ -105,31 +105,6 @@ Unknowns that need resolution during execution.
 Links to flights executing this mission.
 ```
 
-## Mission Briefing
-
-Before execution begins, create a **mission briefing** to align stakeholders:
-
-```markdown
-# Mission Briefing: {Title}
-
-## Outcome
-What success looks like.
-
-## Scope
-What's included and excluded.
-
-## Flight Plan
-Overview of planned flights and their dependencies.
-
-## Key Risks
-Major risks and mitigation strategies.
-
-## Stakeholders
-Who needs progress updates.
-```
-
-The briefing is a snapshot for communication—it doesn't replace the mission document.
-
 ## Mission Lifecycle
 
 Missions progress through defined states:

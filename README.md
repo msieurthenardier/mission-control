@@ -78,7 +78,6 @@ The hierarchy nests naturally:
 
 ```
 Mission
-├── Mission Briefing
 ├── Mission Debrief
 └── Flight
     ├── Flight Log

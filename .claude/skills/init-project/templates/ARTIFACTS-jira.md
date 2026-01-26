@@ -290,41 +290,6 @@ Answer these questions when configuring Jira artifacts for your project:
 
 ---
 
-### Mission Briefing → Epic Comment
-
-| Property | Value |
-|----------|-------|
-| Location | Comment on the Mission (Epic) |
-| Created | Before mission execution begins |
-| Label | `[Mission Briefing]` |
-
-**Comment Format:**
-
-```
-[Mission Briefing] {YYYY-MM-DD}
-
-## Outcome
-{What success looks like}
-
-## Scope
-{What's included and excluded}
-
-## Flight Plan
-| # | Flight | Objective |
-|---|--------|-----------|
-| 01 | {name} | {objective} |
-
-## Key Risks
-| Risk | Impact | Mitigation |
-|------|--------|------------|
-| {risk} | {impact} | {mitigation} |
-
-## Stakeholders
-{Who needs progress updates}
-```
-
----
-
 ### Mission Debrief → Epic Comment
 
 | Property | Value |
