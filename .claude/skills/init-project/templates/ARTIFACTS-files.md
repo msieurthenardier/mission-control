@@ -7,7 +7,7 @@ This project stores Flight Control artifacts as markdown files in the repository
 ```
 {project}/
 └── missions/
-    └── {mission-slug}/
+    └── {NN}-{mission-slug}/
         ├── mission.md
         ├── mission-debrief.md
         └── flights/
@@ -23,7 +23,7 @@ This project stores Flight Control artifacts as markdown files in the repository
 ## Naming Conventions
 
 - **Slugs**: Lowercase, kebab-case, derived from title (e.g., "User Authentication" → `user-authentication`)
-- **Sequence numbers**: Flights and legs use two-digit prefixes (`01`, `02`, etc.) for ordering
+- **Sequence numbers**: Missions, flights, and legs use two-digit prefixes (`01`, `02`, etc.) for ordering
 
 ---
 
@@ -33,7 +33,7 @@ This project stores Flight Control artifacts as markdown files in the repository
 
 | Property | Value |
 |----------|-------|
-| Location | `missions/{slug}/mission.md` |
+| Location | `missions/{NN}-{slug}/mission.md` |
 | Created | During mission planning |
 | Updated | Until status changes to `active` |
 
@@ -400,7 +400,7 @@ Chronological notes from work sessions.
 
 | Property | Value |
 |----------|-------|
-| Location | `missions/{mission}/mission-debrief.md` |
+| Location | `missions/{NN}-{mission}/mission-debrief.md` |
 | Created | After mission completes or aborts |
 | Purpose | Post-mission retrospective and methodology improvements |
 
