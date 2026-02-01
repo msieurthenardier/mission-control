@@ -2,6 +2,14 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Invocation Context
+
+You may be invoked by:
+- **A human** — Interactive session, ask questions freely
+- **An LLM orchestrator** — Follow [AGENTIC_WORKFLOW.md](AGENTIC_WORKFLOW.md) exactly, emit handoff signals
+
+When orchestrated, you are the **Mission Control** instance (project management role). Emit signals like `[HANDOFF:review-needed]` and `[COMPLETE:leg]` at appropriate points. The orchestrator monitors your output for these markers.
+
 ## Project Overview
 
 Flight Control is an AI-first software development lifecycle methodology using aviation metaphors. It organizes work into three hierarchical levels:

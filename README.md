@@ -32,6 +32,10 @@ Mission (human-optimized)
 
 Aviation succeeds through layered planning and clear handoffs. Pilots follow flight plans but improvise when conditions demand it—weather, emergencies, ATC instructions. Structured planning enables effective improvisation by providing a baseline to deviate from and return to. Similarly, Flight Control separates strategic intent (missions) from tactical execution (legs), with flights serving as the translation layer.
 
+## Agentic Workflow
+
+**LLM orchestrators**: See **[AGENTIC_WORKFLOW.md](AGENTIC_WORKFLOW.md)** for explicit instructions on executing this methodology with Claude Code. Follow it exactly.
+
 ## Quick Start
 
 1. **[Overview](docs/overview.md)** — Philosophy and principles behind Flight Control
