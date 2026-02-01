@@ -59,14 +59,36 @@ Claude instances emit these markers. Monitor output for them.
 | `[COMPLETE:flight]` | Flight landed |
 | `[COMPLETE:mission]` | Mission completed |
 
+### Signal Format
+
+**Placement:** Signals must appear on their own line at the end of a Claude response. Never mid-paragraph.
+
+**Detection regex:**
+```
+^\[(HANDOFF|BLOCKED|COMPLETE):[^\]]+\]$
+```
+
+**No-signal fallback:** If Claude completes a response without emitting an expected signal, treat as implicit `[BLOCKED:no-signal]`. Prompt with:
+```
+action:submit data:"Expected signal not received. What is the current status? Emit appropriate signal."
+```
+
 ## Git Workflow
 
 | Scope | Action |
 |-------|--------|
 | Flight start | Create branch: `flight/{number}-{slug}` |
 | First leg | Open draft PR |
-| Leg complete | Commit with leg reference |
+| Leg complete | Commit code + artifacts with leg reference |
 | Flight landed | PR ready for review |
+
+**Each leg commit must include:**
+- Code changes
+- Updated flight log
+- Updated leg status
+- Any mission/flight artifact changes
+
+This ensures `git reset --hard` restores both code and artifacts atomically.
 
 Commit message format:
 ```
@@ -82,7 +104,30 @@ When Claude presents options with a recommendation:
 - **Take the recommendation** if it fulfills the flight and mission objectives
 - **Escalate to human** if you want to take a non-recommended path
 
-Use the "discuss this" interaction with Claude when evaluating decisions. Pause workflow and wait for human response when escalating.
+Pause workflow and wait for human response when escalating.
+
+### Interactive Discussion
+
+Use discussion mode to ask clarifying questions without restarting an instance.
+
+**Enter discussion:**
+```
+action:submit data:"[DISCUSS] How does this approach handle concurrent requests?"
+```
+
+Claude responds conversationally without emitting signals. Ask follow-up questions as needed.
+
+**Exit discussion:**
+```
+action:submit data:"[/DISCUSS] Proceed with the recommendation."
+```
+
+Claude resumes normal operation and emits appropriate signal.
+
+**Rules:**
+- Discussion does not count toward liveness timeouts
+- Claude should not emit handoff signals during discussion
+- Keep discussions focused; open-ended exploration should escalate to human
 
 ## Error Handling
 
@@ -93,6 +138,27 @@ Use the "discuss this" interaction with Claude when evaluating decisions. Pause 
 | Leg marked blocked | Escalate to human with blocker details |
 | Off the rails | Roll back to last leg start commit |
 | Severely off the rails | Roll back further, escalate to human |
+
+### Rollback Recovery
+
+Each leg commit includes all artifact changes (flight log, mission status, leg status). Rolling back a commit restores both code and artifacts to a consistent state.
+
+When rolling back:
+1. `git reset --hard {commit}` restores code + artifacts atomically
+2. Re-read restored artifacts to understand state
+3. Resume from that leg, or escalate if unclear
+
+## Liveness
+
+Monitor for hung or stalled instances.
+
+| Timeout | Trigger | Action |
+|---------|---------|--------|
+| Progress | No new output for 5 min | Send ping: `action:submit data:"Status?"` |
+| Response | No signal within 10 min of ping | Escalate to human |
+| Hard | 30 min total for any phase | Force terminate, escalate to human |
+
+Timeouts reset when Claude produces meaningful output (not just acknowledgments).
 
 ## Workflow Phases
 
@@ -268,6 +334,17 @@ Run /mission-debrief. Capture outcomes assessment. Signal [COMPLETE:mission].
 | Project | After leg implementation + next leg review |
 
 Project reviews the next leg design *before* clearing, while implementation knowledge is fresh.
+
+### Multi-Flight Continuity
+
+Mission Control clears between flights to manage context size. Continuity is maintained through artifacts:
+
+**Before starting each flight, MC must read:**
+1. Mission artifact (outcomes, success criteria, constraints)
+2. All completed flight debriefs (learnings, what changed)
+3. Current mission status/progress
+
+This ensures strategic context persists across a multi-flight mission without requiring unbounded context retention.
 
 ## Validation Protocol
 
