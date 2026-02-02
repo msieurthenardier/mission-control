@@ -70,6 +70,9 @@ Non-negotiable boundaries.
 Unknowns that need resolution during execution.
 
 ## Flights
+
+> **Note:** These are tentative suggestions, not commitments. Flights are planned and created one at a time as work progresses. This list will evolve based on discoveries during implementation.
+
 - [ ] Flight 1: {description}
 - [ ] Flight 2: {description}
 ```
@@ -143,6 +146,9 @@ How the objective will be achieved.
 - {Minor changes that don't require diversion}
 
 ### Legs
+
+> **Note:** These are tentative suggestions, not commitments. Legs are planned and created one at a time as the flight progresses. This list will evolve based on discoveries during implementation.
+
 - [ ] `{leg-slug}` - {Brief description}
 - [ ] `{leg-slug}` - {Brief description}
 

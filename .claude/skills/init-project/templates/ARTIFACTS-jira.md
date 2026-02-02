@@ -99,6 +99,11 @@ Answer these questions when configuring Jira artifacts for your project:
 
 ## Open Questions
 {Unknowns needing resolution}
+
+## Flights
+> **Note:** These are tentative suggestions, not commitments. Flights are planned and created one at a time as work progresses. This list will evolve based on discoveries during implementation.
+
+- [ ] Flight 1: {description}
 ```
 
 ---
@@ -132,7 +137,8 @@ Answer these questions when configuring Jira artifacts for your project:
 {How the objective will be achieved}
 
 ## Legs
-- [ ] {leg-slug} - {description}
+> **Note:** These are tentative suggestions, not commitments. Legs are planned and created one at a time as the flight progresses. This list will evolve based on discoveries during implementation.
+
 - [ ] {leg-slug} - {description}
 
 ## Validation Approach

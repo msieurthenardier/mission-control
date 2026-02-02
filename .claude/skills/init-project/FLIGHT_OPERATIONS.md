@@ -21,6 +21,24 @@ Emit these signals at the end of your response when appropriate:
 
 Read `.flight-ops/ARTIFACTS.md` to find artifact locations.
 
+## Just-in-Time Planning
+
+**Flights and legs are created one at a time, not all upfront.** This is by design.
+
+| When reviewing... | What should exist | What should NOT exist yet |
+|-------------------|-------------------|---------------------------|
+| A mission | The mission document | Flight documents (only listed in mission) |
+| A flight | The flight document | Leg documents (only listed in flight) |
+| A leg | The leg document | (ready to implement) |
+
+**Why this matters:**
+- Listed flights in a mission are **tentative suggestions** — they will change as work progresses
+- Listed legs in a flight are **tentative suggestions** — they will change based on discoveries
+- Creating artifacts just-in-time ensures they're based on **current reality**, not stale assumptions
+- Feedback from completed work should inform the next flight/leg design
+
+**This is not a problem.** If you're implementing a leg and only see one flight defined, that's correct. If you're reviewing a mission and see no flight documents created yet, that's correct. The planning happens incrementally as the work evolves.
+
 ## Reviewing Artifacts
 
 When reviewing a mission, flight, or leg:
