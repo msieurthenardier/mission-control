@@ -135,6 +135,9 @@ Answer these questions when configuring Jira artifacts for your project:
 - [ ] {leg-slug} - {description}
 - [ ] {leg-slug} - {description}
 
+## Validation Approach
+{How will this flight be validated? Manual testing, automated tests, or both?}
+
 ## Verification
 {How to confirm success}
 ```

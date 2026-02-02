@@ -79,10 +79,10 @@ Ask technical questions to resolve the approach:
    - "Is [dependency] ready?"
    - "Do we have access to [resource]?"
 
-5. **Environment capabilities**
-   - "What environment will this run in?"
-   - "Is GUI available for visual verification?"
-   - "Are there hardware requirements?"
+5. **Validation approach**
+   - "How will this flight be validated?"
+   - "Is test automation needed, or is manual verification sufficient?"
+   - "What tests should be created or updated?"
 
 ### Phase 4: Spec Creation
 
@@ -128,6 +128,8 @@ Break flights into legs based on technical boundaries:
 **For scaffolding flights**: Include a final `verify-integration` leg
 
 **For interface changes**: Identify consumers that need updates
+
+**For documentation**: Consider whether README, CLAUDE.md, or other docs need updates as part of this flight
 
 ### Pre-Flight Rigor
 

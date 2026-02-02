@@ -120,6 +120,7 @@ What this flight accomplishes (one paragraph).
 - [ ] All open questions resolved
 - [ ] Design decisions documented
 - [ ] Prerequisites verified
+- [ ] Validation approach defined
 - [ ] Legs defined
 
 ---
