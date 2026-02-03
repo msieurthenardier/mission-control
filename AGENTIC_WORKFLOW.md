@@ -249,6 +249,10 @@ Repeat for each leg in the flight.
 
 #### 3a: Leg Design
 
+**Skill shortcut:** Mission Control has built-in skills for common operations. Instead of crafting full prompts, you can use natural commands like:
+- `design leg 04 for {project} mission {number} flight {number}`
+- The skill handles reading artifacts and creating properly formatted leg files.
+
 **MC prompt:**
 ```
 role: mission-control
