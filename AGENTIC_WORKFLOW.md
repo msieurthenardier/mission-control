@@ -12,6 +12,17 @@ Before starting any mission:
 
 The orchestrator cannot proceed without `.flight-ops/ARTIFACTS.md` in the target project.
 
+## State Verification
+
+Before starting or resuming any flight work, verify the current state:
+
+1. **Read the flight log first** — This is the authoritative record of execution
+2. **Cross-reference leg statuses** — Each leg's `**Status**:` field must match flight log entries
+3. **Verify against codebase** — If discrepancies found, check actual files and git history
+4. **Remediate discrepancies immediately** — They compound over time; fix before proceeding
+
+If the flight log says "not started" but leg files show completion, or vice versa, treat this as a blocking issue requiring remediation before any new work.
+
 ## Architecture
 
 Two Claude Code instances, one orchestrator:
@@ -88,6 +99,11 @@ action:submit data:"Expected signal not received. What is the current status? Em
 - Updated leg status
 - Any mission/flight artifact changes
 
+**Artifact consistency rule:** The flight log is the authoritative record. After each leg:
+- Flight log must have an entry for the completed leg
+- Leg file must have `**Status**: completed` in its header
+- These must match — if they don't, remediation is required before proceeding
+
 This ensures `git reset --hard` restores both code and artifacts atomically.
 
 Commit message format:
@@ -138,6 +154,7 @@ Claude resumes normal operation and emits appropriate signal.
 | Leg marked blocked | Escalate to human with blocker details |
 | Off the rails | Roll back to last leg start commit |
 | Severely off the rails | Roll back further, escalate to human |
+| Artifact discrepancy found | Remediate before proceeding; do not continue with inconsistent state |
 
 ### Rollback Recovery
 
