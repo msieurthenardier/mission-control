@@ -253,6 +253,8 @@ Repeat for each leg in the flight.
 - `design leg 04 for {project} mission {number} flight {number}`
 - The skill handles reading artifacts and creating properly formatted leg files.
 
+**Expected runtime:** Leg design via skills typically takes 1-3 minutes. MC gathers extensive context before generating — reading the flight spec, mission doc, design docs, mockups, and existing code. This thorough context gathering produces better leg specs. Do not interrupt prematurely.
+
 **MC prompt:**
 ```
 role: mission-control
