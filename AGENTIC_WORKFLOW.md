@@ -283,6 +283,24 @@ Read leg artifact. Validate implementation guidance is complete and unambiguous.
 
 **Git (first leg only):** Open draft PR.
 
+### Review/Validation Loop
+
+The leg design review is a negotiation between MC and Project:
+
+1. **MC designs** → signals `[HANDOFF:review-needed]`
+2. **Project reviews** the leg design:
+   - Most recommendations can be auto-accepted
+   - Escalate to human if significant changes needed
+   - Makes changes directly to the leg file
+3. **MC validates** Project's changes (SAME INSTANCE — do not restart MC)
+   - If satisfied → signals `[HANDOFF:confirmed]`
+   - If issues → orchestrator facilitates negotiation
+4. **Loop** until both instances signal `[HANDOFF:confirmed]`
+
+**Critical:** Keep the MC instance alive through this entire cycle. The orchestrator facilitates communication between instances — they cannot talk directly.
+
+Only after both confirm: clear Project context, then start fresh Project instance for implementation.
+
 #### 3b: Leg Implementation
 
 **Clear Project context before this phase.**
