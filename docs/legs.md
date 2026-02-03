@@ -47,6 +47,9 @@ Information the AI needs to understand this task.
 - [ ] Criterion 2
 - [ ] Criterion 3
 
+## Verification Steps
+How to confirm each criterion is met (commands, manual checks, tools).
+
 ## Implementation Guidance
 Specific patterns, approaches, or constraints.
 
@@ -129,6 +132,29 @@ Acceptance criteria should be:
 - **Binary**: Either met or not met
 - **Observable**: Can verify by inspection or test
 - **Complete**: Nothing else required for "done"
+
+### Verification Steps
+
+Tell the AI exactly *how* to confirm each criterion:
+
+```markdown
+## Verification Steps
+- Run `npx prisma migrate status` — should show no pending migrations
+- Run `npm test` — all tests pass
+- Open browser to `/users` — page loads without errors
+- Tab through form fields — focus order matches visual order
+- Run `npx lighthouse --accessibility` — score ≥ 90
+```
+
+Verification steps should be:
+- **Executable**: Commands or specific actions
+- **Deterministic**: Same result every time
+- **Mapped to criteria**: Clear which criterion each step validates
+
+For accessibility legs, include specific checks:
+- Keyboard navigation sequences to test
+- Screen reader commands (e.g., "navigate to main content via skip link")
+- Automated tool commands (Lighthouse, axe-core)
 
 ### Implementation Guidance
 

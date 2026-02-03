@@ -112,6 +112,25 @@ Criteria must be:
 
 **Strong**: "User model exists in `prisma/schema.prisma`"
 
+### Verification Steps
+
+Tell the agent exactly *how* to confirm each criterion:
+
+**Weak**: "Make sure it works"
+
+**Strong**: 
+```markdown
+## Verification Steps
+- Run `npx prisma migrate status` — should show no pending migrations
+- Run `npm test` — all tests pass
+- Tab through form fields — focus order matches visual order
+```
+
+For accessibility work, include specific checks:
+- Keyboard navigation sequences
+- Screen reader commands to test
+- Automated tool commands (Lighthouse, axe-core)
+
 ### Implementation Guidance
 
 Be explicit, not implicit:

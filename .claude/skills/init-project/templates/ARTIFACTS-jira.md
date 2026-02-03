@@ -178,6 +178,11 @@ Answer these questions when configuring Jira artifacts for your project:
 - [ ] {Criterion 1}
 - [ ] {Criterion 2}
 
+## Verification Steps
+How to confirm each criterion is met:
+- {Command or manual check for criterion 1}
+- {Command or manual check for criterion 2}
+
 ## Implementation Guidance
 {Step-by-step guidance}
 
