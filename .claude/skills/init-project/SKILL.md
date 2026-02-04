@@ -106,7 +106,12 @@ Add this section:
 ```markdown
 ## Flight Operations
 
-This project uses the [Flight Control](https://github.com/anthropics/flight-control) methodology. When implementing missions, flights, or legs, you MUST strictly follow the workflow defined in `.flight-ops/FLIGHT_OPERATIONS.md`.
+This project uses [Flight Control](https://github.com/flight-control/mission-control).
+
+**Before any mission/flight/leg work, read these files in order:**
+1. `.flight-ops/README.md` — What the flight-ops directory contains
+2. `.flight-ops/FLIGHT_OPERATIONS.md` — **The workflow you MUST follow**
+3. `.flight-ops/ARTIFACTS.md` — Where all artifacts are stored
 ```
 
 ### 6. Post-Sync Instructions
