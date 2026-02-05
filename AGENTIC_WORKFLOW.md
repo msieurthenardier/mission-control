@@ -386,19 +386,16 @@ else:
 
 #### Orchestrator Flight Completion Checklist
 
-Before invoking MC for debrief, the orchestrator MUST:
-
 | Step | Action | Command |
 |------|--------|---------|
 | 1 | Verify all legs show completed status | Read each leg file, check `**Status**: completed` |
 | 2 | Verify flight log has entries for all legs | Read flight-log.md |
-| 3 | Mark PR ready for review | `gh pr ready` |
-| 4 | Update flight status to landed | Ensure flight.md shows `**Status**: landed` |
-| 5 | Check off flight in mission.md | Update mission.md flight checkbox |
+| 3 | **Run flight debrief** | Invoke MC with `/flight-debrief` (see prompt below) |
+| 4 | Mark PR ready for review | `gh pr ready` |
+| 5 | Update flight status to landed | Ensure flight.md shows `**Status**: landed` |
+| 6 | Check off flight in mission.md | Update mission.md flight checkbox |
 
-Only after completing steps 1-5, invoke MC for debrief:
-
-**MC prompt:**
+**MC prompt (step 3):**
 ```
 role: mission-control
 phase: flight-debrief
@@ -409,7 +406,7 @@ action: debrief
 Run /flight-debrief. Capture learnings. Update mission progress. Signal [COMPLETE:flight].
 ```
 
-**Git:** PR ready for human review.
+**Git:** After step 6, PR is ready for human review.
 
 ---
 
@@ -417,7 +414,16 @@ Run /flight-debrief. Capture learnings. Update mission progress. Signal [COMPLET
 
 When all flights land:
 
-**MC prompt:**
+#### Orchestrator Mission Completion Checklist
+
+| Step | Action | Command |
+|------|--------|---------|
+| 1 | Verify all flights show landed status | Read each flight file, check `**Status**: landed` |
+| 2 | Verify all flight debriefs exist | Read flight debrief artifacts |
+| 3 | **Run mission debrief** | Invoke MC with `/mission-debrief` (see prompt below) |
+| 4 | Update mission status to completed | Ensure mission.md shows `**Status**: completed` |
+
+**MC prompt (step 3):**
 ```
 role: mission-control
 phase: mission-debrief
