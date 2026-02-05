@@ -212,7 +212,18 @@ Timeouts reset when Claude produces meaningful output (not just acknowledgments)
 
 **Human-driven.** The orchestrator facilitates but the human defines outcomes.
 
-**MC prompt:**
+#### Orchestrator Mission Planning Checklist
+
+| Step | Action | Expected Signal |
+|------|--------|-----------------|
+| 1 | Invoke MC to create mission | `[HANDOFF:review-needed]` |
+| 2 | Invoke Project to review mission | `[HANDOFF:confirmed]` or changes described |
+| 3 | If changes, invoke MC to validate | `[HANDOFF:confirmed]` |
+| 4 | Loop steps 2-3 until both confirm | Both signal `[HANDOFF:confirmed]` |
+| 5 | Present mission to human for approval | Human approves |
+| 6 | Update mission status to `active` | — |
+
+**MC prompt (step 1):**
 ```
 role: mission-control
 phase: mission-planning
@@ -222,9 +233,7 @@ action: create-mission
 Research the project codebase. Interview the HUMAN for outcomes, success criteria, and constraints. Create mission artifact. Signal [HANDOFF:review-needed] when draft complete.
 ```
 
-**Human review required.** Present the mission to the human for approval. Loop with human feedback until approved.
-
-**Project prompt (review):**
+**Project prompt (step 2):**
 ```
 role: crew
 phase: mission-planning
@@ -234,13 +243,22 @@ action: review-mission
 Read the mission artifact. Validate alignment with project goals. Make changes if needed. Signal [HANDOFF:confirmed] if no changes, or describe changes made for MC validation.
 ```
 
-**Loop** MC ↔ Project until both signal `[HANDOFF:confirmed]`, then **human approves final mission**.
-
 ---
 
 ### Phase 2: Flight Planning
 
-**MC prompt:**
+#### Orchestrator Flight Planning Checklist
+
+| Step | Action | Expected Signal |
+|------|--------|-----------------|
+| 1 | Invoke MC to create flight | `[HANDOFF:review-needed]` |
+| 2 | Invoke Project to review flight | `[HANDOFF:confirmed]` or changes described |
+| 3 | If changes, invoke MC to validate | `[HANDOFF:confirmed]` |
+| 4 | Loop steps 2-3 until both confirm | Both signal `[HANDOFF:confirmed]` |
+| 5 | Present flight to human for approval | Human approves |
+| 6 | Create git branch | `git checkout -b flight/{number}-{slug}` |
+
+**MC prompt (step 1):**
 ```
 role: mission-control
 phase: flight-planning
@@ -251,7 +269,7 @@ action: create-flight
 Read mission, design flight spec with legs. Signal [HANDOFF:review-needed] when complete.
 ```
 
-**Project prompt (review):**
+**Project prompt (step 2):**
 ```
 role: crew
 phase: flight-planning
@@ -261,12 +279,6 @@ action: review-flight
 
 Read flight spec. Validate technical approach and leg breakdown. Make changes if needed. Signal [HANDOFF:confirmed] or describe changes.
 ```
-
-**Loop** MC ↔ Project until both signal `[HANDOFF:confirmed]`.
-
-**Human review required before first leg.** Present the flight spec to the human for approval before proceeding to leg execution.
-
-**Git:** Create branch `flight/{number}-{slug}`.
 
 ---
 
@@ -284,7 +296,17 @@ Repeat for each leg in the flight.
 
 **Expected runtime:** Leg design via skills typically takes 1-3 minutes. MC gathers extensive context before generating — reading the flight spec, mission doc, design docs, mockups, and existing code. This thorough context gathering produces better leg specs. Do not interrupt prematurely.
 
-**MC prompt:**
+##### Orchestrator Leg Design Checklist
+
+| Step | Action | Expected Signal |
+|------|--------|-----------------|
+| 1 | Invoke MC to design leg | `[HANDOFF:review-needed]` |
+| 2 | Invoke Project to review leg | `[HANDOFF:confirmed]` or changes described |
+| 3 | If changes, invoke MC to validate | `[HANDOFF:confirmed]` |
+| 4 | Loop steps 2-3 until both confirm | Both signal `[HANDOFF:confirmed]` |
+| 5 | (First leg only) Open draft PR | `gh pr create --draft` |
+
+**MC prompt (step 1):**
 ```
 role: mission-control
 phase: leg-design
@@ -296,7 +318,7 @@ action: design-leg
 Read flight spec and flight log. Design leg {leg-number} with acceptance criteria. Signal [HANDOFF:review-needed] when complete.
 ```
 
-**Project prompt (review):**
+**Project prompt (step 2):**
 ```
 role: crew
 phase: leg-design
@@ -307,10 +329,6 @@ action: review-leg
 
 Read leg artifact. Validate implementation guidance is complete and unambiguous. Make changes if needed. Signal [HANDOFF:confirmed] or describe changes.
 ```
-
-**Loop** until both signal `[HANDOFF:confirmed]`.
-
-**Git (first leg only):** Open draft PR.
 
 ### Review/Validation Loop
 
@@ -334,7 +352,18 @@ Only after both confirm: clear Project context, then start fresh Project instanc
 
 **Clear Project context before this phase.**
 
-**Project prompt:**
+##### Orchestrator Leg Implementation Checklist
+
+| Step | Action | Expected Signal |
+|------|--------|-----------------|
+| 1 | Clear Project instance context | — |
+| 2 | Invoke Project to implement leg | `[COMPLETE:leg]` |
+| 3 | Verify commit includes all artifacts | Check flight-log, leg status updated |
+| 4 | Invoke MC to review implementation | `[HANDOFF:confirmed]` or issues listed |
+| 5 | If issues, invoke Project to fix | `[COMPLETE:leg]` |
+| 6 | Loop steps 4-5 until MC confirms | `[HANDOFF:confirmed]` |
+
+**Project prompt (step 2):**
 ```
 role: crew
 phase: leg-implementation
@@ -346,7 +375,7 @@ action: implement
 Read leg artifact. Implement to acceptance criteria. Update flight log with outcomes. Propagate changes to artifacts (flight, mission, leg), CLAUDE.md, README, and other project documentation as needed. Commit. Signal [COMPLETE:leg] when done.
 ```
 
-**MC prompt (review):**
+**MC prompt (step 4):**
 ```
 role: mission-control
 phase: leg-review
@@ -358,18 +387,18 @@ action: review-implementation
 Review all changes from leg implementation. Validate acceptance criteria met. Signal [HANDOFF:confirmed] if satisfactory, or list items needing attention.
 ```
 
-**Loop** if changes needed, then proceed to next leg.
-
 #### 3c: Leg Transition (Orchestrator Decision Point)
 
-After `[COMPLETE:leg]` is received and validated, the orchestrator must decide the next action:
+After `[COMPLETE:leg]` is received and validated, the orchestrator must decide the next action.
 
-```
-if legs_completed < legs_total:
-    → Return to Phase 3a for next leg
-else:
-    → Proceed to Phase 4 (Flight Completion)
-```
+##### Orchestrator Leg Transition Checklist
+
+| Step | Action | Command |
+|------|--------|---------|
+| 1 | Increment `legs_completed` counter | — |
+| 2 | Compare to `legs_total` | — |
+| 3a | If more legs remain | → Return to Phase 3a |
+| 3b | If all legs complete | → Proceed to Phase 4 |
 
 **Leg counting:** The orchestrator MUST track leg progress:
 1. Parse flight.md during Phase 2 to count total planned legs
@@ -390,7 +419,7 @@ else:
 |------|--------|---------|
 | 1 | Verify all legs show completed status | Read each leg file, check `**Status**: completed` |
 | 2 | Verify flight log has entries for all legs | Read flight-log.md |
-| 3 | **Run flight debrief** | Invoke MC with `/flight-debrief` (see prompt below) |
+| 3 | Run flight debrief | Invoke MC with `/flight-debrief` (see prompt below) |
 | 4 | Mark PR ready for review | `gh pr ready` |
 | 5 | Update flight status to landed | Ensure flight.md shows `**Status**: landed` |
 | 6 | Check off flight in mission.md | Update mission.md flight checkbox |
@@ -420,7 +449,7 @@ When all flights land:
 |------|--------|---------|
 | 1 | Verify all flights show landed status | Read each flight file, check `**Status**: landed` |
 | 2 | Verify all flight debriefs exist | Read flight debrief artifacts |
-| 3 | **Run mission debrief** | Invoke MC with `/mission-debrief` (see prompt below) |
+| 3 | Run mission debrief | Invoke MC with `/mission-debrief` (see prompt below) |
 | 4 | Update mission status to completed | Ensure mission.md shows `**Status**: completed` |
 
 **MC prompt (step 3):**
