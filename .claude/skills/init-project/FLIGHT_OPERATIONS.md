@@ -118,10 +118,11 @@ Deferred issues go in the flight log.
 | Step | Action |
 |------|--------|
 | 1 | Complete all items in the Leg Completion Checklist above |
-| 2 | **Update flight status** — Set `**Status**: landed` in flight.md |
-| 3 | **Update mission** — Check off this flight in mission.md |
-| 4 | **Verify all legs** — Confirm all legs show `completed` status |
-| 5 | Signal `[COMPLETE:leg]` (the orchestrator will trigger Phase 4) |
+| 2 | **Update flight log** — Add flight completion entry with summary |
+| 3 | **Update flight status** — Set `**Status**: landed` in flight.md |
+| 4 | **Update mission** — Check off this flight in mission.md |
+| 5 | **Verify all legs** — Confirm all legs show `completed` status |
+| 6 | Signal `[COMPLETE:leg]` (the orchestrator will trigger Phase 4) |
 
 The orchestrator will then:
 - Mark the PR ready for human review
