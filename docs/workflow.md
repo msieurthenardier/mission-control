@@ -275,21 +275,17 @@ Manual test completed:
 4. ✓ Can access protected features
 ```
 
-### Retrospective
+### Flight Debrief
 
-Capture learnings:
+**Run `/flight-debrief` to capture learnings.** This is a required step, not optional.
 
-```markdown
-### Retrospective Notes
+The debrief skill will:
+- Analyze what went well and what could improve
+- Identify process and technical lessons
+- Recommend methodology improvements
+- Update project documentation if needed
 
-**What went well:**
-- Email verification leg was well-specified
-- No blockers during execution
-
-**What could improve:**
-- Password validation rules should have been a separate leg
-- Underestimated email template complexity
-```
+The debrief artifact becomes part of the flight record and informs future flights.
 
 ### Flight State: `landed`
 
@@ -338,9 +334,21 @@ When all success criteria are met:
 - [x] Security audit passes
 ```
 
+### Mission Debrief
+
+**Run `/mission-debrief` to perform a retrospective.** This is a required step, not optional.
+
+The debrief skill will:
+- Assess whether the mission achieved its stated outcomes
+- Synthesize lessons from all flight debriefs
+- Capture process and methodology improvements
+- Interview participants for qualitative insights
+
+The mission debrief is the primary source for improving Flight Control itself.
+
 ### Mission State: `completed`
 
-All outcomes achieved. The mission can be archived.
+All outcomes achieved. The mission can be archived with its debrief.
 
 ## Feedback Loops
 
@@ -453,13 +461,13 @@ Once work begins, create new rather than modify. This preserves history and prev
 
 ## Quick Reference
 
-| Phase | Mission State | Flight State | Leg State |
-|-------|---------------|--------------|-----------|
-| Defining outcomes | planning | — | — |
-| Planning first flight | planning | planning | — |
-| Pre-flight complete | planning | ready | queued |
-| Executing first leg | active | in-flight | in-progress |
-| Leg verification | active | in-flight | review |
-| Leg done | active | in-flight | completed |
-| Flight done | active | landed | — |
-| All flights done | completed | — | — |
+| Phase | Mission State | Flight State | Leg State | Action |
+|-------|---------------|--------------|-----------|--------|
+| Defining outcomes | planning | — | — | — |
+| Planning first flight | planning | planning | — | — |
+| Pre-flight complete | planning | ready | queued | — |
+| Executing first leg | active | in-flight | in-progress | — |
+| Leg verification | active | in-flight | review | — |
+| Leg done | active | in-flight | completed | — |
+| Flight done | active | landed | — | `/flight-debrief` |
+| All flights done | completed | — | — | `/mission-debrief` |
