@@ -194,18 +194,6 @@ Claude Code (headless) may crash during execution. The orchestrator should handl
 
 This pattern proved highly effective in practice — it provides resilience against crashes without human intervention.
 
-## Liveness
-
-Monitor for hung or stalled instances.
-
-| Timeout | Trigger | Action |
-|---------|---------|--------|
-| Progress | No new output for 5 min | Send ping: `action:submit data:"Status?"` |
-| Response | No signal within 10 min of ping | Escalate to human |
-| Hard | 30 min total for any phase | Force terminate, escalate to human |
-
-Timeouts reset when Claude produces meaningful output (not just acknowledgments).
-
 ## Workflow Phases
 
 ### Phase 1: Mission Planning
