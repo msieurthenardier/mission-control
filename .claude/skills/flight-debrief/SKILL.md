@@ -42,7 +42,17 @@ Perform comprehensive post-flight analysis for continuous improvement.
    - Compare intended vs actual implementation
    - Note deviations, workarounds, or unexpected discoveries
 
-### Phase 2: Deep Analysis
+### Phase 2: Quick Debrief Interview
+
+Brief questions to capture insights documents may miss. Keep this lightweight — 2-3 questions max based on what you observed in the flight log.
+
+- **On anomalies/deviations**: "The log mentions [X] — what drove that decision?"
+- **On leg quality**: "Were any leg specs unclear or missing key context?"
+- **On blockers**: "What slowed you down most? Was it predictable?"
+
+Skip this phase if the flight log is comprehensive and there are no obvious gaps.
+
+### Phase 3: Deep Analysis
 
 Analyze the flight across multiple dimensions:
 
@@ -75,7 +85,7 @@ Analyze the flight across multiple dimensions:
 - Are there reusable patterns that emerged?
 - Are README or CLAUDE.md updates needed?
 
-### Phase 3: Skill Effectiveness Analysis
+### Phase 4: Skill Effectiveness Analysis
 
 Evaluate whether the mission-control skills could be improved:
 
@@ -93,7 +103,7 @@ Evaluate whether the mission-control skills could be improved:
 - Were acceptance criteria verifiable?
 - Were edge cases adequately identified?
 
-### Phase 4: Generate Debrief
+### Phase 5: Generate Debrief
 
 Create the flight debrief artifact using the format defined in `.flight-ops/ARTIFACTS.md`.
 

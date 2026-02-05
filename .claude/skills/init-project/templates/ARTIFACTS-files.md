@@ -225,6 +225,22 @@ How to confirm each criterion is met:
 
 ## Files Affected
 - `path/to/file.ext` - {What changes}
+
+---
+
+## Post-Completion Checklist
+
+**Complete ALL steps before signaling `[COMPLETE:leg]`:**
+
+- [ ] All acceptance criteria verified
+- [ ] Tests passing
+- [ ] Update flight-log.md with leg progress entry
+- [ ] Set this leg's status to `completed` (in this file's header)
+- [ ] Check off this leg in flight.md
+- [ ] If final leg of flight:
+  - [ ] Update flight.md status to `landed`
+  - [ ] Check off flight in mission.md
+- [ ] Commit all changes together (code + artifacts)
 ```
 
 ---

@@ -91,7 +91,18 @@ action:submit data:"Expected signal not received. What is the current status? Em
 | Flight start | Create branch: `flight/{number}-{slug}` |
 | First leg | Open draft PR |
 | Leg complete | Commit code + artifacts with leg reference |
-| Flight landed | PR ready for review |
+| Flight landed | PR ready for human review |
+
+**Orchestrator enforcement:** The orchestrator MUST actively manage git workflow:
+
+| Phase | Orchestrator Action | Verification |
+|-------|---------------------|--------------|
+| Phase 2 end | Create branch `flight/{N}-{slug}` | `git branch --show-current` returns flight branch |
+| Phase 3a (first leg) | Open draft PR | `gh pr list --state open` shows draft PR |
+| Phase 3b (each leg) | Verify commit includes all artifacts | Commit diff includes flight-log.md, leg status |
+| Phase 4 start | Mark PR ready for review | `gh pr ready` or equivalent |
+
+Do NOT rely on Claude instances to manage git workflow. The orchestrator must execute these commands directly.
 
 **Each leg commit must include:**
 - Code changes
@@ -164,6 +175,24 @@ When rolling back:
 1. `git reset --hard {commit}` restores code + artifacts atomically
 2. Re-read restored artifacts to understand state
 3. Resume from that leg, or escalate if unclear
+
+### Claude Code Crash Recovery
+
+Claude Code (headless) may crash during execution. The orchestrator should handle this gracefully:
+
+1. **Detect crash**: Process exits unexpectedly or becomes unresponsive
+2. **Read artifacts**: Check flight-log.md and leg statuses to understand progress
+3. **Resume or restart**:
+   - If mid-leg: Restart implementation with context of what was done
+   - If leg complete but not committed: Commit the changes
+   - If unclear: Escalate to human
+
+**Health check pattern:** Run a periodic check (e.g., hourly cron job) that:
+1. Polls for running Claude Code sessions
+2. If none running, reads artifacts to assess state
+3. Restarts orchestration if work remains and no blockers exist
+
+This pattern proved highly effective in practice — it provides resilience against crashes without human intervention.
 
 ## Liveness
 
@@ -329,13 +358,45 @@ action: review-implementation
 Review all changes from leg implementation. Validate acceptance criteria met. Signal [HANDOFF:confirmed] if satisfactory, or list items needing attention.
 ```
 
-**Loop** if changes needed, then return to **3a** for next leg.
+**Loop** if changes needed, then proceed to next leg.
+
+#### 3c: Leg Transition (Orchestrator Decision Point)
+
+After `[COMPLETE:leg]` is received and validated, the orchestrator must decide the next action:
+
+```
+if legs_completed < legs_total:
+    → Return to Phase 3a for next leg
+else:
+    → Proceed to Phase 4 (Flight Completion)
+```
+
+**Leg counting:** The orchestrator MUST track leg progress:
+1. Parse flight.md during Phase 2 to count total planned legs
+2. Increment `legs_completed` after each `[COMPLETE:leg]`
+3. When `legs_completed == legs_total`, transition to Phase 4
+
+**Do NOT rely on Claude to signal flight completion.** The orchestrator must detect this condition and trigger Phase 4 explicitly.
 
 ---
 
 ### Phase 4: Flight Completion
 
-When all legs complete:
+**Triggered by orchestrator when all legs complete.**
+
+#### Orchestrator Flight Completion Checklist
+
+Before invoking MC for debrief, the orchestrator MUST:
+
+| Step | Action | Command |
+|------|--------|---------|
+| 1 | Verify all legs show completed status | Read each leg file, check `**Status**: completed` |
+| 2 | Verify flight log has entries for all legs | Read flight-log.md |
+| 3 | Mark PR ready for review | `gh pr ready` |
+| 4 | Update flight status to landed | Ensure flight.md shows `**Status**: landed` |
+| 5 | Check off flight in mission.md | Update mission.md flight checkbox |
+
+Only after completing steps 1-5, invoke MC for debrief:
 
 **MC prompt:**
 ```
