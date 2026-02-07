@@ -25,18 +25,29 @@ If the flight log says "not started" but leg files show completion, or vice vers
 
 ## Architecture
 
-Two Claude Code instances, one orchestrator:
+Three Claude Code instances, one orchestrator:
 
 ```
 Orchestrator (you)
 ├── Mission Control instance (runs in mission-control/)
-│   Role: Project management
+│   Role: Project management — missions, flights, legs, debriefs
+│   Model: Opus or Sonnet
 │   Context lifespan: Entire flight
 │
-└── Project instance (runs in target project/)
-    Role: Implementor/crew
-    Context lifespan: One leg + next leg review, then clear
+├── Developer instance (runs in target project/)
+│   Role: Implementation — code, tests, documentation
+│   Model: Sonnet
+│   Context lifespan: One leg, then clear
+│
+└── Reviewer instance (runs in target project/)
+    Role: Code review — quality, correctness, acceptance criteria
+    Model: Sonnet
+    Context lifespan: One review, then clear
 ```
+
+**Instance contexts:** Each instance runs in its respective project directory and loads that project's CLAUDE.md, conventions, and codebase context. The Developer and Reviewer both run in the target project but get separate, fresh context windows — the Reviewer has no knowledge of the Developer's reasoning, only the resulting changes.
+
+**Model selection:** Use Sonnet for Developer and Reviewer — sufficient for implementation and review tasks. MC may use Opus for complex planning that requires deep codebase analysis, or Sonnet for straightforward leg design. Never use Opus for the Reviewer.
 
 Artifacts are the shared state. Never pass files as context. Each Claude instance reads artifacts directly from its filesystem via the conventions in `.flight-ops/ARTIFACTS.md`.
 
@@ -104,10 +115,12 @@ action:submit data:"Expected signal not received. What is the current status? Em
 
 Do NOT rely on Claude instances to manage git workflow. The orchestrator must execute these commands directly.
 
+**Leg lifecycle:** Implementation follows the full state machine: `queued` → `in-progress` → `review` → `completed`. The Developer sets `in-progress` when starting, the orchestrator sets `review` when the Reviewer is invoked, and the Developer sets `completed` when committing after review passes.
+
 **Each leg commit must include:**
 - Code changes
 - Updated flight log
-- Updated leg status
+- Updated leg status (`completed`)
 - Any mission/flight artifact changes
 
 **Artifact consistency rule:** The flight log is the authoritative record. After each leg:
@@ -338,42 +351,82 @@ Only after both confirm: clear Project context, then start fresh Project instanc
 
 #### 3b: Leg Implementation
 
-**Clear Project context before this phase.**
+**Clear Developer context before this phase.**
 
 ##### Orchestrator Leg Implementation Checklist
 
 | Step | Action | Expected Signal |
 |------|--------|-----------------|
-| 1 | Clear Project instance context | — |
-| 2 | Invoke Project to implement leg | `[COMPLETE:leg]` |
-| 3 | Verify commit includes all artifacts | Check flight-log, leg status updated |
-| 4 | Invoke MC to review implementation | `[HANDOFF:confirmed]` or issues listed |
-| 5 | If issues, invoke Project to fix | `[COMPLETE:leg]` |
-| 6 | Loop steps 4-5 until MC confirms | `[HANDOFF:confirmed]` |
+| 1 | Clear Developer instance context | — |
+| 2 | Invoke Developer to implement leg | `[HANDOFF:review-needed]` |
+| 3 | Invoke Reviewer to review changes | `[HANDOFF:confirmed]` or issues listed |
+| 4 | If issues, invoke Developer to fix | `[HANDOFF:review-needed]` |
+| 5 | Loop steps 3-4 until Reviewer confirms | `[HANDOFF:confirmed]` |
+| 6 | Invoke Developer to commit | `[COMPLETE:leg]` |
+| 7 | Verify commit includes all artifacts | Check flight-log, leg status updated |
 
-**Project prompt (step 2):**
+**Developer prompt (step 2):**
 ```
-role: crew
+role: developer
 phase: leg-implementation
 project: {project-slug}
 flight: {flight-number}
 leg: {leg-number}
 action: implement
 
-Read leg artifact. Implement to acceptance criteria. Update flight log with outcomes. Propagate changes to artifacts (flight, mission, leg), CLAUDE.md, README, and other project documentation as needed. Commit. Signal [COMPLETE:leg] when done.
+Read leg artifact. Implement to acceptance criteria. Update flight log with outcomes. Propagate changes to artifacts (flight, mission, leg), CLAUDE.md, README, and other project documentation as needed. Do NOT commit yet — signal [HANDOFF:review-needed] when implementation is complete.
 ```
 
-**MC prompt (step 4):**
+**Reviewer prompt (step 3):**
 ```
-role: mission-control
+role: reviewer
 phase: leg-review
 project: {project-slug}
 flight: {flight-number}
 leg: {leg-number}
-action: review-implementation
+action: review
 
-Review all changes from leg implementation. Validate acceptance criteria met. Signal [HANDOFF:confirmed] if satisfactory, or list items needing attention.
+Review all changes since the last commit. Evaluate against:
+1. Leg acceptance criteria — are all criteria met?
+2. Code quality — style, clarity, maintainability
+3. Correctness — edge cases, error handling, security
+4. Tests — coverage, meaningful assertions, no regressions
+5. Artifacts — flight log updated, leg status correct
+
+Signal [HANDOFF:confirmed] if all changes are satisfactory.
+If issues found, list them with severity (blocking/non-blocking) and specific file:line references.
 ```
+
+**Developer prompt (step 4, if issues):**
+```
+role: developer
+phase: leg-implementation
+project: {project-slug}
+flight: {flight-number}
+leg: {leg-number}
+action: fix-review-issues
+
+Address the following review feedback:
+{reviewer-issues}
+
+Fix all blocking issues. Non-blocking issues: fix if straightforward, otherwise note as accepted. Signal [HANDOFF:review-needed] when fixes are complete.
+```
+
+**Developer prompt (step 6, after review passes):**
+```
+role: developer
+phase: leg-implementation
+project: {project-slug}
+flight: {flight-number}
+leg: {leg-number}
+action: commit
+
+Review has passed. Commit all changes with appropriate message. Update leg status to completed. Signal [COMPLETE:leg].
+```
+
+**Review scope:** The Reviewer evaluates ALL changes since the last commit, not just the leg spec's acceptance criteria. This catches unintended side effects, style inconsistencies, and issues the Developer may have been blind to.
+
+**Human-assisted mode:** This review step also applies when a human implements the leg. The Reviewer instance can be invoked to review a human's uncommitted changes using the same prompt and checklist. This provides consistent quality gates regardless of who implements.
 
 #### 3c: Leg Transition (Orchestrator Decision Point)
 
@@ -456,9 +509,12 @@ Run /mission-debrief. Capture outcomes assessment. Signal [COMPLETE:mission].
 | Instance | When to clear |
 |----------|---------------|
 | Mission Control | After flight completes |
-| Project | After leg implementation + next leg review |
+| Developer | After leg commit (review passed, changes committed) |
+| Reviewer | After each review (always starts fresh) |
 
-Project reviews the next leg design *before* clearing, while implementation knowledge is fresh.
+The Reviewer always gets a fresh context — this is intentional. A reviewer with no prior knowledge of the implementation reasoning provides more objective feedback.
+
+The Developer may optionally review the next leg design *before* clearing, while implementation knowledge is fresh. This is a judgment call by the orchestrator based on whether the Developer's context would be valuable for the next leg's design review.
 
 ### Multi-Flight Continuity
 
