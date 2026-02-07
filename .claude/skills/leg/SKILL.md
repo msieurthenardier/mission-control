@@ -77,6 +77,7 @@ Deep dive into the specific implementation:
    - What could go wrong?
    - What validation is needed?
    - What error handling is required?
+   - If this leg modifies database schemas: does it include migration creation AND execution? Both must happen in the same leg — a schema defined but never migrated is a gap.
 
 5. **Identify dependent code** (for interface changes)
    - Does this leg modify shared interfaces?

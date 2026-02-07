@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 You may be invoked by:
 - **A human** — Interactive session, ask questions freely
-- **An LLM orchestrator** — Follow [AGENTIC_WORKFLOW.md](AGENTIC_WORKFLOW.md) exactly, emit handoff signals
+- **An LLM orchestrator** — Run `/agentic-workflow` to drive multi-agent flight execution
 
 When orchestrated, you are the **Mission Control** instance (project management role). Emit signals like `[HANDOFF:review-needed]` and `[COMPLETE:leg]` at appropriate points. The orchestrator monitors your output for these markers.
 
@@ -22,7 +22,7 @@ This repository contains the methodology documentation and Claude Code skills fo
 
 ## Claude Code Skills
 
-Six skills automate the planning and debrief workflow:
+Seven skills automate the planning, execution, and debrief workflow:
 
 | Skill | Purpose |
 |-------|---------|
@@ -30,6 +30,7 @@ Six skills automate the planning and debrief workflow:
 | `/mission` | Create outcome-driven missions through research and interview |
 | `/flight` | Create technical flight specs from missions |
 | `/leg` | Generate implementation guidance for LLM execution |
+| `/agentic-workflow` | Drive multi-agent flight execution (design, implement, review, commit) |
 | `/flight-debrief` | Post-flight analysis for continuous improvement |
 | `/mission-debrief` | Post-mission retrospective for outcomes assessment |
 

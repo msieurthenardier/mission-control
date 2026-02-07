@@ -34,7 +34,7 @@ Aviation succeeds through layered planning and clear handoffs. Pilots follow fli
 
 ## Agentic Workflow
 
-**LLM orchestrators**: See **[AGENTIC_WORKFLOW.md](AGENTIC_WORKFLOW.md)** for explicit instructions on executing this methodology with Claude Code. Follow it exactly.
+**LLM orchestrators**: Run `/agentic-workflow` to drive multi-agent flight execution with Claude Code. The skill orchestrates the full leg cycle — design, implement, review, commit — using three separate Claude instances.
 
 ## Quick Start
 
@@ -109,6 +109,7 @@ Flight Control includes Claude Code skills for interactive planning:
 | `/flight` | Create technical flight specs from missions |
 | `/leg` | Generate implementation guidance for LLM execution |
 | `/flight-debrief` | Post-flight analysis for continuous improvement |
+| `/agentic-workflow` | Drive multi-agent flight execution |
 | `/mission-debrief` | Post-mission retrospective for outcomes assessment |
 
 ## Recommended Workflow

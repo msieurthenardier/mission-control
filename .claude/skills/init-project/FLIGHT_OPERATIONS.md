@@ -11,6 +11,20 @@
 
 ---
 
+## Three-Agent Workflow
+
+Legs must be implemented by a **separate Developer instance** and reviewed by a **separate Reviewer instance**. Mission Control designs legs and orchestrates — it does NOT implement code directly.
+
+| Instance | Role | Context |
+|----------|------|---------|
+| Mission Control | Design legs, manage artifacts, orchestrate | Entire flight |
+| Developer | Implement code, tests, docs | One leg, then clear |
+| Reviewer | Review changes against acceptance criteria | One review, then clear |
+
+The Reviewer has no knowledge of the Developer's reasoning — only the resulting changes. This separation provides objective code review. Use the `/agentic-workflow` skill in mission-control to drive this cycle.
+
+---
+
 ## ⚠️ Leg Completion Checklist (MANDATORY)
 
 **You MUST complete ALL of these before emitting `[COMPLETE:leg]`:**
@@ -122,11 +136,25 @@ Deferred issues go in the flight log.
 | 3 | **Update flight status** — Set `**Status**: landed` in flight.md |
 | 4 | **Update mission** — Check off this flight in mission.md |
 | 5 | **Verify all legs** — Confirm all legs show `completed` status |
-| 6 | Signal `[COMPLETE:leg]` (the orchestrator will trigger Phase 4) |
+| 6 | **Update project docs** — Ensure CLAUDE.md, README, and other docs reflect any new commands, endpoints, configuration, or APIs introduced during the flight |
+| 7 | Signal `[COMPLETE:leg]` (the orchestrator will trigger Phase 4) |
 
 The orchestrator will then:
 - Mark the PR ready for human review
 - Invoke Mission Control for flight debrief
+
+---
+
+## Database Schema Changes
+
+When a flight modifies database schemas:
+
+1. **Include migration steps in the leg** — schema changes need explicit CREATE/ALTER statements or migration commands
+2. **Verify migrations run** — acceptance criteria must include confirming the migration executed successfully against the live database
+3. **Update SCHEMA docs** — if the project maintains a SCHEMA reference, update it in the same leg that creates the migration
+4. **Test against real DB** — unit tests with mocks are not sufficient for schema changes; verify against the actual database
+
+A table defined in SCHEMA but never created via migration is a gap — treat schema documentation and migration execution as a single atomic operation.
 
 ---
 

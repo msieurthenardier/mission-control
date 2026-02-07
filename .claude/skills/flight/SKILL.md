@@ -56,6 +56,11 @@ Explore the target project's codebase to inform the technical approach:
    - Error handling approaches
    - Testing patterns
 
+4. **Check for schema/migration implications**
+   - Does this flight add or modify database tables?
+   - What migration tooling does the project use?
+   - Are there existing migration patterns to follow?
+
 ### Phase 3: Crew Interview
 
 Ask technical questions to resolve the approach:
@@ -129,7 +134,9 @@ Break flights into legs based on technical boundaries:
 
 **For interface changes**: Identify consumers that need updates
 
-**For documentation**: Consider whether README, CLAUDE.md, or other docs need updates as part of this flight
+**For documentation**: Consider whether README, CLAUDE.md, or other docs need updates as part of this flight — especially for flights adding new CLI commands, API endpoints, or configuration options
+
+**For schema changes**: Include explicit migration legs and verify against the live database, not just mocks
 
 ### Pre-Flight Rigor
 
