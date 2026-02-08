@@ -44,7 +44,20 @@ Repeat for each leg in the flight.
 1. **Design the leg** using the `/leg` skill (or craft guidance manually)
    - Read the flight spec, flight log, and relevant source code
    - Create the leg artifact with acceptance criteria
-2. **Signal `[HANDOFF:review-needed]`** when the leg design is complete
+2. **Spawn a Developer agent for design review** (Task tool, `subagent_type: "general-purpose"`)
+   - Working directory: the target project
+   - Provide the "Review Leg Design" prompt from PROMPTS.md
+   - The Developer reads the leg artifact and cross-references against actual codebase state
+   - The Developer provides a structured assessment: approve, approve with changes, or needs rework
+3. **Incorporate feedback** — update the leg artifact to address any issues raised
+   - High-severity issues: must fix before proceeding
+   - Medium-severity issues: fix unless there's a clear reason not to
+   - Low-severity issues and suggestions: apply at discretion
+4. **Re-review if substantive changes were made** — spawn another Developer for a second pass
+   - Skip if only minor/cosmetic fixes were applied
+   - If the second review raises new high-severity issues, fix and re-review once more
+   - **Max 2 design review cycles** — if issues persist after 2 rounds, escalate to human
+5. **Signal `[HANDOFF:review-needed]`** when the leg design is finalized
 
 ### 2b: Leg Implementation
 
@@ -132,7 +145,8 @@ Mission: {mission-number}
 | Situation | Action |
 |-----------|--------|
 | Developer agent fails mid-leg | Spawn new Developer with context of what failed |
-| Review loops > 3 times | Escalate to human |
+| Design review loops > 2 times | Escalate to human with unresolved design issues |
+| Code review loops > 3 times | Escalate to human |
 | Leg marked blocked | Escalate to human with blocker details |
 | Artifact discrepancy | Remediate before proceeding |
 | Off the rails | Roll back to last leg commit, escalate |

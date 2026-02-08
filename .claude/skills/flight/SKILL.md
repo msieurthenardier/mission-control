@@ -95,6 +95,23 @@ Create the flight artifact using the format defined in `.flight-ops/ARTIFACTS.md
 
 Also create the flight log artifact (empty, ready for execution notes).
 
+### Phase 4b: Design Review
+
+Spawn a Developer agent to validate the flight spec against the real codebase before presenting it to the crew.
+
+1. **Spawn a Developer agent** in the target project context (Task tool, `subagent_type: "general-purpose"`)
+   - Provide the "Review Flight Design" prompt from the agentic-workflow PROMPTS.md
+   - The Developer reads the flight spec and cross-references design decisions, prerequisites, technical approach, and leg breakdown against actual codebase state
+   - The Developer provides a structured assessment: approve, approve with changes, or needs rework
+2. **Incorporate feedback** — update the flight artifact to address issues raised
+   - High-severity issues: must fix before proceeding
+   - Medium-severity issues: fix unless there's a clear reason not to
+   - Low-severity issues and suggestions: apply at discretion
+3. **Re-review if substantive changes were made** — spawn another Developer for a second pass
+   - Skip if only minor/cosmetic fixes were applied
+   - **Max 2 design review cycles** — if issues persist after 2 rounds, escalate to human
+4. **Proceed to Phase 5** with a codebase-validated spec
+
 ### Phase 5: Iterate
 
 1. Walk through the spec with the crew
