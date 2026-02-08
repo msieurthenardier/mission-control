@@ -42,19 +42,37 @@ Perform comprehensive post-flight analysis for continuous improvement.
    - Compare intended vs actual implementation
    - Note deviations, workarounds, or unexpected discoveries
 
-### Phase 2: Quick Debrief Interview
+### Phase 2: Crew Debrief Interviews
 
+Read `{target-project}/.flight-ops/phases/flight-debrief.md` for crew definitions and prompts (fall back to defaults at `.claude/skills/init-project/defaults/phases/flight-debrief.md`).
+
+**Validate structure**: The phase file MUST contain `## Crew`, `## Interaction Protocol`, and `## Prompts` sections with fenced code blocks. If the file exists but is malformed, STOP and tell the user: "Phase file `flight-debrief.md` is missing required sections. Either fix it manually or re-run `/init-project` to reset to defaults."
+
+#### Developer Interview
+1. **Spawn a Developer agent** in the target project context (Task tool, `subagent_type: "general-purpose"`)
+   - Provide the "Debrief Interview" prompt from the flight-debrief phase file's Prompts section
+   - The Developer examines code changes, test coverage, patterns, and technical debt
+   - The Developer provides structured debrief input
+
+#### Architect Interview
+1. **Spawn an Architect agent** in the target project context (Task tool, `subagent_type: "general-purpose"`)
+   - Provide the "Debrief Design Review" prompt from the flight-debrief phase file's Prompts section
+   - The Architect compares planned design decisions against actual implementation
+   - The Architect evaluates whether the flight design held up and provides feedback for future flights
+   - This closes the design feedback loop — the same role that reviewed the spec now evaluates the outcome
+
+#### Human Interview
 Brief questions to capture insights documents may miss. Keep this lightweight — 2-3 questions max based on what you observed in the flight log.
 
 - **On anomalies/deviations**: "The log mentions [X] — what drove that decision?"
 - **On leg quality**: "Were any leg specs unclear or missing key context?"
 - **On blockers**: "What slowed you down most? Was it predictable?"
 
-Skip this phase if the flight log is comprehensive and there are no obvious gaps.
+Skip the human interview if the flight log is comprehensive and there are no obvious gaps.
 
 ### Phase 3: Deep Analysis
 
-Analyze the flight across multiple dimensions:
+Synthesize Developer input, Architect input, human input, and document analysis across multiple dimensions:
 
 #### Outcome Analysis
 - Did the flight achieve its objective?

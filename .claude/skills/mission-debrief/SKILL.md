@@ -37,31 +37,42 @@ Perform comprehensive post-mission retrospective and methodology assessment.
    - Read the target project's `README.md` and `CLAUDE.md`
    - Understand what was built during this mission
 
-### Phase 2: Crew Interview
+### Phase 2: Crew Debrief Interviews
 
-Before synthesizing conclusions, interview the crew to capture qualitative insights that documents alone cannot reveal.
+Read `{target-project}/.flight-ops/phases/mission-debrief.md` for crew definitions and prompts (fall back to defaults at `.claude/skills/init-project/defaults/phases/mission-debrief.md`).
 
-#### Flight Log Clarifications
+**Validate structure**: The phase file MUST contain `## Crew`, `## Interaction Protocol`, and `## Prompts` sections with fenced code blocks. If the file exists but is malformed, STOP and tell the user: "Phase file `mission-debrief.md` is missing required sections. Either fix it manually or re-run `/init-project` to reset to defaults."
+
+#### Architect Interview
+1. **Spawn an Architect agent** in the target project context (Task tool, `subagent_type: "general-purpose"`)
+   - Provide the "Debrief Interview" prompt from the mission-debrief phase file's Prompts section
+   - The Architect reviews architectural evolution across all flights, pattern consistency, and structural health
+   - The Architect provides structured debrief input
+
+#### Human Interview
+Interview the crew to capture qualitative insights that documents alone cannot reveal.
+
+##### Flight Log Clarifications
 Surface specific observations from flight logs and ask for context:
 - Anomalies or deviations noted in logs — what caused them?
 - Decisions made during execution — what drove those choices?
 - Blockers or delays — were these predictable in hindsight?
 - Workarounds implemented — should these become standard practice?
 
-#### Mission Control Experience
+##### Mission Control Experience
 For the human(s) who served as mission control:
 - "What was your experience coordinating this mission?"
 - "Were there moments of confusion or uncertainty about status?"
 - "Did the flight/leg structure help or hinder your oversight?"
 - "What information was missing when you needed it?"
 
-#### Project-Specific Feedback
+##### Project-Specific Feedback
 - "What surprised you most during this mission?"
 - "What would you do differently if starting over?"
 - "Are there project-specific conventions that should be documented?"
 - "Did any tools, libraries, or patterns prove particularly valuable or problematic?"
 
-#### Agentic Orchestration Feedback (if applicable)
+##### Agentic Orchestration Feedback (if applicable)
 If the mission used automated orchestration (LLM agents executing legs):
 - "How well did handoffs between agents work?"
 - "Were there failures in agent coordination or context transfer?"
@@ -71,7 +82,7 @@ If the mission used automated orchestration (LLM agents executing legs):
 
 **Note**: Adapt questions based on what the flight logs and artifacts reveal. Surface specific examples rather than asking in the abstract.
 
-### Phase 3: Outcome Assessment
+### Phase 3: Outcome Assessment (synthesize Architect + human input)
 
 #### Success Criteria Evaluation
 For each success criterion:

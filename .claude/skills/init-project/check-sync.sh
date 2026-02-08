@@ -9,7 +9,7 @@
 #   current  - All files match source
 #
 # Note: Only checks synced files (README.md, FLIGHT_OPERATIONS.md).
-#       ARTIFACTS.md is project-specific and not synced.
+#       ARTIFACTS.md and phases/ are project-specific and not synced.
 
 set -e
 
@@ -62,4 +62,13 @@ if $ALL_CURRENT; then
   echo "current"
 else
   echo "outdated"
+fi
+
+# Report on phases directory existence (not content — content is project-specific)
+if [[ ! -d "$TARGET_DIR/phases" ]]; then
+  echo "phases:missing"
+elif [[ -z "$(ls -A "$TARGET_DIR/phases/" 2>/dev/null)" ]]; then
+  echo "phases:empty"
+else
+  echo "phases:present"
 fi

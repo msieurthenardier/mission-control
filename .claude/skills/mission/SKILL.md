@@ -76,6 +76,21 @@ Ask about outcomes, not tasks. Focus on:
 
 Create the mission artifact using the format defined in `.flight-ops/ARTIFACTS.md`.
 
+### Phase 3b: Technical Viability Check
+
+Read `{target-project}/.flight-ops/phases/mission-design.md` for crew definitions and prompts (fall back to defaults at `.claude/skills/init-project/defaults/phases/mission-design.md`).
+
+**Validate structure**: The phase file MUST contain `## Crew`, `## Interaction Protocol`, and `## Prompts` sections with fenced code blocks. If the file exists but is malformed, STOP and tell the user: "Phase file `mission-design.md` is missing required sections. Either fix it manually or re-run `/init-project` to reset to defaults."
+
+1. **Spawn an Architect agent** in the target project context (Task tool, `subagent_type: "general-purpose"`)
+   - Provide the "Validate Mission" prompt from the mission-design phase file's Prompts section
+   - The Architect reviews the draft mission against the codebase, stack, and constraints
+   - The Architect provides a structured assessment: feasible / feasible with caveats / not feasible
+2. **Incorporate feedback** — update the mission artifact to address issues raised
+   - If not feasible: discuss with user, adjust scope or approach
+   - If feasible with caveats: present caveats to user, adjust if needed
+3. **Human gives final sign-off** before proceeding
+
 ### Phase 4: Iterate
 
 Present the draft and iterate:
@@ -83,7 +98,7 @@ Present the draft and iterate:
 1. Walk through each section with the user
 2. Validate success criteria are measurable
 3. Confirm flight breakdown makes sense
-4. Refine until the user approves
+4. Refine until the user explicitly approves
 
 ## Guidelines
 

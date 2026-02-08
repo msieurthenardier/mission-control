@@ -10,6 +10,12 @@ You may be invoked by:
 
 When orchestrated, you are the **Mission Control** instance (project management role). Emit signals like `[HANDOFF:review-needed]` and `[COMPLETE:leg]` at appropriate points. The orchestrator monitors your output for these markers.
 
+**When a human says a leg is ready to implement**, invoke `/agentic-workflow`. Do not read the leg spec, do not plan execution steps, do not execute commands directly. You become the orchestrator by loading the skill.
+
+## First-Contact Check
+
+If `projects.md` does not exist in this repository, suggest running `/init-mission-control` to set up the projects registry before proceeding with any other skills.
+
 ## Project Overview
 
 Flight Control is an AI-first software development lifecycle methodology using aviation metaphors. It organizes work into three hierarchical levels:
@@ -22,10 +28,11 @@ This repository contains the methodology documentation and Claude Code skills fo
 
 ## Claude Code Skills
 
-Seven skills automate the planning, execution, and debrief workflow:
+Eight skills automate the planning, execution, and debrief workflow:
 
 | Skill | Purpose |
 |-------|---------|
+| `/init-mission-control` | Onboard to Mission Control (set up `projects.md` registry) |
 | `/init-project` | Initialize a project for Flight Control (creates `.flight-ops/` directory) |
 | `/mission` | Create outcome-driven missions through research and interview |
 | `/flight` | Create technical flight specs from missions |
@@ -38,11 +45,11 @@ Run `/init-project` before using the other skills on a new project to create the
 
 **Artifact Systems:** Each project defines how artifacts are stored in `.flight-ops/ARTIFACTS.md`. Skills read this configuration and adapt their output accordingly.
 
-**IMPORTANT: Skills produce documentation only.** When running these skills:
+**IMPORTANT: Planning skills produce documentation only.** `/init-project`, `/mission`, `/flight`, `/leg`, `/flight-debrief`, and `/mission-debrief` must:
 - **NEVER implement code changes** — only create/update artifacts
 - **NEVER modify source files** in the target project (no `.rs`, `.ts`, `.tsx`, `.json`, etc.)
-- The leg document contains implementation guidance for a separate execution phase
-- Implementation happens later, in a dedicated session within the target project
+
+`/agentic-workflow` orchestrates implementation by spawning separate agents that execute code changes in the target project. The orchestrator itself never modifies source files directly.
 
 ## Projects Registry
 
@@ -67,10 +74,16 @@ Every project using Flight Control has a `.flight-ops/` directory:
 └── .flight-ops/
     ├── README.md              # Directory purpose and usage
     ├── FLIGHT_OPERATIONS.md   # Quick reference for implementation (synced)
-    └── ARTIFACTS.md           # Artifact system configuration (project-specific)
+    ├── ARTIFACTS.md           # Artifact system configuration (project-specific)
+    └── phases/                # Project crew definitions (project-specific)
+        ├── mission-design.md
+        ├── flight-design.md
+        ├── leg-execution.md
+        ├── flight-debrief.md
+        └── mission-debrief.md
 ```
 
-The `ARTIFACTS.md` file defines where and how all artifacts are stored.
+The `ARTIFACTS.md` file defines where and how all artifacts are stored. The `phases/` directory defines per-project crew compositions — which agents the Flight Director works with during each phase, their roles, models, prompts, and interaction protocols.
 
 ## Business Objects
 

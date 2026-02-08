@@ -25,11 +25,14 @@ Example: `/agentic-workflow flight 03 for epipen mission 04`
 
 1. **Read `projects.md`** to find the target project's path
 2. **Read `{target-project}/.flight-ops/ARTIFACTS.md`** for artifact locations
-3. **Read the mission artifact** — outcomes, success criteria, constraints
-4. **Read the flight artifact** — objective, design decisions, leg list
-5. **Read the flight log** — ground truth from prior execution
-6. **Count total legs** from the flight spec — track progress throughout
-7. **Determine starting point** — which leg is next based on flight log and leg statuses
+3. **Read `{target-project}/.flight-ops/phases/leg-execution.md`** for project crew definitions, interaction protocol, and prompts (fall back to defaults at `.claude/skills/init-project/defaults/phases/leg-execution.md`)
+   - **Validate structure**: The phase file MUST contain `## Crew`, `## Interaction Protocol`, and `## Prompts` sections. Each prompt subsection MUST have a fenced code block.
+   - **If the file exists but is malformed**: STOP. Tell the user: "Phase file `leg-execution.md` is missing required sections. Either fix it manually or re-run `/init-project` to reset to defaults." Do NOT improvise missing prompts — halt and get the file fixed.
+4. **Read the mission artifact** — outcomes, success criteria, constraints
+5. **Read the flight artifact** — objective, design decisions, leg list
+6. **Read the flight log** — ground truth from prior execution
+7. **Count total legs** from the flight spec — track progress throughout
+8. **Determine starting point** — which leg is next based on flight log and leg statuses
 
 If resuming a flight already in progress, verify state consistency:
 - Flight log entries must match leg statuses
@@ -46,7 +49,7 @@ Repeat for each leg in the flight.
    - Create the leg artifact with acceptance criteria
 2. **Spawn a Developer agent for design review** (Task tool, `subagent_type: "general-purpose"`)
    - Working directory: the target project
-   - Provide the "Review Leg Design" prompt from PROMPTS.md
+   - Provide the "Review Leg Design" prompt from the leg-execution phase file's Prompts section
    - The Developer reads the leg artifact and cross-references against actual codebase state
    - The Developer provides a structured assessment: approve, approve with changes, or needs rework
 3. **Incorporate feedback** — update the leg artifact to address any issues raised
@@ -65,19 +68,19 @@ Repeat for each leg in the flight.
 
 1. **Spawn a Developer agent** (Task tool, `subagent_type: "general-purpose"`)
    - Working directory: the target project
-   - Provide the Developer prompt from PROMPTS.md
+   - Provide the "Implement" prompt from the leg-execution phase file's Prompts section
    - The Developer reads the leg artifact, implements to acceptance criteria, updates flight log
    - The Developer signals `[HANDOFF:review-needed]` when done — do NOT let it commit
 2. **Spawn a Reviewer agent** (Task tool, `subagent_type: "general-purpose"`)
    - Working directory: the target project
-   - Provide the Reviewer prompt from PROMPTS.md
+   - Provide the "Review" prompt from the leg-execution phase file's Prompts section
    - The Reviewer evaluates ALL uncommitted changes against acceptance criteria and code quality
    - The Reviewer signals `[HANDOFF:confirmed]` or lists issues with severity
 3. **If issues found**, spawn a new Developer agent to fix them
-   - Provide the fix prompt from PROMPTS.md with the Reviewer's feedback
+   - Provide the "Fix Review Issues" prompt from the leg-execution phase file with the Reviewer's feedback
    - Loop review/fix until the Reviewer confirms
 4. **Spawn the Developer agent to commit** after review passes
-   - Provide the commit prompt from PROMPTS.md
+   - Provide the "Commit" prompt from the leg-execution phase file's Prompts section
    - The commit must include code changes, updated flight log, and updated leg status
 
 ### 2c: Leg Transition
@@ -99,29 +102,35 @@ After `[COMPLETE:leg]`:
 
 ## Architecture
 
-Three Claude Code instances with distinct roles:
+The Flight Director (you) orchestrates according to this skill. Project crew composition, roles, models, and prompts are defined in `{target-project}/.flight-ops/phases/leg-execution.md`.
 
-| Instance | Role | Working Directory | Model | Context |
-|----------|------|-------------------|-------|---------|
-| Mission Control (you) | Project management — legs, artifacts, orchestration | mission-control/ | Opus or Sonnet | Entire flight |
-| Developer | Implementation — code, tests, docs | target project/ | Sonnet | One leg, then clear |
-| Reviewer | Code review — quality, correctness, criteria | target project/ | Sonnet | One review, then clear |
+**Separation is mandatory.** Project crew agents run in the target project and load its CLAUDE.md and conventions. The Reviewer has no knowledge of the Developer's reasoning — only the resulting changes. This provides objective review.
 
-**Separation is mandatory.** The Developer and Reviewer run in the target project and load its CLAUDE.md and conventions. The Reviewer has no knowledge of the Developer's reasoning — only the resulting changes. This provides objective review.
-
-**Model selection:** Use Sonnet for Developer and Reviewer. MC may use Opus for complex planning. Never use Opus for the Reviewer.
+**Model selection:** Follow the model preferences in the phase file. MC may use Opus for complex planning. Never use Opus for the Reviewer.
 
 ## Handoff Signals
 
-Emit on their own line at the end of a response:
+Signals are part of the Flight Control methodology and are NOT configurable per-project. All crew agents must use these exact signals:
 
-| Signal | Meaning |
-|--------|---------|
-| `[HANDOFF:review-needed]` | Artifact/code ready for review |
-| `[HANDOFF:confirmed]` | Review passed, proceed |
-| `[BLOCKED:reason]` | Cannot proceed, needs resolution |
-| `[COMPLETE:leg]` | Leg finished and committed |
-| `[COMPLETE:flight]` | Flight landed |
+| Signal | Emitted By | Meaning |
+|--------|-----------|---------|
+| `[HANDOFF:review-needed]` | Developer | Code/artifact ready for review |
+| `[HANDOFF:confirmed]` | Reviewer | Review passed |
+| `[BLOCKED:reason]` | Any crew agent | Cannot proceed, needs resolution |
+| `[COMPLETE:leg]` | Developer | Leg finished and committed |
+| `[COMPLETE:flight]` | Flight Director | Flight landed |
+
+## Flight Director Decision Log
+
+The Flight Director must maintain transparency about its own decisions. After each major orchestration step, log what happened and why in the flight log under a `### Flight Director Notes` subsection:
+
+1. **Phase file loading** — Record which phase file was loaded (project or default fallback) and what crew was extracted
+2. **Agent spawning** — Record which agent was spawned, with what prompt, and what model
+3. **Review cycle decisions** — When incorporating feedback, note what was accepted/rejected and why
+4. **Escalation decisions** — When choosing between "fix and re-review" vs "escalate to human," note the reasoning
+5. **Signal interpretation** — When a crew agent's output is ambiguous, note how it was interpreted
+
+This is not a separate file — it goes in the flight log alongside leg entries. The goal is that anyone reviewing the flight log can understand not just what the crew did, but why the Flight Director made the orchestration choices it did.
 
 ## Git Workflow
 

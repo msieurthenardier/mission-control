@@ -93,7 +93,29 @@ If setup questions were answered, update the ARTIFACTS.md file to replace the pl
 
 **If ARTIFACTS.md already exists**, do not modify it — it's project-specific and may have been customized.
 
-### 5. Update CLAUDE.md
+### 5. Configure Project Crew
+
+Set up phase-specific crew definitions that control how Mission Control interacts with project-side agents.
+
+1. **Check if `.flight-ops/phases/` exists**
+
+   **If missing** (first run):
+   - Copy all defaults from `${SKILL_DIR}/defaults/phases/` to `{target-project}/.flight-ops/phases/`
+   - Brief the user:
+     > "Default crew has been set up for all phases. Your project crew defines who Mission Control (Flight Director) works with during each phase — which agents exist, their roles, models, and prompts."
+   - Ask about customization:
+     > "Want to customize any phase crew? (Most projects work fine with defaults)"
+   - If yes: ask which phase → show current crew → walk through changes (add/remove/modify roles, adjust prompts, change interaction protocol)
+   - If no: proceed with defaults
+
+   **If exists** (re-run):
+   - Copy any missing phase files from defaults (new phases added to the methodology)
+   - Ask the user:
+     > "Phase crew files already exist. Default crew definitions may have been updated since your project was initialized. Want to review and update any phase files to the latest defaults?"
+   - If yes: for each file, show what changed between their version and the current default, ask whether to overwrite or keep their version
+   - If no: leave all existing files untouched
+
+### 6. Update CLAUDE.md
 
 Check if the project's `CLAUDE.md` file references the flight operations directory:
 
@@ -112,9 +134,10 @@ This project uses [Flight Control](https://github.com/flight-control/mission-con
 1. `.flight-ops/README.md` — What the flight-ops directory contains
 2. `.flight-ops/FLIGHT_OPERATIONS.md` — **The workflow you MUST follow**
 3. `.flight-ops/ARTIFACTS.md` — Where all artifacts are stored
+4. `.flight-ops/phases/` — Project crew definitions for each phase (read the relevant phase file)
 ```
 
-### 6. Post-Sync Instructions
+### 7. Post-Sync Instructions
 
 After creating or updating the directory, inform the user:
 
@@ -132,7 +155,13 @@ This skill creates/updates the following at project root:
 └── .flight-ops/               # Hidden directory for Flight Control
     ├── README.md              # Explains the directory purpose
     ├── FLIGHT_OPERATIONS.md   # Quick reference for implementation (synced)
-    └── ARTIFACTS.md           # Artifact system configuration (project-specific)
+    ├── ARTIFACTS.md           # Artifact system configuration (project-specific)
+    └── phases/                # Project crew definitions (project-specific)
+        ├── mission-design.md
+        ├── flight-design.md
+        ├── leg-execution.md
+        ├── flight-debrief.md
+        └── mission-debrief.md
 ```
 
 ## File Sync Behavior
@@ -143,6 +172,7 @@ This skill creates/updates the following at project root:
 | README.md | Yes | Methodology reference |
 | FLIGHT_OPERATIONS.md | Yes | Methodology reference |
 | ARTIFACTS.md | No | Created once from template, then project-specific |
+| phases/*.md | Ask on re-run | Created from defaults; on re-run, user can choose to update to latest defaults |
 
 ## Guidelines
 

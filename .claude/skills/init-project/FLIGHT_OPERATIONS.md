@@ -11,15 +11,25 @@
 
 ---
 
-## Three-Agent Workflow
+## Project Crew & Phase Files
 
-Legs must be implemented by a **separate Developer instance** and reviewed by a **separate Reviewer instance**. Mission Control designs legs and orchestrates — it does NOT implement code directly.
+Each phase of the Flight Control workflow has a crew definition in `.flight-ops/phases/`:
 
-| Instance | Role | Context |
-|----------|------|---------|
-| Mission Control | Design legs, manage artifacts, orchestrate | Entire flight |
-| Developer | Implement code, tests, docs | One leg, then clear |
-| Reviewer | Review changes against acceptance criteria | One review, then clear |
+| Phase File | Purpose |
+|------------|---------|
+| `mission-design.md` | Crew for `/mission` (e.g., Architect validates viability) |
+| `flight-design.md` | Crew for `/flight` (e.g., Architect reviews spec) |
+| `leg-execution.md` | Crew for `/agentic-workflow` (e.g., Developer + Reviewer) |
+| `flight-debrief.md` | Crew for `/flight-debrief` (e.g., Developer provides perspective) |
+| `mission-debrief.md` | Crew for `/mission-debrief` (e.g., Architect provides perspective) |
+
+Phase files define: crew roles, models, interaction protocols, prompts, and signals. Customize these to change your project's team composition.
+
+---
+
+## Multi-Agent Workflow
+
+Legs must be implemented by a **separate Developer instance** and reviewed by a **separate Reviewer instance** (or whatever crew is defined in `leg-execution.md`). Mission Control designs legs and orchestrates — it does NOT implement code directly.
 
 The Reviewer has no knowledge of the Developer's reasoning — only the resulting changes. This separation provides objective code review. Use the `/agentic-workflow` skill in mission-control to drive this cycle.
 
