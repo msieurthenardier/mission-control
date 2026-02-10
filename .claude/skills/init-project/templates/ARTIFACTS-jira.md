@@ -100,6 +100,11 @@ Answer these questions when configuring Jira artifacts for your project:
 ## Open Questions
 {Unknowns needing resolution}
 
+## Known Issues
+Emergent blockers and issues discovered during execution. Add items here as flights surface problems that affect the broader mission — things not anticipated during planning but visible at the mission level.
+
+- [ ] {Issue description} — discovered in Flight {N}, affects {scope}
+
 ## Flights
 > **Note:** These are tentative suggestions, not commitments. Flights are planned and created one at a time as work progresses. This list will evolve based on discoveries during implementation.
 

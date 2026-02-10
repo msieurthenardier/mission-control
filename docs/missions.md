@@ -101,6 +101,9 @@ Development environment, runtime dependencies, special tooling.
 ## Open Questions
 Unknowns that need resolution during execution.
 
+## Known Issues
+Emergent blockers and issues discovered during execution.
+
 ## Flights
 Links to flights executing this mission.
 ```
