@@ -9,7 +9,7 @@ Create a new mission through research and collaborative discovery.
 
 ## Prerequisites
 
-- Project must be initialized with `/init-project` (`.flight-ops/ARTIFACTS.md` must exist)
+- Project must be initialized with `/init-project` (`.flightops/ARTIFACTS.md` must exist)
 
 ## Workflow
 
@@ -22,12 +22,12 @@ Before asking questions, gather context:
    - If not listed, ask the user for details
 
 2. **Verify project is initialized**
-   - Check if `{target-project}/.flight-ops/ARTIFACTS.md` exists
+   - Check if `{target-project}/.flightops/ARTIFACTS.md` exists
    - **If missing**: STOP and tell the user to run `/init-project` first
    - Do not proceed without the artifact configuration
 
 3. **Read the artifact configuration**
-   - Read `{target-project}/.flight-ops/ARTIFACTS.md` for artifact locations and formats
+   - Read `{target-project}/.flightops/ARTIFACTS.md` for artifact locations and formats
 
 4. **Explore the target project's codebase**
    - Project structure and architecture
@@ -74,11 +74,11 @@ Ask about outcomes, not tasks. Focus on:
 
 ### Phase 3: Draft
 
-Create the mission artifact using the format defined in `.flight-ops/ARTIFACTS.md`.
+Create the mission artifact using the format defined in `.flightops/ARTIFACTS.md`.
 
 ### Phase 3b: Technical Viability Check
 
-Read `{target-project}/.flight-ops/phases/mission-design.md` for crew definitions and prompts (fall back to defaults at `.claude/skills/init-project/defaults/phases/mission-design.md`).
+Read `{target-project}/.flightops/agent-crews/mission-design.md` for crew definitions and prompts (fall back to defaults at `.claude/skills/init-project/defaults/agent-crews/mission-design.md`).
 
 **Validate structure**: The phase file MUST contain `## Crew`, `## Interaction Protocol`, and `## Prompts` sections with fenced code blocks. If the file exists but is malformed, STOP and tell the user: "Phase file `mission-design.md` is missing required sections. Either fix it manually or re-run `/init-project` to reset to defaults."
 
@@ -138,4 +138,4 @@ Frame missions around results, not tasks:
 
 ## Output
 
-Create the mission artifact using the location and format defined in `.flight-ops/ARTIFACTS.md`.
+Create the mission artifact using the location and format defined in `.flightops/ARTIFACTS.md`.

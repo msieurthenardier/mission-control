@@ -6,7 +6,7 @@ This directory contains reference materials for the [Flight Control](https://git
 
 - **FLIGHT_OPERATIONS.md** — Quick reference for implementing missions, flights, and legs
 - **ARTIFACTS.md** — Project-specific configuration for how artifacts are stored
-- **phases/** — Project crew definitions for each phase (who Mission Control works with)
+- **agent-crews/** — Project crew definitions for each phase (who Mission Control works with)
 
 ## For AI Agents
 
@@ -14,7 +14,7 @@ When working on this project with Flight Control:
 
 1. Read `ARTIFACTS.md` to understand how this project stores missions, flights, and legs
 2. Read `FLIGHT_OPERATIONS.md` for the implementation workflow
-3. Read the relevant `phases/*.md` file for crew definitions and prompts
+3. Read the relevant `agent-crews/*.md` file for crew definitions and prompts
 4. Check the artifact locations defined in `ARTIFACTS.md` for active work
 5. Follow the code review gate before marking any leg complete
 6. Update flight-log after each leg (location depends on artifact system)
@@ -26,4 +26,4 @@ When working on this project with Flight Control:
 | README.md | Yes | Updated via `/init-project` |
 | FLIGHT_OPERATIONS.md | Yes | Updated via `/init-project` |
 | ARTIFACTS.md | No | Project-specific, customize freely |
-| phases/*.md | No | Project-specific, customize freely |
+| agent-crews/*.md | No | Project-specific, customize freely |

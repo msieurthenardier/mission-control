@@ -9,7 +9,7 @@ Perform comprehensive post-flight analysis for continuous improvement.
 
 ## Prerequisites
 
-- Project must be initialized with `/init-project` (`.flight-ops/ARTIFACTS.md` must exist)
+- Project must be initialized with `/init-project` (`.flightops/ARTIFACTS.md` must exist)
 - A flight must be completed (status `landed` or `diverted`) before debriefing
 
 ## Workflow
@@ -20,12 +20,12 @@ Perform comprehensive post-flight analysis for continuous improvement.
    - Read `projects.md` to find the project's path
 
 2. **Verify project is initialized**
-   - Check if `{target-project}/.flight-ops/ARTIFACTS.md` exists
+   - Check if `{target-project}/.flightops/ARTIFACTS.md` exists
    - **If missing**: STOP and tell the user to run `/init-project` first
    - Do not proceed without the artifact configuration
 
 3. **Read the artifact configuration**
-   - Read `{target-project}/.flight-ops/ARTIFACTS.md` for artifact locations and formats
+   - Read `{target-project}/.flightops/ARTIFACTS.md` for artifact locations and formats
 
 4. **Load flight documentation**
    - Read the mission for overall context and success criteria
@@ -44,7 +44,7 @@ Perform comprehensive post-flight analysis for continuous improvement.
 
 ### Phase 2: Crew Debrief Interviews
 
-Read `{target-project}/.flight-ops/phases/flight-debrief.md` for crew definitions and prompts (fall back to defaults at `.claude/skills/init-project/defaults/phases/flight-debrief.md`).
+Read `{target-project}/.flightops/agent-crews/flight-debrief.md` for crew definitions and prompts (fall back to defaults at `.claude/skills/init-project/defaults/agent-crews/flight-debrief.md`).
 
 **Validate structure**: The phase file MUST contain `## Crew`, `## Interaction Protocol`, and `## Prompts` sections with fenced code blocks. If the file exists but is malformed, STOP and tell the user: "Phase file `flight-debrief.md` is missing required sections. Either fix it manually or re-run `/init-project` to reset to defaults."
 
@@ -123,7 +123,7 @@ Evaluate whether the mission-control skills could be improved:
 
 ### Phase 5: Generate Debrief
 
-Create the flight debrief artifact using the format defined in `.flight-ops/ARTIFACTS.md`.
+Create the flight debrief artifact using the format defined in `.flightops/ARTIFACTS.md`.
 
 ## Guidelines
 
@@ -151,6 +151,6 @@ Identify effective patterns that should be reinforced or codified.
 
 ## Output
 
-Create the debrief artifact using the location and format defined in `.flight-ops/ARTIFACTS.md`.
+Create the debrief artifact using the location and format defined in `.flightops/ARTIFACTS.md`.
 
 After creating the debrief, summarize the top 3-5 most impactful recommendations.

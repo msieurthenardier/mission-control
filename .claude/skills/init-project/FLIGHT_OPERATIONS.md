@@ -5,25 +5,25 @@
 ## Before You Start
 
 **Read these files in order:**
-1. `.flight-ops/ARTIFACTS.md` — Where and how artifacts are stored (project-specific)
+1. `.flightops/ARTIFACTS.md` — Where and how artifacts are stored (project-specific)
 2. The **flight log** for your active flight — Ground truth for what happened
 3. The **leg artifact** you're implementing — Your acceptance criteria
 
 ---
 
-## Project Crew & Phase Files
+## Project Crew & Phases
 
-Each phase of the Flight Control workflow has a crew definition in `.flight-ops/phases/`:
+Each phase of the Flight Control workflow has a crew definition in `.flightops/agent-crews/`:
 
-| Phase File | Purpose |
-|------------|---------|
+| Crew | Purpose |
+|------|---------|
 | `mission-design.md` | Crew for `/mission` (e.g., Architect validates viability) |
 | `flight-design.md` | Crew for `/flight` (e.g., Architect reviews spec) |
 | `leg-execution.md` | Crew for `/agentic-workflow` (e.g., Developer + Reviewer) |
 | `flight-debrief.md` | Crew for `/flight-debrief` (e.g., Developer provides perspective) |
 | `mission-debrief.md` | Crew for `/mission-debrief` (e.g., Architect provides perspective) |
 
-Phase files define: crew roles, models, interaction protocols, prompts, and signals. Customize these to change your project's team composition.
+Crew files define: roles, models, interaction protocols, prompts, and signals. Customize these to change your project's team composition.
 
 ---
 
@@ -54,7 +54,7 @@ The Reviewer has no knowledge of the Developer's reasoning — only the resultin
 - Verification (how acceptance criteria were confirmed)
 - Any decisions, deviations, or anomalies
 
-Refer to `.flight-ops/ARTIFACTS.md` for exact locations and formats.
+Refer to `.flightops/ARTIFACTS.md` for exact locations and formats.
 
 ---
 

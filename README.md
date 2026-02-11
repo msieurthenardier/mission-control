@@ -49,9 +49,9 @@ Aviation succeeds through layered planning and clear handoffs. Pilots follow fli
 
 2. **Set up the projects registry** — Run `/init-mission-control` (or manually copy `projects.md.template` → `projects.md` and fill in your project details). This creates the central registry that all skills read from.
 
-3. **Initialize your project** — Run `/init-project` and select your project. This creates `.flight-ops/` in your target project with artifact configuration, methodology reference, and crew definitions.
+3. **Initialize your project** — Run `/init-project` and select your project. This creates `.flightops/` in your target project with artifact configuration, methodology reference, and crew definitions.
 
-4. **Review phase files** — Check the files in `{project}/.flight-ops/phases/`. These define the crew composition (roles, models, prompts) for each phase. Customize them to your needs.
+4. **Review agent crew files** — Check the files in `{project}/.flightops/agent-crews/`. These define the crew composition (roles, models, prompts) for each phase. Customize them to your needs.
 
 5. **Create a mission** — Run `/mission`. This interviews you about desired outcomes and creates a mission artifact in your target project.
 

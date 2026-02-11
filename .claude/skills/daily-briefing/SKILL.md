@@ -39,11 +39,11 @@ Format each project option as:
 For each selected project, gather data by spawning **parallel Explore agents** (Task tool, `subagent_type: "Explore"`) — one per project. Each agent should:
 
 1. **Check initialization status**
-   - Check if `{project-path}/.flight-ops/ARTIFACTS.md` exists
+   - Check if `{project-path}/.flightops/ARTIFACTS.md` exists
    - If missing, note the project as "not initialized" and skip artifact scanning
 
 2. **Read artifact configuration**
-   - Read `{project-path}/.flight-ops/ARTIFACTS.md` for directory structure and naming conventions
+   - Read `{project-path}/.flightops/ARTIFACTS.md` for directory structure and naming conventions
 
 3. **Discover all artifacts**
    - For filesystem-based projects, scan `{project-path}/missions/` for mission directories
@@ -157,7 +157,7 @@ Create the daily briefing file at `daily-briefings/YYYY-MM-DD.md`. Ensure the `d
 ---
 
 ## Not Initialized
-{List any selected projects that lack `.flight-ops/` — suggest running `/init-project`}
+{List any selected projects that lack `.flightops/` — suggest running `/init-project`}
 
 ---
 
@@ -195,7 +195,7 @@ This skill only reads project artifacts and git history. It **never** modifies a
 Spawn project scanning agents in parallel for efficiency. Don't scan projects sequentially.
 
 ### Graceful Degradation
-- Projects without `.flight-ops/` get noted but don't block the report
+- Projects without `.flightops/` get noted but don't block the report
 - Projects with no missions directory get reported as "no Flight Control artifacts"
 - Missing or malformed artifacts get flagged, not crashed on
 

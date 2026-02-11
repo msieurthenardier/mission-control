@@ -9,7 +9,7 @@ Create a technical flight spec from a mission.
 
 ## Prerequisites
 
-- Project must be initialized with `/init-project` (`.flight-ops/ARTIFACTS.md` must exist)
+- Project must be initialized with `/init-project` (`.flightops/ARTIFACTS.md` must exist)
 - A mission must exist before creating a flight
 
 ## Workflow
@@ -20,12 +20,12 @@ Create a technical flight spec from a mission.
    - Read `projects.md` to find the project's path
 
 2. **Verify project is initialized**
-   - Check if `{target-project}/.flight-ops/ARTIFACTS.md` exists
+   - Check if `{target-project}/.flightops/ARTIFACTS.md` exists
    - **If missing**: STOP and tell the user to run `/init-project` first
    - Do not proceed without the artifact configuration
 
 3. **Read the artifact configuration**
-   - Read `{target-project}/.flight-ops/ARTIFACTS.md` for artifact locations and formats
+   - Read `{target-project}/.flightops/ARTIFACTS.md` for artifact locations and formats
 
 4. **Read the parent mission**
    - Understand the outcome being pursued
@@ -91,7 +91,7 @@ Ask technical questions to resolve the approach:
 
 ### Phase 4: Spec Creation
 
-Create the flight artifact using the format defined in `.flight-ops/ARTIFACTS.md`.
+Create the flight artifact using the format defined in `.flightops/ARTIFACTS.md`.
 
 Also create the flight log artifact (empty, ready for execution notes).
 
@@ -99,7 +99,7 @@ Also create the flight log artifact (empty, ready for execution notes).
 
 Spawn an Architect agent to validate the flight spec against the real codebase before presenting it to the crew.
 
-Read `{target-project}/.flight-ops/phases/flight-design.md` for crew definitions and prompts (fall back to defaults at `.claude/skills/init-project/defaults/phases/flight-design.md`).
+Read `{target-project}/.flightops/agent-crews/flight-design.md` for crew definitions and prompts (fall back to defaults at `.claude/skills/init-project/defaults/agent-crews/flight-design.md`).
 
 **Validate structure**: The phase file MUST contain `## Crew`, `## Interaction Protocol`, and `## Prompts` sections with fenced code blocks. If the file exists but is malformed, STOP and tell the user: "Phase file `flight-design.md` is missing required sections. Either fix it manually or re-run `/init-project` to reset to defaults."
 
@@ -173,7 +173,7 @@ Break flights into legs based on technical boundaries:
 
 ## Output
 
-Create the following artifacts using locations and formats from `.flight-ops/ARTIFACTS.md`:
+Create the following artifacts using locations and formats from `.flightops/ARTIFACTS.md`:
 
 1. **Flight spec** — The flight plan
 2. **Flight log** — Empty, ready for execution notes

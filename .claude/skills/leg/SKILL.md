@@ -9,7 +9,7 @@ Generate detailed implementation guidance for LLM execution.
 
 ## Prerequisites
 
-- Project must be initialized with `/init-project` (`.flight-ops/ARTIFACTS.md` must exist)
+- Project must be initialized with `/init-project` (`.flightops/ARTIFACTS.md` must exist)
 - A flight must exist before creating legs
 
 ## Workflow
@@ -20,12 +20,12 @@ Generate detailed implementation guidance for LLM execution.
    - Read `projects.md` to find the project's path
 
 2. **Verify project is initialized**
-   - Check if `{target-project}/.flight-ops/ARTIFACTS.md` exists
+   - Check if `{target-project}/.flightops/ARTIFACTS.md` exists
    - **If missing**: STOP and tell the user to run `/init-project` first
    - Do not proceed without the artifact configuration
 
 3. **Read the artifact configuration**
-   - Read `{target-project}/.flight-ops/ARTIFACTS.md` for artifact locations and formats
+   - Read `{target-project}/.flightops/ARTIFACTS.md` for artifact locations and formats
 
 4. **Read the parent flight**
    - Understand the objective being achieved
@@ -90,7 +90,7 @@ Deep dive into the specific implementation:
 
 ### Phase 3: Guidance Generation
 
-Create the leg artifact using the format defined in `.flight-ops/ARTIFACTS.md`.
+Create the leg artifact using the format defined in `.flightops/ARTIFACTS.md`.
 
 ## Guidelines
 
@@ -174,4 +174,4 @@ Once a leg is `in-progress`:
 
 ## Output
 
-Create the leg artifact using the location and format defined in `.flight-ops/ARTIFACTS.md`.
+Create the leg artifact using the location and format defined in `.flightops/ARTIFACTS.md`.

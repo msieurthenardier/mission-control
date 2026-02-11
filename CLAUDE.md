@@ -33,7 +33,7 @@ Nine skills automate the planning, execution, debrief, and oversight workflow:
 | Skill | Purpose |
 |-------|---------|
 | `/init-mission-control` | Onboard to Mission Control (set up `projects.md` registry) |
-| `/init-project` | Initialize a project for Flight Control (creates `.flight-ops/` directory) |
+| `/init-project` | Initialize a project for Flight Control (creates `.flightops/` directory) |
 | `/mission` | Create outcome-driven missions through research and interview |
 | `/flight` | Create technical flight specs from missions |
 | `/leg` | Generate implementation guidance for LLM execution |
@@ -44,7 +44,7 @@ Nine skills automate the planning, execution, debrief, and oversight workflow:
 
 Run `/init-project` before using the other skills on a new project to create the flight operations reference directory and configure the artifact system.
 
-**Artifact Systems:** Each project defines how artifacts are stored in `.flight-ops/ARTIFACTS.md`. Skills read this configuration and adapt their output accordingly.
+**Artifact Systems:** Each project defines how artifacts are stored in `.flightops/ARTIFACTS.md`. Skills read this configuration and adapt their output accordingly.
 
 **IMPORTANT: Planning skills produce documentation only.** `/init-project`, `/mission`, `/flight`, `/leg`, `/flight-debrief`, and `/mission-debrief` must:
 - **NEVER implement code changes** — only create/update artifacts
@@ -57,7 +57,7 @@ Run `/init-project` before using the other skills on a new project to create the
 The `projects.md` file in this repository catalogs all active projects on this device. When using skills:
 
 1. **Read `projects.md` first** to find the target project's path, remote, and description
-2. **Read `.flight-ops/ARTIFACTS.md`** in the target project to determine artifact locations
+2. **Read `.flightops/ARTIFACTS.md`** in the target project to determine artifact locations
 3. **Create all artifacts in the target project** — not in mission-control
 
 The registry provides:
@@ -68,15 +68,15 @@ The registry provides:
 
 ## Flight Operations Directory
 
-Every project using Flight Control has a `.flight-ops/` directory:
+Every project using Flight Control has a `.flightops/` directory:
 
 ```
 {target-project}/
-└── .flight-ops/
+└── .flightops/
     ├── README.md              # Directory purpose and usage
     ├── FLIGHT_OPERATIONS.md   # Quick reference for implementation (synced)
     ├── ARTIFACTS.md           # Artifact system configuration (project-specific)
-    └── phases/                # Project crew definitions (project-specific)
+    └── agent-crews/           # Project crew definitions (project-specific)
         ├── mission-design.md
         ├── flight-design.md
         ├── leg-execution.md
@@ -84,7 +84,7 @@ Every project using Flight Control has a `.flight-ops/` directory:
         └── mission-debrief.md
 ```
 
-The `ARTIFACTS.md` file defines where and how all artifacts are stored. The `phases/` directory defines per-project crew compositions — which agents the Flight Director works with during each phase, their roles, models, prompts, and interaction protocols.
+The `ARTIFACTS.md` file defines where and how all artifacts are stored. The `agent-crews/` directory defines per-project crew compositions — which agents the Flight Director works with during each phase, their roles, models, prompts, and interaction protocols.
 
 ## Business Objects
 

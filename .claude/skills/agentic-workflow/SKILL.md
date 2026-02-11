@@ -9,7 +9,7 @@ Orchestrate multi-agent flight execution. You drive the full leg cycle — desig
 
 ## Prerequisites
 
-- Project must be initialized with `/init-project` (`.flight-ops/ARTIFACTS.md` must exist)
+- Project must be initialized with `/init-project` (`.flightops/ARTIFACTS.md` must exist)
 - A mission must exist and be `active`
 - A flight must exist and be `ready` or `in-flight`
 
@@ -24,8 +24,8 @@ Example: `/agentic-workflow flight 03 for epipen mission 04`
 ## Phase 1: Context Loading
 
 1. **Read `projects.md`** to find the target project's path
-2. **Read `{target-project}/.flight-ops/ARTIFACTS.md`** for artifact locations
-3. **Read `{target-project}/.flight-ops/phases/leg-execution.md`** for project crew definitions, interaction protocol, and prompts (fall back to defaults at `.claude/skills/init-project/defaults/phases/leg-execution.md`)
+2. **Read `{target-project}/.flightops/ARTIFACTS.md`** for artifact locations
+3. **Read `{target-project}/.flightops/agent-crews/leg-execution.md`** for project crew definitions, interaction protocol, and prompts (fall back to defaults at `.claude/skills/init-project/defaults/agent-crews/leg-execution.md`)
    - **Validate structure**: The phase file MUST contain `## Crew`, `## Interaction Protocol`, and `## Prompts` sections. Each prompt subsection MUST have a fenced code block.
    - **If the file exists but is malformed**: STOP. Tell the user: "Phase file `leg-execution.md` is missing required sections. Either fix it manually or re-run `/init-project` to reset to defaults." Do NOT improvise missing prompts — halt and get the file fixed.
 4. **Read the mission artifact** — outcomes, success criteria, constraints
@@ -102,7 +102,7 @@ After `[COMPLETE:leg]`:
 
 ## Architecture
 
-The Flight Director (you) orchestrates according to this skill. Project crew composition, roles, models, and prompts are defined in `{target-project}/.flight-ops/phases/leg-execution.md`.
+The Flight Director (you) orchestrates according to this skill. Project crew composition, roles, models, and prompts are defined in `{target-project}/.flightops/agent-crews/leg-execution.md`.
 
 **Separation is mandatory.** Project crew agents run in the target project and load its CLAUDE.md and conventions. The Reviewer has no knowledge of the Developer's reasoning — only the resulting changes. This provides objective review.
 

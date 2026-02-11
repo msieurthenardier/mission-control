@@ -57,7 +57,7 @@ Add the project to `projects.md` using the standard format from the template.
 After the registry is set up, briefly orient the user:
 
 > "You're all set. Here's the workflow:"
-> 1. **`/init-project`** — Run this in each project to set up `.flight-ops/` with methodology references and configure the project crew
+> 1. **`/init-project`** — Run this in each project to set up `.flightops/` with methodology references and configure the project crew
 > 2. **`/mission`** — Define what you want to achieve (outcomes, not tasks)
 > 3. **`/flight`** — Break a mission into technical specs
 > 4. **`/leg`** — Generate implementation steps for each flight leg

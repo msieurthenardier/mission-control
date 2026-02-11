@@ -1,15 +1,20 @@
 #!/bin/bash
-# check-sync.sh - Compare .flight-ops directory between source and target
+# check-sync.sh - Compare .flightops directory between source and target
 #
 # Usage: check-sync.sh <source-dir> <target-dir>
 #
 # Outputs:
-#   missing  - Target directory doesn't exist
+#   missing  - Target directory doesn't exist (neither .flightops/ nor .flight-ops/)
 #   outdated - Target exists but one or more files differ from source
 #   current  - All files match source
 #
+# Additional output lines:
+#   agent-crews:{missing|empty|present}     - Crew directory status
+#   legacy-layout:flight-ops                - .flight-ops/ detected (old name)
+#   legacy-layout:phases                    - phases/ detected (old name)
+#
 # Note: Only checks synced files (README.md, FLIGHT_OPERATIONS.md).
-#       ARTIFACTS.md and phases/ are project-specific and not synced.
+#       ARTIFACTS.md and agent-crews/ are project-specific and not synced.
 
 set -e
 
@@ -26,10 +31,20 @@ if [[ ! -d "$SOURCE_DIR" ]]; then
   exit 1
 fi
 
-# Check if target directory exists
+# Resolve the actual target directory, falling back to legacy name
+EFFECTIVE_TARGET="$TARGET_DIR"
+LEGACY_FLIGHT_OPS=false
+
 if [[ ! -d "$TARGET_DIR" ]]; then
-  echo "missing"
-  exit 0
+  # Derive the legacy path: replace trailing .flightops with .flight-ops
+  LEGACY_DIR="${TARGET_DIR%/.flightops}/.flight-ops"
+  if [[ "$LEGACY_DIR" != "$TARGET_DIR" && -d "$LEGACY_DIR" ]]; then
+    EFFECTIVE_TARGET="$LEGACY_DIR"
+    LEGACY_FLIGHT_OPS=true
+  else
+    echo "missing"
+    exit 0
+  fi
 fi
 
 # Compare each file in source directory
@@ -38,7 +53,7 @@ ALL_CURRENT=true
 
 for FILE in "${FILES_TO_CHECK[@]}"; do
   SOURCE_FILE="$SOURCE_DIR/$FILE"
-  TARGET_FILE="$TARGET_DIR/$FILE"
+  TARGET_FILE="$EFFECTIVE_TARGET/$FILE"
 
   if [[ ! -f "$SOURCE_FILE" ]]; then
     continue
@@ -64,11 +79,30 @@ else
   echo "outdated"
 fi
 
-# Report on phases directory existence (not content — content is project-specific)
-if [[ ! -d "$TARGET_DIR/phases" ]]; then
-  echo "phases:missing"
-elif [[ -z "$(ls -A "$TARGET_DIR/phases/" 2>/dev/null)" ]]; then
-  echo "phases:empty"
+# Report on agent-crews directory existence, checking both current and legacy names
+CREW_DIR=""
+LEGACY_PHASES=false
+
+if [[ -d "$EFFECTIVE_TARGET/agent-crews" ]]; then
+  CREW_DIR="$EFFECTIVE_TARGET/agent-crews"
+elif [[ -d "$EFFECTIVE_TARGET/phases" ]]; then
+  CREW_DIR="$EFFECTIVE_TARGET/phases"
+  LEGACY_PHASES=true
+fi
+
+if [[ -z "$CREW_DIR" ]]; then
+  echo "agent-crews:missing"
+elif [[ -z "$(ls -A "$CREW_DIR" 2>/dev/null)" ]]; then
+  echo "agent-crews:empty"
 else
-  echo "phases:present"
+  echo "agent-crews:present"
+fi
+
+# Report legacy layout detection
+if $LEGACY_FLIGHT_OPS; then
+  echo "legacy-layout:flight-ops"
+fi
+
+if $LEGACY_PHASES; then
+  echo "legacy-layout:phases"
 fi

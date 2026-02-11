@@ -9,7 +9,7 @@ Perform comprehensive post-mission retrospective and methodology assessment.
 
 ## Prerequisites
 
-- Project must be initialized with `/init-project` (`.flight-ops/ARTIFACTS.md` must exist)
+- Project must be initialized with `/init-project` (`.flightops/ARTIFACTS.md` must exist)
 - A mission must be completed (status `completed` or `aborted`) before debriefing
 
 ## Workflow
@@ -20,12 +20,12 @@ Perform comprehensive post-mission retrospective and methodology assessment.
    - Read `projects.md` to find the project's path
 
 2. **Verify project is initialized**
-   - Check if `{target-project}/.flight-ops/ARTIFACTS.md` exists
+   - Check if `{target-project}/.flightops/ARTIFACTS.md` exists
    - **If missing**: STOP and tell the user to run `/init-project` first
    - Do not proceed without the artifact configuration
 
 3. **Read the artifact configuration**
-   - Read `{target-project}/.flight-ops/ARTIFACTS.md` for artifact locations and formats
+   - Read `{target-project}/.flightops/ARTIFACTS.md` for artifact locations and formats
 
 4. **Load mission documentation**
    - Read the mission for original outcome, success criteria, and constraints
@@ -39,7 +39,7 @@ Perform comprehensive post-mission retrospective and methodology assessment.
 
 ### Phase 2: Crew Debrief Interviews
 
-Read `{target-project}/.flight-ops/phases/mission-debrief.md` for crew definitions and prompts (fall back to defaults at `.claude/skills/init-project/defaults/phases/mission-debrief.md`).
+Read `{target-project}/.flightops/agent-crews/mission-debrief.md` for crew definitions and prompts (fall back to defaults at `.claude/skills/init-project/defaults/agent-crews/mission-debrief.md`).
 
 **Validate structure**: The phase file MUST contain `## Crew`, `## Interaction Protocol`, and `## Prompts` sections with fenced code blocks. If the file exists but is malformed, STOP and tell the user: "Phase file `mission-debrief.md` is missing required sections. Either fix it manually or re-run `/init-project` to reset to defaults."
 
@@ -143,7 +143,7 @@ For each flight:
 
 ### Phase 7: Generate Debrief
 
-Create the mission debrief artifact using the format defined in `.flight-ops/ARTIFACTS.md`.
+Create the mission debrief artifact using the format defined in `.flightops/ARTIFACTS.md`.
 
 ## Guidelines
 
@@ -171,7 +171,7 @@ Weave interview insights throughout the debrief, not as a separate section. Crew
 
 ## Output
 
-Create the debrief artifact using the location and format defined in `.flight-ops/ARTIFACTS.md`.
+Create the debrief artifact using the location and format defined in `.flightops/ARTIFACTS.md`.
 
 After creating the debrief, summarize:
 1. Overall mission outcome assessment

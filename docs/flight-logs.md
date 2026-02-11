@@ -181,7 +181,7 @@ When creating the "Protected Routes" leg, the guidance must specify using `jose`
 
 ## Location
 
-Flight log location is defined in `.flight-ops/ARTIFACTS.md`. The artifact system determines where and how logs are stored.
+Flight log location is defined in `.flightops/ARTIFACTS.md`. The artifact system determines where and how logs are stored.
 
 ## Best Practices
 
