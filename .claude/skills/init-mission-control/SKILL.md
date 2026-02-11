@@ -38,19 +38,31 @@ Check if `projects.md` exists in the mission-control repository root.
 2. Ask: add new project, or update existing?
 3. Proceed accordingly
 
-### 3. Project Interview
+### 3. Discover Projects
 
-For each project being registered, ask:
+Ask the user how they want to add projects:
 
-1. **Project slug** — short identifier (e.g., `my-app`)
-2. **Description** — what does this project do?
-3. **Filesystem path** — where is it on disk? (e.g., `~/projects/my-app`)
-4. **Git remote** — repository URL
-5. **Branch** — default branch name (usually `main`)
-6. **Stack** (optional) — key technologies
-7. **Status** (optional) — current state
+> "Want to scan a directory for projects, or add a single project?"
 
-Add the project to `projects.md` using the standard format from the template.
+**Option A: Scan a directory**
+1. Ask for the parent directory path (e.g., `~/projects`)
+2. Scan immediate subdirectories for git repos
+3. Present the list and ask which ones to register
+4. Auto-detect details for each selected project
+5. Ask for descriptions in batch (or let the user provide them later)
+
+**Option B: Add a single project**
+1. Ask for the project path (e.g., `~/projects/my-app`)
+2. Verify it exists and is a git repo
+3. Auto-detect details
+4. Ask only for what can't be detected: description, and optionally stack/status
+
+**Auto-detection:** For each project directory, run:
+- **Slug**: directory name
+- **Remote**: `git -C <path> remote get-url origin`
+- **Branch**: `git -C <path> symbolic-ref --short HEAD`
+
+Only ask the user for fields that can't be auto-detected.
 
 ### 4. Orientation
 
