@@ -41,7 +41,7 @@ Aviation succeeds through layered planning and clear handoffs. Pilots follow fli
 ### Prerequisites
 
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed
-- A project on disk with a git remote
+- A project on disk with a git remote, initialized with Claude Code (`claude /init`)
 
 ### Walkthrough
 
