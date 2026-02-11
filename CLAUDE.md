@@ -63,7 +63,7 @@ The `projects.md` file in this repository catalogs all active projects on this d
 The registry provides:
 - Project slug and description
 - Filesystem path (e.g., `~/projects/my-app`)
-- Git remote and branch
+- Git remote
 - Optional stack and status information
 
 ## Flight Operations Directory

@@ -14,7 +14,6 @@ Copy this file to `projects.md` and fill in your project details.
 |----------|-------|
 | Path | `/path/to/project` |
 | Remote | `git@github.com:username/repo.git` |
-| Branch | `main` |
 | Stack | (optional) Key technologies used |
 | Status | (optional) Current state of the project |
 
@@ -28,4 +27,3 @@ Copy this file to `projects.md` and fill in your project details.
 |----------|-------|
 | Path | `/path/to/another-project` |
 | Remote | `git@github.com:username/another-repo.git` |
-| Branch | `main` |

@@ -60,7 +60,6 @@ Ask the user how they want to add projects:
 **Auto-detection:** For each project directory, run:
 - **Slug**: directory name
 - **Remote**: `git -C <path> remote get-url origin`
-- **Branch**: `git -C <path> symbolic-ref --short HEAD`
 
 Only ask the user for fields that can't be auto-detected.
 
