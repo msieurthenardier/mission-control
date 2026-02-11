@@ -136,6 +136,7 @@ Flight Control includes Claude Code skills for interactive planning:
 | `/flight-debrief` | Post-flight analysis for continuous improvement |
 | `/agentic-workflow` | Drive multi-agent flight execution |
 | `/mission-debrief` | Post-mission retrospective for outcomes assessment |
+| `/daily-briefing` | Cross-project status report with health assessment |
 
 ## Recommended Workflow
 
