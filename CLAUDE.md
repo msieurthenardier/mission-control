@@ -52,6 +52,14 @@ Run `/init-project` before using the other skills on a new project to create the
 
 `/agentic-workflow` orchestrates implementation by spawning separate agents that execute code changes in the target project. The orchestrator itself never modifies source files directly.
 
+**Project skills in spawned agents:** Skills defined in a target project's `.claude/skills/` directory are **not** automatically available to spawned agents (Task tool subagents). The Skill tool will return "Unknown skill" because skills are only injected into interactive session context. To invoke a project skill from a spawned agent, include instructions in the agent's prompt to read the SKILL.md file directly and follow its workflow:
+
+```
+Read .claude/skills/{skill-name}/SKILL.md and execute the workflow described there.
+```
+
+The agent reads the same instructions — it just loads them from disk instead of having them injected by the system.
+
 ## Projects Registry
 
 The `projects.md` file in this repository catalogs all active projects on this device. When using skills:
