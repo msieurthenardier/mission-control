@@ -53,6 +53,7 @@ Success criteria should be:
 - **Observable**: Can be verified by inspection
 - **Binary**: Either met or not met
 - **Independent**: Achievable without external dependencies
+- **Capability-focused**: Describes what users or the system can do, not which tool or technology achieves it
 
 ### Consider Stakeholders
 
@@ -183,6 +184,16 @@ Missions should not prescribe *how*:
 
 **Proper abstraction**:
 > Users can securely authenticate across sessions without re-entering credentials
+
+This applies to success criteria too. Criteria that name tools or technologies lock you into an approach before flights even begin:
+
+**Implementation-specific criteria** (avoid):
+> - [ ] JWT tokens are validated via middleware on every request
+> - [ ] User records are stored in PostgreSQL with bcrypt-hashed passwords
+
+**Capability-focused criteria** (prefer):
+> - [ ] Unauthorized requests are rejected before reaching protected resources
+> - [ ] Stored credentials cannot be recovered even if the database is compromised
 
 Save implementation details for flights.
 

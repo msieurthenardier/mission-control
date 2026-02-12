@@ -66,6 +66,8 @@ Ask about outcomes, not tasks. Focus on:
 4. **Success criteria**
    - "What specific, observable criteria indicate completion?"
    - "How will each criterion be verified?"
+   - "Do any criteria name specific tools or technologies? Reframe as capabilities."
+   - "Could each criterion be satisfied by more than one implementation approach?"
 
 5. **Environment requirements**
    - "What development environment will be used?"
@@ -97,8 +99,9 @@ Present the draft and iterate:
 
 1. Walk through each section with the user
 2. Validate success criteria are measurable
-3. Confirm flight breakdown makes sense
-4. Refine until the user explicitly approves
+3. Screen each criterion for technology names, tool names, config file paths, or specific libraries — reframe any that describe implementation rather than capability
+4. Confirm flight breakdown makes sense
+5. Refine until the user explicitly approves
 
 ## Guidelines
 
@@ -129,6 +132,14 @@ Frame missions around results, not tasks:
 
 **Outcome-focused** (prefer):
 > Users can securely access their personal data without sharing credentials
+
+This applies equally to success criteria. Criteria that name specific tools or technologies constrain the solution space prematurely — if the prescribed tool doesn't work, the criteria become misaligned with reality.
+
+**Implementation-specific criterion** (avoid):
+> OAuth tokens are stored in Redis with a 24-hour TTL
+
+**Capability-focused criterion** (prefer):
+> Authenticated sessions persist across browser restarts for up to 24 hours
 
 ### Adaptive Planning
 
