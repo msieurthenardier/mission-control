@@ -157,6 +157,7 @@ How the objective will be achieved.
 
 - [ ] `{leg-slug}` - {Brief description}
 - [ ] `{leg-slug}` - {Brief description}
+- [ ] `manual-alignment` *(optional)* - Human testing, verification, and intent alignment
 
 ---
 

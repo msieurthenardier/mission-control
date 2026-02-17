@@ -143,14 +143,14 @@ This applies equally to success criteria. Criteria that name specific tools or t
 
 ### Human Alignment Flight
 
-When suggesting flights, consider including an optional final flight for human testing and alignment. This flight gives the human an opportunity to:
+During the interview phase, ask the user whether they'd like to include a final human alignment flight. Explain that this optional flight gives them an opportunity to:
 
 - Manually verify outcomes against the original mission intent
 - Address unresolved issues or edge cases surfaced during prior flights
 - Make hands-on adjustments that require human judgment
 - Confirm the delivered result matches their vision
 
-This flight is optional — suggest it when the mission involves subjective quality, user experience, or outcomes that benefit from human verification. Mark it clearly as optional in the flights list.
+If the user opts in, include it as the final flight in the suggested breakdown, marked as optional.
 
 ### Adaptive Planning
 
