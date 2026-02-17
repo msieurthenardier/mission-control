@@ -1,6 +1,6 @@
 # Flight Operations Quick Reference
 
-> For full methodology docs, see [mission-control](https://github.com/flight-control/mission-control)
+> For full methodology docs, see [mission-control](https://github.com/msieurthenardier/mission-control)
 
 ## Before You Start
 

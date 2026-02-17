@@ -153,7 +153,7 @@ Add this section:
 ```markdown
 ## Flight Operations
 
-This project uses [Flight Control](https://github.com/flight-control/mission-control).
+This project uses [Flight Control](https://github.com/msieurthenardier/mission-control).
 
 **Before any mission/flight/leg work, read these files in order:**
 1. `.flightops/README.md` — What the flightops directory contains
