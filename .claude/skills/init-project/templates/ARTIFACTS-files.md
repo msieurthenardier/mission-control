@@ -80,6 +80,7 @@ Emergent blockers and issues discovered during execution. Add items here as flig
 
 - [ ] Flight 1: {description}
 - [ ] Flight 2: {description}
+- [ ] Flight N *(optional)*: Human testing and alignment — manual verification, issue resolution, and intent alignment
 ```
 
 ---
