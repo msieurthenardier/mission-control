@@ -260,4 +260,4 @@ The discipline of review-before-clear and propagate-before-complete keeps artifa
 
 ## License
 
-[AGPL-3.0](LICENSE)
+[MIT](LICENSE)
