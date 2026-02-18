@@ -87,8 +87,11 @@ Repeat for each leg in the flight.
 
 After `[COMPLETE:leg]`:
 1. Increment `legs_completed`
-2. If more legs remain → return to 2a
-3. If all legs complete → proceed to Phase 3
+2. **Manage PR**:
+   - **First leg**: Open a draft PR with the leg checklist in the body (see PR Body Format below), then check off the completed leg
+   - **Subsequent legs**: Use `gh pr edit --body` to check off the newly completed leg in the existing PR body
+3. If more legs remain → return to 2a
+4. If all legs complete → proceed to Phase 3
 
 ## Phase 3: Flight Completion
 
@@ -137,8 +140,8 @@ This is not a separate file — it goes in the flight log alongside leg entries.
 | Event | Action |
 |-------|--------|
 | Flight start | Create branch: `flight/{number}-{slug}` |
-| First leg complete | Open draft PR |
-| Each leg complete | Commit code + artifacts with leg reference |
+| First leg complete | Open draft PR with leg checklist in body |
+| Each leg complete | Commit code + artifacts, update PR checklist |
 | Flight landed | Mark PR ready for review |
 
 Commit message format:
@@ -147,6 +150,23 @@ leg/{number}: {description}
 
 Flight: {flight-number}
 Mission: {mission-number}
+```
+
+### PR Body Format
+
+The draft PR body includes the flight objective and a checklist of all legs. Update this checklist as each leg completes.
+
+```markdown
+## {Flight Title}
+
+{Flight objective — one paragraph}
+
+**Mission**: {Mission Title}
+
+## Legs
+
+- [ ] `{leg-slug}` — {brief description}
+- [ ] `{leg-slug}` — {brief description}
 ```
 
 ## Error Handling
