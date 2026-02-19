@@ -129,6 +129,7 @@ Flight Control includes Claude Code skills for interactive planning:
 
 | Skill | Purpose |
 |-------|---------|
+| `/init-mission-control` | Set up the projects registry |
 | `/init-project` | Initialize a project for Flight Control |
 | `/mission` | Create outcome-driven missions through research and interview |
 | `/flight` | Create technical flight specs from missions |
