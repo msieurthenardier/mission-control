@@ -141,123 +141,69 @@ Flight Control includes Claude Code skills for interactive planning:
 
 ## Recommended Workflow
 
-Flight Control operates across two Claude sessions: **Mission Control** (planning and orchestration) and **Project** (implementation and review).
+All work runs from a single **Mission Control** session. Mission Control handles planning directly and spawns agents into the target project's context for implementation, review, and commits. Each spawned agent gets a clean context with only the information it needs, while Mission Control maintains continuity across the entire flight.
 
 ### Context Strategy
 
-- **Mission Control**: Long-running session spanning an entire flight—accumulates knowledge across legs
-- **Project**: Fresh session per leg—relies on artifacts to carry forward knowledge
+- **Mission Control**: Long-running session spanning an entire flight — accumulates knowledge across legs, orchestrates all work
+- **Spawned agents**: Fresh context per task — designed with precise instructions and the relevant artifacts, execute in the target project directory
 
-Review the next leg's design *before* clearing context, while implementation knowledge is fresh. Implement in a clean context.
+Claude Code's version control in mission-control acts as the orchestrator for development of the remote project. No second interactive session is needed.
 
 ### The Cycle
 
 ```mermaid
 sequenceDiagram
     participant MC as Mission Control
-    participant P as Project
+    participant A as Spawned Agents
 
-    Note over MC,P: ─── Mission Planning ───
-    MC->>MC: "Let's create our first mission"
-    MC->>MC: Research, interview, define outcomes
-    MC->>P: "Mission created,<br/>review for alignment"
-    P->>P: Review mission
-    P->>P: Make changes to artifacts
-    P-->>MC: "Mission updated, validate"
-    MC->>MC: Review changes
+    Note over MC,A: ─── Mission Planning ───
+    MC->>MC: /mission — research, interview, define outcomes
+    MC->>MC: Review and confirm mission
 
-    alt Changes needed
-        MC->>P: "These items need attention"
-        P->>P: Review and update
-        P-->>MC: "Updated"
+    Note over MC,A: ─── Flight Planning ───
+    MC->>MC: /flight — create technical spec, checklists
+    MC->>MC: Review and confirm flight
+
+    Note over MC,A: ─── Execution ───
+    MC->>MC: /agentic-workflow
+
+    loop For each leg
+        Note over MC: Design phase
+        MC->>A: Spawn designer agent
+        A->>A: Design leg spec
+        A-->>MC: Leg designed
+
+        MC->>MC: Review leg design
+
+        Note over MC: Implement phase
+        MC->>A: Spawn implementer agent<br/>(target project context)
+        A->>A: Implement leg, update logs
+        A-->>MC: Implementation complete
+
+        Note over MC: Review phase
+        MC->>A: Spawn reviewer agent<br/>(target project context)
+        A->>A: Review changes, verify criteria
+        A-->>MC: Review complete
+
+        Note over MC: Commit phase
+        MC->>A: Spawn commit agent<br/>(target project context)
+        A->>A: Stage and commit changes
+        A-->>MC: Committed
+
+        MC->>MC: Update flight checklist
     end
 
-    MC->>P: "Mission confirmed"
+    Note over MC,A: Flight lands
 
-    Note over MC,P: ─── Flight Planning ───
-    MC->>MC: "Let's design the first flight"
-    MC->>MC: Create technical spec, checklists
-    MC->>P: "Flight created,<br/>review for completeness"
-    P->>P: Review flight spec
-    P->>P: Make changes to artifacts
-    P-->>MC: "Flight updated, validate"
-    MC->>MC: Review changes
-
-    alt Changes needed
-        MC->>P: "These items need attention"
-        P->>P: Review and update
-        P-->>MC: "Updated"
-    end
-
-    MC->>P: "Flight confirmed"
-
-    Note over MC,P: ─── Leg Cycle (repeats) ───
-    Note over MC: Long-running context<br/>(entire flight)
-
-    MC->>MC: "Let's design the next leg"
-    MC->>P: "Leg N designed,<br/>review for completeness"
-
-    Note over P: Clear context
-
-    P->>P: Review leg N design
-    P->>P: Make changes to artifacts
-    P-->>MC: "Leg N updated, validate"
-
-    MC->>MC: Review changes
-
-    alt Changes needed
-        MC->>P: "These items need attention"
-        P->>P: Review and update
-        P-->>MC: "Updated"
-    end
-
-    MC->>P: "Leg N confirmed"
-
-    Note over P: Clear context
-
-    P->>P: "Let's implement leg N"
-    P->>P: Update flight logs
-    P->>P: Propagate: update flight, mission,<br/>claude.md based on changes
-    P-->>MC: "Leg N complete"
-
-    MC->>MC: Review all changes
-
-    alt Changes needed
-        MC->>P: "These items need attention"
-        P->>P: Review and update
-        P-->>MC: "Updated"
-    end
-
-    MC->>MC: "Let's design the next leg"
-    MC->>P: "Leg N+1 designed,<br/>review for completeness"
-
-    P->>P: Review leg N+1 design<br/>(while implementation knowledge fresh)
-    P->>P: Make changes to artifacts
-    P-->>MC: "Leg N+1 updated, validate"
-
-    Note over P: Clear context
-
-    MC->>MC: Review changes
-    MC->>P: "Leg N+1 confirmed"
-
-    Note over P: Clear context
-
-    P->>P: "Let's implement leg N+1"
-    P->>P: Propagate
-
-    Note over P: Leg cycle repeats...
-
-    Note over MC,P: When flight lands:<br/>"Let's design the next flight"
+    Note over MC,A: ─── Debrief ───
+    MC->>MC: /flight-debrief
+    MC->>MC: /mission-debrief
 ```
 
 ### Why This Matters
 
-Implementation reveals reality. Without propagating that knowledge back into artifacts:
-- The next project session starts with stale assumptions
-- Mission Control's long-running context drifts from the code
-- Each leg operates on increasingly outdated plans
-
-The discipline of review-before-clear and propagate-before-complete keeps artifacts synchronized with truth.
+A single orchestrating session eliminates context drift between planning and execution. Mission Control sees every leg's outcome and carries that knowledge forward into the next design. Spawned agents get clean, focused contexts — they don't need flight-wide memory because Mission Control provides exactly the context they need. Artifacts stay synchronized because one session owns the full lifecycle.
 
 ## License
 
