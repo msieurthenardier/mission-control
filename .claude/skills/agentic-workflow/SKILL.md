@@ -33,6 +33,8 @@ Example: `/agentic-workflow flight 03 for epipen mission 04`
 6. **Read the flight log** — ground truth from prior execution
 7. **Count total legs** from the flight spec — track progress throughout
 8. **Determine starting point** — which leg is next based on flight log and leg statuses
+9. **Read git strategy** from `{target-project}/.flightops/ARTIFACTS.md` `## Git Workflow` section. Default to `branch` if the section is absent.
+10. **Set `{working-directory}`** — `branch`: the target project root; `worktree`: the worktree path (see Git Workflow section below)
 
 If resuming a flight already in progress, verify state consistency:
 - Flight log entries must match leg statuses
@@ -48,7 +50,7 @@ Repeat for each leg in the flight.
    - Read the flight spec, flight log, and relevant source code
    - Create the leg artifact with acceptance criteria
 2. **Spawn a Developer agent for design review** (Task tool, `subagent_type: "general-purpose"`)
-   - Working directory: the target project
+   - Working directory: `{working-directory}`
    - Provide the "Review Leg Design" prompt from the leg-execution phase file's Prompts section
    - The Developer reads the leg artifact and cross-references against actual codebase state
    - The Developer provides a structured assessment: approve, approve with changes, or needs rework
@@ -67,12 +69,12 @@ Repeat for each leg in the flight.
 **NEVER implement code directly.** Spawn a Developer agent via the Task tool.
 
 1. **Spawn a Developer agent** (Task tool, `subagent_type: "general-purpose"`)
-   - Working directory: the target project
+   - Working directory: `{working-directory}`
    - Provide the "Implement" prompt from the leg-execution phase file's Prompts section
    - The Developer updates leg status to `in-flight`, implements to acceptance criteria, updates flight log
    - The Developer signals `[HANDOFF:review-needed]` when done — do NOT let it commit
 2. **Spawn a Reviewer agent** (Task tool, `subagent_type: "general-purpose"`)
-   - Working directory: the target project
+   - Working directory: `{working-directory}`
    - Provide the "Review" prompt from the leg-execution phase file's Prompts section
    - The Reviewer evaluates ALL uncommitted changes against acceptance criteria and code quality
    - The Reviewer signals `[HANDOFF:confirmed]` or lists issues with severity
@@ -85,7 +87,7 @@ Repeat for each leg in the flight.
 
 ### 2c: Leg Transition
 
-After `[COMPLETE:leg]`:
+After `[COMPLETE:leg]` (all git/PR operations run from `{working-directory}`):
 1. Increment `legs_completed`
 2. **Manage PR**:
    - **First leg**: Open a draft PR with the leg checklist in the body (see PR Body Format below), then check off the completed leg
@@ -101,7 +103,8 @@ After `[COMPLETE:leg]`:
 4. **Run flight debrief** using the `/flight-debrief` skill
 5. **Update flight status** to `landed`
 6. **Check off flight** in mission artifact
-7. **Signal `[COMPLETE:flight]`**
+7. **Clean up worktree** (worktree strategy only) — run `git worktree remove` after the PR is marked ready for review
+8. **Signal `[COMPLETE:flight]`**
 
 ## Architecture
 
@@ -137,14 +140,17 @@ This is not a separate file — it goes in the flight log alongside leg entries.
 
 ## Git Workflow
 
-| Event | Action |
-|-------|--------|
-| Flight start | Create branch: `flight/{number}-{slug}` |
-| First leg complete | Open draft PR with leg checklist in body |
-| Each leg complete | Commit code + artifacts, update PR checklist |
-| Flight landed | Mark PR ready for review |
+### Strategy Selection
 
-Commit message format:
+Read the `## Git Workflow` section from `{target-project}/.flightops/ARTIFACTS.md`. The `Strategy` property determines which workflow to use. If the section is absent, default to `branch`.
+
+### Shared Elements
+
+Both strategies use the same branch naming, commit format, PR lifecycle, and PR body format.
+
+**Branch naming**: `flight/{number}-{slug}`
+
+**Commit message format:**
 ```
 leg/{number}: {description}
 
@@ -152,9 +158,15 @@ Flight: {flight-number}
 Mission: {mission-number}
 ```
 
-### PR Body Format
+**PR lifecycle:**
 
-The draft PR body includes the flight objective and a checklist of all legs. Update this checklist as each leg completes.
+| Event | Action |
+|-------|--------|
+| First leg complete | Open draft PR with leg checklist in body |
+| Each leg complete | Commit code + artifacts, update PR checklist |
+| Flight landed | Mark PR ready for review |
+
+**PR body format:**
 
 ```markdown
 ## {Flight Title}
@@ -169,6 +181,31 @@ The draft PR body includes the flight objective and a checklist of all legs. Upd
 - [ ] `{leg-slug}` — {brief description}
 ```
 
+### Strategy: Branch
+
+The default single-checkout workflow. One flight at a time per working copy.
+
+| Step | Command |
+|------|---------|
+| Flight start | `git checkout -b flight/{number}-{slug}` |
+| Set `{working-directory}` | Target project root |
+| Agents work in | Project root |
+| Flight landed | PR marked ready for review |
+
+### Strategy: Worktree
+
+Worktree isolation enables parallel flights on a single repo clone.
+
+| Step | Command |
+|------|---------|
+| Flight start | `git worktree add .worktrees/flight-{number}-{slug} -b flight/{number}-{slug}` |
+| Set `{working-directory}` | `.worktrees/flight-{number}-{slug}` |
+| Orchestrator stays on | Main branch (does not checkout the flight branch) |
+| Agents work in | Worktree path |
+| Flight landed | PR marked ready for review, then `git worktree remove .worktrees/flight-{number}-{slug}` |
+
+**Note:** The `.worktrees/` directory must be in `.gitignore` when using this strategy.
+
 ## Error Handling
 
 | Situation | Action |
@@ -179,3 +216,4 @@ The draft PR body includes the flight objective and a checklist of all legs. Upd
 | Leg marked blocked | Escalate to human with blocker details |
 | Artifact discrepancy | Remediate before proceeding |
 | Off the rails | Roll back to last leg commit, escalate |
+| Stale worktree (worktree strategy) | Run `git worktree prune`, recreate if needed |
