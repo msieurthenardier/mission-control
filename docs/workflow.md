@@ -182,7 +182,7 @@ Legs are being executed. A [flight log](flight-logs.md) tracks progress, recordi
 Each leg follows its own progression:
 
 ```
-queued ──► in-progress ──► review ──► completed
+queued ──► in-flight ──► review ──► completed
 ```
 
 **Example: `create-user-model` leg**
@@ -202,7 +202,7 @@ Create the User model with authentication fields.
 
 **Execution flow:**
 
-1. Leg moves to `in-progress`, recorded in flight log
+1. Leg moves to `in-flight`, recorded in flight log
 2. AI executes the implementation
 3. AI reports completion, leg moves to `review`
 4. Verification confirms acceptance criteria met
@@ -436,7 +436,7 @@ planning ──► ready ──► in-flight ──► landed
                            └──► diverted ──► planning
 
 LEG STATES
-queued ──► in-progress ──► review ──► completed
+queued ──► in-flight ──► review ──► completed
                 │
                 └──► blocked ──► queued
 ```
@@ -447,7 +447,7 @@ queued ──► in-progress ──► review ──► completed
 
 - **Mission**: New outcome needed
 - **Flight**: New area of work identified
-- **Leg**: Requirements changed after `in-progress`
+- **Leg**: Requirements changed after `in-flight`
 
 ### Modify Existing
 
@@ -466,7 +466,7 @@ Once work begins, create new rather than modify. This preserves history and prev
 | Defining outcomes | planning | — | — | — |
 | Planning first flight | planning | planning | — | — |
 | Pre-flight complete | planning | ready | queued | — |
-| Executing first leg | active | in-flight | in-progress | — |
+| Executing first leg | active | in-flight | in-flight | — |
 | Leg verification | active | in-flight | review | — |
 | Leg done | active | in-flight | completed | — |
 | Flight done | active | landed | — | `/flight-debrief` |

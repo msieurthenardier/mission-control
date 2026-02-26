@@ -56,7 +56,7 @@ Brief overview of the flight's execution status and key outcomes.
 ## Leg Progress
 
 ### {Leg Name}
-**Status**: completed | in-progress | blocked
+**Status**: completed | in-flight | blocked
 **Started**: {timestamp}
 **Completed**: {timestamp}
 

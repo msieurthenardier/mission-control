@@ -377,7 +377,7 @@ How to confirm each criterion is met:
 | Flight Control | Jira Status |
 |----------------|-------------|
 | queued | To Do |
-| in-progress | In Progress |
+| in-flight | In Progress |
 | review | In Review |
 | completed | Done |
 | blocked | Blocked |

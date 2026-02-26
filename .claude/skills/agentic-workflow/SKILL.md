@@ -69,7 +69,7 @@ Repeat for each leg in the flight.
 1. **Spawn a Developer agent** (Task tool, `subagent_type: "general-purpose"`)
    - Working directory: the target project
    - Provide the "Implement" prompt from the leg-execution phase file's Prompts section
-   - The Developer reads the leg artifact, implements to acceptance criteria, updates flight log
+   - The Developer updates leg status to `in-flight`, implements to acceptance criteria, updates flight log
    - The Developer signals `[HANDOFF:review-needed]` when done — do NOT let it commit
 2. **Spawn a Reviewer agent** (Task tool, `subagent_type: "general-purpose"`)
    - Working directory: the target project

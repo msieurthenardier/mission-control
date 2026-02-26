@@ -181,14 +181,14 @@ How to confirm the flight achieved its objective.
 |----------|-------|
 | Location | `missions/{mission}/flights/{flight}/legs/{NN}-{slug}.md` |
 | Created | Before leg execution |
-| Updated | Never once `in-progress` (immutable) |
+| Updated | Never once `in-flight` (immutable) |
 
 **Format:**
 
 ```markdown
 # Leg: {slug}
 
-**Status**: queued | in-progress | review | completed | blocked
+**Status**: queued | in-flight | review | completed | blocked
 **Flight**: [{Flight Title}](../flight.md)
 
 ## Objective
@@ -277,7 +277,7 @@ Brief overview of execution status and key outcomes.
 ## Leg Progress
 
 ### {Leg Name}
-**Status**: completed | in-progress | blocked
+**Status**: completed | in-flight | blocked
 **Started**: {timestamp}
 **Completed**: {timestamp}
 
@@ -492,11 +492,11 @@ States are tracked in the frontmatter or status field of each artifact:
 |----------|--------|
 | Mission | `planning` → `active` → `completed` (or `aborted`) |
 | Flight | `planning` → `ready` → `in-flight` → `landed` (or `diverted`) |
-| Leg | `queued` → `in-progress` → `review` → `completed` (or `blocked`) |
+| Leg | `queued` → `in-flight` → `review` → `completed` (or `blocked`) |
 
 ## Conventions
 
-- **Immutability**: Never modify legs once `in-progress`; create new ones instead
+- **Immutability**: Never modify legs once `in-flight`; create new ones instead
 - **Append-only logs**: Flight logs are append-only during execution
 - **Flight briefings**: Created before execution, not modified after
 - **Debriefs**: Created after completion, may be updated with follow-up notes

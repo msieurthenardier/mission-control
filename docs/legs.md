@@ -201,7 +201,7 @@ Legs progress through defined states:
 ### States
 
 ```
-queued ──► in-progress ──► review ──► completed
+queued ──► in-flight ──► review ──► completed
                │
                └──► blocked
 ```
@@ -209,7 +209,7 @@ queued ──► in-progress ──► review ──► completed
 **queued**
 Leg is defined and ready to be picked up. Prerequisites met.
 
-**in-progress**
+**in-flight**
 AI agent actively working on implementation.
 
 **review**
@@ -232,14 +232,14 @@ Cannot proceed. Needs intervention. Common blockers:
 
 | From | To | Trigger |
 |------|----|---------|
-| queued | in-progress | AI begins work |
-| in-progress | review | AI reports completion |
-| in-progress | blocked | AI cannot proceed |
+| queued | in-flight | AI begins work |
+| in-flight | review | AI reports completion |
+| in-flight | blocked | AI cannot proceed |
 | review | completed | Verification passes |
-| review | in-progress | Issues found, needs fixes |
+| review | in-flight | Issues found, needs fixes |
 | blocked | queued | Blocker resolved |
 
-Note: Legs may only be modified while in `queued` state. Once `in-progress`, create new legs instead of modifying existing ones.
+Note: Legs may only be modified while in `queued` state. Once `in-flight`, create new legs instead of modifying existing ones.
 
 ## Patterns for AI Consumption
 
@@ -373,7 +373,7 @@ Flight: User Registration Flow
 
 ## Immutability Principle
 
-Once a leg is `in-progress`, don't modify it. If requirements change:
+Once a leg is `in-flight`, don't modify it. If requirements change:
 
 1. Mark the current leg as blocked (with explanation)
 2. Create a new leg with updated requirements

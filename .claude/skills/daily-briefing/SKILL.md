@@ -69,23 +69,23 @@ For each selected project, gather data by spawning **parallel Explore agents** (
    - List of all legs with status
    - Debrief summaries (key learnings and recommendations)
    - Recent git activity summary
-   - Any anomalies (e.g., in-progress legs with no recent commits)
+   - Any anomalies (e.g., in-flight legs with no recent commits)
 
 ### Phase 4: Health Analysis
 
 For each scanned project, assess health across these dimensions:
 
 #### Activity Status
-- **Active**: Has in-progress work AND recent commits
-- **Stalled**: Has in-progress work but NO recent commits (7+ days)
-- **Idle**: No in-progress work
+- **Active**: Has in-flight work AND recent commits
+- **Stalled**: Has in-flight work but NO recent commits (7+ days)
+- **Idle**: No in-flight work
 - **Fresh**: Recently completed work (within 7 days)
 
 #### Staleness Detection
 Flag artifacts that appear stale or abandoned:
 - **Missions** with status `active` or `planning` but no flight activity in 14+ days
 - **Flights** with status `in-flight` or `planning` but no leg progress in 7+ days
-- **Legs** with status `in-progress` or `queued` but no recent commits in 7+ days
+- **Legs** with status `in-flight` or `queued` but no recent commits in 7+ days
 - **Open questions** that remain unresolved across any active artifacts
 
 #### Completion Assessment

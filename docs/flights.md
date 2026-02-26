@@ -246,7 +246,7 @@ Reference the implementation legs:
 ### Legs
 - [x] `create-user-model` - completed
 - [x] `registration-endpoint` - completed
-- [ ] `login-endpoint` - in-progress
+- [ ] `login-endpoint` - in-flight
 - [ ] `auth-middleware` - queued
 - [ ] `password-reset` - queued
 ```

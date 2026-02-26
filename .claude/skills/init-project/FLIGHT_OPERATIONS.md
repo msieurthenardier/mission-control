@@ -77,7 +77,8 @@ Emit at the end of your response, on its own line:
 1. Read mission, flight, and leg artifacts
 2. Read flight log for context from prior legs
 3. Verify leg accuracy against existing code
-4. Present summary and get approval before proceeding
+4. **Update leg status** to `in-flight`
+5. Present summary and get approval before proceeding
 
 ### Implementation
 5. Implement to acceptance criteria
@@ -171,7 +172,7 @@ A table defined in SCHEMA but never created via migration is a gap — treat sch
 ## Key Principles
 
 1. **Flight log is ground truth** — Read it first, update it always
-2. **Never modify in-progress legs** — Create new ones instead
+2. **Never modify in-flight legs** — Create new ones instead
 3. **Binary acceptance criteria** — Met or not met
 4. **Log everything** — Decisions, deviations, anomalies
 5. **Signal clearly** — End of response, own line

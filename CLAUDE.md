@@ -112,7 +112,7 @@ Flight Control defines these business objects (artifacts):
 
 - **Missions**: `planning` → `active` → `completed` (or `aborted`)
 - **Flights**: `planning` → `ready` → `in-flight` → `landed` (or `diverted`)
-- **Legs**: `queued` → `in-progress` → `review` → `completed` (or `blocked`)
+- **Legs**: `queued` → `in-flight` → `review` → `completed` (or `blocked`)
 
 ## Key Principles
 
@@ -121,7 +121,7 @@ Flight Control defines these business objects (artifacts):
    - Missions must be fully agreed before designing flights
    - Flights must be fully agreed before designing legs
    - Never skip ahead — get explicit user confirmation at each transition
-3. **Immutability after start**: Never modify legs once `in-progress`; create new ones instead
+3. **Immutability after start**: Never modify legs once `in-flight`; create new ones instead
 4. **Pre-flight rigor**: Resolve all open questions and verify prerequisites before execution
 5. **Explicit criteria**: Acceptance criteria must be binary, observable, and complete
 6. **Log during flight**: Record decisions, deviations, and anomalies in the flight log

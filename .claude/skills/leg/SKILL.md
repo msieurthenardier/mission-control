@@ -167,7 +167,7 @@ When implementing a workaround, document:
 
 ### Immutability
 
-Once a leg is `in-progress`:
+Once a leg is `in-flight`:
 - Do NOT modify the leg document
 - If requirements change, mark it `blocked`
 - Create a new leg with updated requirements

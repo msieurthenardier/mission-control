@@ -121,10 +121,10 @@ flight: {flight-number}
 leg: {leg-number}
 action: implement
 
-Read leg artifact. Implement to acceptance criteria. Update flight log with outcomes.
-Propagate changes to artifacts (flight, mission, leg), CLAUDE.md, README, and other
-project documentation as needed. Do NOT commit yet — signal [HANDOFF:review-needed]
-when implementation is complete.
+Read leg artifact. Update leg status to in-flight. Implement to acceptance criteria.
+Update flight log with outcomes. Propagate changes to artifacts (flight, mission, leg),
+CLAUDE.md, README, and other project documentation as needed. Do NOT commit yet —
+signal [HANDOFF:review-needed] when implementation is complete.
 ```
 
 ### Reviewer: Review
