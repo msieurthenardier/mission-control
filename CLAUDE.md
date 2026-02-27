@@ -8,9 +8,21 @@ You may be invoked by:
 - **A human** — Interactive session, ask questions freely
 - **An LLM orchestrator** — Run `/agentic-workflow` to drive multi-agent flight execution
 
-When orchestrated, you are the **Mission Control** instance (project management role). Emit signals like `[HANDOFF:review-needed]` and `[COMPLETE:leg]` at appropriate points. The orchestrator monitors your output for these markers.
+When orchestrated, you are the **Flight Director** — responsible for driving execution, coordinating agents, and making go/no-go decisions. Emit signals like `[HANDOFF:review-needed]` and `[COMPLETE:leg]` at appropriate points. The orchestrator monitors your output for these markers.
 
 **When a human says a leg is ready to implement**, invoke `/agentic-workflow`. Do not read the leg spec, do not plan execution steps, do not execute commands directly. You become the orchestrator by loading the skill.
+
+### Loading Skills in Non-Interactive Contexts
+
+**The Skill tool is ONLY available in interactive human sessions.** If you are a spawned agent, running via `claude -p`, or inside a container/SDK — you do NOT have the Skill tool. Do not attempt to call it.
+
+To execute a skill, read its SKILL.md file directly and follow the workflow:
+
+```
+Read .claude/skills/{skill-name}/SKILL.md and execute the workflow described there.
+```
+
+This applies to both mission-control skills and target project skills (in `.claude/skills/`).
 
 ## First-Contact Check
 
@@ -52,13 +64,7 @@ Run `/init-project` before using the other skills on a new project to create the
 
 `/agentic-workflow` orchestrates implementation by spawning separate agents that execute code changes in the target project. The orchestrator itself never modifies source files directly.
 
-**Skills without the Skill tool:** Skills are only injected into interactive session context. They are **not** available when running non-interactively (e.g., `claude -p`) or in spawned agents (Task tool subagents). If the Skill tool is unavailable or returns "Unknown skill", read the SKILL.md file directly and follow its workflow:
-
-```
-Read .claude/skills/{skill-name}/SKILL.md and execute the workflow described there.
-```
-
-This applies both to mission-control's own skills and to skills defined in a target project's `.claude/skills/` directory.
+**Non-interactive skill loading:** See [Loading Skills in Non-Interactive Contexts](#loading-skills-in-non-interactive-contexts) in the Invocation Context section above.
 
 ## Projects Registry
 
