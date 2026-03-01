@@ -46,7 +46,7 @@ Repeat for each leg in the flight.
 
 ### 2a: Leg Design
 
-1. **Design the leg** using the `/leg` skill (or craft guidance manually)
+1. **Design the leg** using the `/leg` skill (if the Skill tool is unavailable, read `.claude/skills/leg/SKILL.md` and follow the workflow directly)
    - Read the flight spec, flight log, and relevant source code
    - Create the leg artifact with acceptance criteria
 2. **Spawn a Developer agent for design review** (Task tool, `subagent_type: "general-purpose"`)
@@ -100,7 +100,7 @@ After `[COMPLETE:leg]` (all git/PR operations run from `{working-directory}`):
 1. **Verify all legs** show `completed` status
 2. **Verify flight log** has entries for all legs
 3. **Verify documentation** — check that CLAUDE.md, README, and other project docs reflect any new commands, endpoints, configuration, or APIs introduced during the flight. If not, spawn a Developer agent to update them.
-4. **Run flight debrief** using the `/flight-debrief` skill
+4. **Run flight debrief** using the `/flight-debrief` skill (if the Skill tool is unavailable, read `.claude/skills/flight-debrief/SKILL.md` and follow the workflow directly)
 5. **Update flight status** to `landed`
 6. **Check off flight** in mission artifact
 7. **Clean up worktree** (worktree strategy only) — run `git worktree remove` after the PR is marked ready for review
