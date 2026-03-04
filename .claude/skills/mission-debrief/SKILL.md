@@ -99,7 +99,7 @@ For each success criterion:
 
 #### Flight Summary
 For each flight:
-- Status (landed/diverted)
+- Status (landed/completed/aborted)
 - Key accomplishments
 - Major challenges
 

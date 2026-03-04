@@ -182,7 +182,7 @@ Legs are being executed. A [flight log](flight-logs.md) tracks progress, recordi
 Each leg follows its own progression:
 
 ```
-queued ──► in-flight ──► review ──► completed
+planning ──► ready ──► in-flight ──► landed ──► completed
 ```
 
 **Example: `create-user-model` leg**
@@ -202,11 +202,11 @@ Create the User model with authentication fields.
 
 **Execution flow:**
 
-1. Leg moves to `in-flight`, recorded in flight log
-2. AI executes the implementation
-3. AI reports completion, leg moves to `review`
-4. Verification confirms acceptance criteria met
-5. Leg moves to `completed`, flight log updated with summary of changes
+1. Leg design approved, moves to `ready`
+2. Developer begins, leg moves to `in-flight`
+3. Developer completes implementation, leg moves to `landed`, flight log updated
+4. Reviewer verifies acceptance criteria met
+5. Leg moves to `completed`
 
 ### Parallel vs. Sequential Legs
 
@@ -219,22 +219,22 @@ create-user-model ────► registration-endpoint ────► registra
 
 The model must exist first, but the endpoint and email flows can be built simultaneously, then tests cover everything.
 
-### Handling Blocked Legs
+### Handling Aborted Legs
 
 When a leg can't proceed:
 
-1. Mark it `blocked` with explanation
+1. Mark it `aborted` — changes are rolled back
 2. Determine if it needs:
    - Flight-level decision (update the flight)
    - External resolution (wait for dependency)
-   - Leg redesign (create new leg)
+   - New leg with updated requirements
 
 ```markdown
-## Status: blocked
+## Status: aborted
 
-**Blocker**: Email service credentials not available in dev environment
-**Needs**: DevOps to provision SendGrid API key
-**Impact**: Cannot test email verification flow
+**Reason**: Email service credentials not available in dev environment
+**Changes**: Rolled back
+**Next**: New leg after DevOps provisions SendGrid API key
 ```
 
 ## Phase 5: Flight Completion
@@ -302,7 +302,7 @@ As flights land, mission success criteria get checked:
 - [x] Users can create accounts ← Flight: Account Creation landed
 - [ ] Users can log in and maintain sessions ← Flight: Login in-flight
 - [ ] Password reset flow exists ← Flight: Password Reset planning
-- [ ] Security audit passes ← Flight: Security Hardening queued
+- [ ] Security audit passes ← Flight: Security Hardening planning
 ```
 
 ### Spawning New Flights
@@ -388,23 +388,20 @@ When circumstances change:
 - The discovered work is independent of the current flight's goal
 - The new work serves different mission success criteria
 
-### Flight Diversion
+### In-Flight Modifications
 
-When a flight must change direction:
+Flights can be modified while `in-flight` — for example, when planned legs need to change due to discoveries during execution. Update the flight artifact and record the change and rationale in the flight log.
+
+### Flight Abortion
+
+When a flight must be cancelled, changes are rolled back:
 
 ```markdown
-## Status: diverted
+## Status: aborted
 
-**Reason**: Security audit revealed JWT vulnerability
-**Original plan**: Custom JWT implementation
-**New direction**: Use established auth library (Auth0)
-
-## Impact
-- Legs `jwt-generation` and `jwt-validation` deprecated
-- New legs for Auth0 integration created
+**Reason**: Security audit revealed JWT vulnerability requires a fundamentally different approach
+**Changes**: Rolled back — new flight will be created for Auth0 integration
 ```
-
-The flight returns to `planning` to redefine the approach, then proceeds through `ready` → `in-flight` → `landed`.
 
 ### Mission Abortion
 
@@ -431,14 +428,14 @@ planning ──► active ──► completed
                 └──► aborted
 
 FLIGHT STATES
-planning ──► ready ──► in-flight ──► landed
+planning ──► ready ──► in-flight ──► landed ──► completed
                            │
-                           └──► diverted ──► planning
+                           └──► aborted
 
 LEG STATES
-queued ──► in-flight ──► review ──► completed
-                │
-                └──► blocked ──► queued
+planning ──► ready ──► in-flight ──► landed ──► completed
+                           │
+                           └──► aborted
 ```
 
 ## When to Create vs. Modify
@@ -453,7 +450,7 @@ queued ──► in-flight ──► review ──► completed
 
 - **Mission**: Refining success criteria during `planning`
 - **Flight**: Updating during `planning` phase
-- **Leg**: Only while `queued` (before work begins)
+- **Leg**: Only while `planning` (before work begins)
 
 ### Rule of Thumb
 
@@ -465,9 +462,12 @@ Once work begins, create new rather than modify. This preserves history and prev
 |-------|---------------|--------------|-----------|--------|
 | Defining outcomes | planning | — | — | — |
 | Planning first flight | planning | planning | — | — |
-| Pre-flight complete | planning | ready | queued | — |
-| Executing first leg | active | in-flight | in-flight | — |
-| Leg verification | active | in-flight | review | — |
-| Leg done | active | in-flight | completed | — |
-| Flight done | active | landed | — | `/flight-debrief` |
+| Pre-flight complete | planning | ready | — | — |
+| Designing first leg | active | in-flight | planning | — |
+| Leg design approved | active | in-flight | ready | — |
+| Executing leg | active | in-flight | in-flight | — |
+| Leg implementation done | active | in-flight | landed | — |
+| Leg reviewed | active | in-flight | completed | — |
+| Flight done | active | landed | — | — |
+| Flight debriefed | active | completed | — | `/flight-debrief` |
 | All flights done | completed | — | — | `/mission-debrief` |

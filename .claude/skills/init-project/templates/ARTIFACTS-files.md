@@ -98,7 +98,7 @@ Emergent blockers and issues discovered during execution. Add items here as flig
 ```markdown
 # Flight: {Title}
 
-**Status**: planning | ready | in-flight | landed | diverted
+**Status**: planning | ready | in-flight | landed | completed | aborted
 **Mission**: [{Mission Title}](../../mission.md)
 
 ## Contributing to Criteria
@@ -188,7 +188,7 @@ How to confirm the flight achieved its objective.
 ```markdown
 # Leg: {slug}
 
-**Status**: queued | in-flight | review | completed | blocked
+**Status**: planning | ready | in-flight | landed | completed | aborted
 **Flight**: [{Flight Title}](../flight.md)
 
 ## Objective
@@ -277,7 +277,7 @@ Brief overview of execution status and key outcomes.
 ## Leg Progress
 
 ### {Leg Name}
-**Status**: completed | in-flight | blocked
+**Status**: completed | landed | in-flight | aborted
 **Started**: {timestamp}
 **Completed**: {timestamp}
 
@@ -384,7 +384,7 @@ Chronological notes from work sessions.
 
 **Date**: {debrief date}
 **Flight**: [{Flight Title}](flight.md)
-**Status**: {landed | diverted}
+**Status**: {landed | aborted}
 **Duration**: {start} - {end}
 **Legs Completed**: {X of Y}
 
@@ -463,7 +463,7 @@ Chronological notes from work sessions.
 ## Flight Summary
 | Flight | Status | Key Outcome |
 |--------|--------|-------------|
-| {flight} | {landed/diverted} | {outcome} |
+| {flight} | {landed/aborted} | {outcome} |
 
 ## What Went Well
 {Effective patterns and successes}
@@ -491,8 +491,8 @@ States are tracked in the frontmatter or status field of each artifact:
 | Artifact | States |
 |----------|--------|
 | Mission | `planning` → `active` → `completed` (or `aborted`) |
-| Flight | `planning` → `ready` → `in-flight` → `landed` (or `diverted`) |
-| Leg | `queued` → `in-flight` → `review` → `completed` (or `blocked`) |
+| Flight | `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`) |
+| Leg | `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`) |
 
 ## Conventions
 

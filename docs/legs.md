@@ -201,45 +201,41 @@ Legs progress through defined states:
 ### States
 
 ```
-queued ──► in-flight ──► review ──► completed
-               │
-               └──► blocked
+planning ──► ready ──► in-flight ──► landed ──► completed
+                           │
+                           └──► aborted
 ```
 
-**queued**
-Leg is defined and ready to be picked up. Prerequisites met.
+**planning**
+Leg is being designed. Acceptance criteria and implementation guidance being defined.
+
+**ready**
+Leg design approved. Ready for implementation.
 
 **in-flight**
 AI agent actively working on implementation.
 
-**review**
-Implementation complete, awaiting verification. This might involve:
-- Human code review
-- Automated tests
-- Integration verification
+**landed**
+Implementation complete. Flight log updated. Ready for review.
 
 **completed**
-Verified and merged. Acceptance criteria confirmed met.
+Review passed. Acceptance criteria confirmed met.
 
-**blocked**
-Cannot proceed. Needs intervention. Common blockers:
-- Missing prerequisites
-- Ambiguous requirements
-- External dependency unavailable
-- Discovered complexity requiring flight-level decision
+**aborted**
+Leg cancelled. Changes are rolled back. Document the reason in the flight log.
 
 ### State Transitions
 
 | From | To | Trigger |
 |------|----|---------|
-| queued | in-flight | AI begins work |
-| in-flight | review | AI reports completion |
-| in-flight | blocked | AI cannot proceed |
-| review | completed | Verification passes |
-| review | in-flight | Issues found, needs fixes |
-| blocked | queued | Blocker resolved |
+| planning | ready | Design review passes |
+| ready | in-flight | Developer begins work |
+| in-flight | landed | Developer reports completion |
+| in-flight | aborted | Cannot proceed, changes rolled back |
+| landed | completed | Review passes |
+| landed | in-flight | Issues found, needs fixes |
 
-Note: Legs may only be modified while in `queued` state. Once `in-flight`, create new legs instead of modifying existing ones.
+Note: Legs may only be modified while in `planning` state. Once `in-flight`, create new legs instead of modifying existing ones.
 
 ## Patterns for AI Consumption
 
@@ -375,7 +371,7 @@ Flight: User Registration Flow
 
 Once a leg is `in-flight`, don't modify it. If requirements change:
 
-1. Mark the current leg as blocked (with explanation)
+1. Mark the current leg as aborted (changes rolled back)
 2. Create a new leg with updated requirements
 3. Reference the old leg for context
 

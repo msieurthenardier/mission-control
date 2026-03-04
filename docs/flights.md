@@ -247,8 +247,8 @@ Reference the implementation legs:
 - [x] `create-user-model` - completed
 - [x] `registration-endpoint` - completed
 - [ ] `login-endpoint` - in-flight
-- [ ] `auth-middleware` - queued
-- [ ] `password-reset` - queued
+- [ ] `auth-middleware` - planning
+- [ ] `password-reset` - planning
 ```
 
 ### Flight Log
@@ -327,9 +327,9 @@ Flights progress through defined states:
 ### States
 
 ```
-planning ──► ready ──► in-flight ──► landed
+planning ──► ready ──► in-flight ──► landed ──► completed
                            │
-                           └──► diverted ──► planning
+                           └──► aborted
 ```
 
 **planning**
@@ -339,20 +339,20 @@ Pre-flight phase. Questions being resolved, design decisions being made.
 Pre-flight checklist complete. All prerequisites met. Ready to execute.
 
 **in-flight**
-Legs actively being executed. Checkpoints being reached.
+Legs actively being executed. Checkpoints being reached. Flights may be modified during this phase (e.g., changing planned legs) as long as the flight log captures the change and rationale.
 
 **landed**
-Post-flight checklist complete. Verification passed. Flight achieved its objective.
+All legs complete. Verification passed. Flight achieved its objective. Ready for debrief.
 
-**diverted**
-Flight changed direction due to circumstances. This isn't failure—it's adaptation. Document why and what changed.
+**completed**
+Debrief done. Flight fully wrapped up and artifacts updated.
 
-### When to Divert vs. Create New Flight
+**aborted**
+Flight cancelled. Changes are rolled back. Document the reason for future reference.
 
-**Divert the current flight when:**
-- The objective remains the same but the approach must change
-- External factors (security issues, API changes) invalidate the current plan
-- Discovered complexity requires re-planning but the goal is unchanged
+### In-Flight Modifications
+
+Flights can be modified while `in-flight` — for example, when planned legs need to change due to discoveries during execution. This is not a separate state; simply update the flight artifact and record the change and rationale in the flight log.
 
 **Create a new flight when:**
 - A completely new objective emerges
@@ -365,9 +365,9 @@ Flight changed direction due to circumstances. This isn't failure—it's adaptat
 |------|----|---------|
 | planning | ready | Pre-flight checklist complete |
 | ready | in-flight | First leg begins |
-| in-flight | landed | Post-flight checklist complete |
-| in-flight | diverted | Adaptation criteria triggered |
-| diverted | planning | Re-planning after diversion |
+| in-flight | landed | All legs complete |
+| in-flight | aborted | Flight cancelled, changes rolled back |
+| landed | completed | Debrief complete |
 
 ## Connecting to Parent Mission
 

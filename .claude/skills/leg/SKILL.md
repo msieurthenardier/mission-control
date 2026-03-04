@@ -169,7 +169,7 @@ When implementing a workaround, document:
 
 Once a leg is `in-flight`:
 - Do NOT modify the leg document
-- If requirements change, mark it `blocked`
+- If requirements change, mark it `aborted` (changes rolled back)
 - Create a new leg with updated requirements
 
 ## Output
