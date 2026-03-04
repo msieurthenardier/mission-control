@@ -22,7 +22,7 @@ To execute a skill, read its SKILL.md file directly and follow the workflow:
 Read .claude/skills/{skill-name}/SKILL.md and execute the workflow described there.
 ```
 
-This applies to both mission-control skills and target project skills (in `.claude/skills/`).
+**All Flight Control skills** (listed in the table below) **live in this repository** (mission-control), under `.claude/skills/`. The Flight Director runs from the mission-control directory, so relative `.claude/skills/` paths in skill docs resolve here. Target projects may have their own unrelated skills in their own `.claude/skills/` directories — those are separate.
 
 ## First-Contact Check
 
