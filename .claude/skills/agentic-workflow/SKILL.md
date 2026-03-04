@@ -62,7 +62,8 @@ Repeat for each leg in the flight.
    - Skip if only minor/cosmetic fixes were applied
    - If the second review raises new high-severity issues, fix and re-review once more
    - **Max 2 design review cycles** — if issues persist after 2 rounds, escalate to human
-5. **Signal `[HANDOFF:review-needed]`** when the leg design is finalized
+5. **Update leg status** to `ready`
+6. **Signal `[HANDOFF:review-needed]`** when the leg design is finalized
 
 ### 2b: Leg Implementation
 
@@ -71,8 +72,8 @@ Repeat for each leg in the flight.
 1. **Spawn a Developer agent** (Task tool, `subagent_type: "general-purpose"`)
    - Working directory: `{working-directory}`
    - Provide the "Implement" prompt from the leg-execution phase file's Prompts section
-   - The Developer updates leg status to `in-flight`, implements to acceptance criteria, updates flight log
-   - The Developer signals `[HANDOFF:review-needed]` when done — do NOT let it commit
+   - The Developer updates leg status to `in-flight`, implements to acceptance criteria
+   - When done, the Developer updates leg status to `landed`, updates flight log, and signals `[HANDOFF:review-needed]` — do NOT let it commit
 2. **Spawn a Reviewer agent** (Task tool, `subagent_type: "general-purpose"`)
    - Working directory: `{working-directory}`
    - Provide the "Review" prompt from the leg-execution phase file's Prompts section
@@ -83,7 +84,7 @@ Repeat for each leg in the flight.
    - Loop review/fix until the Reviewer confirms
 4. **Spawn the Developer agent to commit** after review passes
    - Provide the "Commit" prompt from the leg-execution phase file's Prompts section
-   - The commit must include code changes, updated flight log, and updated leg status
+   - The commit must include code changes, updated flight log, and leg status updated to `completed`
 
 ### 2c: Leg Transition
 
@@ -100,11 +101,12 @@ After `[COMPLETE:leg]` (all git/PR operations run from `{working-directory}`):
 1. **Verify all legs** show `completed` status
 2. **Verify flight log** has entries for all legs
 3. **Verify documentation** — check that CLAUDE.md, README, and other project docs reflect any new commands, endpoints, configuration, or APIs introduced during the flight. If not, spawn a Developer agent to update them.
-4. **Run flight debrief** using the `/flight-debrief` skill (if the Skill tool is unavailable, read `.claude/skills/flight-debrief/SKILL.md` and follow the workflow directly)
-5. **Update flight status** to `landed`
-6. **Check off flight** in mission artifact
-7. **Clean up worktree** (worktree strategy only) — run `git worktree remove` after the PR is marked ready for review
-8. **Signal `[COMPLETE:flight]`**
+4. **Update flight status** to `landed`
+5. **Check off flight** in mission artifact
+6. **Clean up worktree** (worktree strategy only) — run `git worktree remove` after the PR is marked ready for review
+7. **Signal `[COMPLETE:flight]`**
+
+The flight debrief is a separate step run via `/flight-debrief` after the flight lands. The debrief transitions the flight to `completed`.
 
 ## Architecture
 
@@ -213,7 +215,7 @@ Worktree isolation enables parallel flights on a single repo clone.
 | Developer agent fails mid-leg | Spawn new Developer with context of what failed |
 | Design review loops > 2 times | Escalate to human with unresolved design issues |
 | Code review loops > 3 times | Escalate to human |
-| Leg marked blocked | Escalate to human with blocker details |
+| Leg marked aborted | Escalate to human with abort details |
 | Artifact discrepancy | Remediate before proceeding |
 | Off the rails | Roll back to last leg commit, escalate |
 | Stale worktree (worktree strategy) | Run `git worktree prune`, recreate if needed |

@@ -85,7 +85,7 @@ For each scanned project, assess health across these dimensions:
 Flag artifacts that appear stale or abandoned:
 - **Missions** with status `active` or `planning` but no flight activity in 14+ days
 - **Flights** with status `in-flight` or `planning` but no leg progress in 7+ days
-- **Legs** with status `in-flight` or `queued` but no recent commits in 7+ days
+- **Legs** with status `in-flight` or `planning` but no recent commits in 7+ days
 - **Open questions** that remain unresolved across any active artifacts
 
 #### Completion Assessment

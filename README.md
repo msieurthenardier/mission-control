@@ -12,8 +12,6 @@ This repository is a **centralized command center** for managing multiple projec
 
 Artifacts (missions, flights, legs) are created in target projects, not here. Mission-control holds the methodology, skills, and coordination—your projects hold the work.
 
-Development crews remain essential. AI can automate much of the implementation, but technical oversight ensures quality and alignment with intent.
-
 ## The Aviation Model
 
 Flight Control organizes work into three hierarchical levels, each optimized for its primary audience:
@@ -64,12 +62,11 @@ Aviation succeeds through layered planning and clear handoffs. Pilots follow fli
 ## Documentation
 
 1. **[Overview](docs/overview.md)** — Philosophy and principles behind Flight Control
-2. **[Roles](docs/roles.md)** — Crew and Mission Control organizational structure
-3. **[Missions](docs/missions.md)** — Writing outcome-driven mission statements
-4. **[Flights](docs/flights.md)** — Creating technical specifications with pre/post checklists
-5. **[Flight Logs](docs/flight-logs.md)** — Recording execution progress and decisions
-6. **[Legs](docs/legs.md)** — Structuring AI-optimized implementation steps
-7. **[Workflow](docs/workflow.md)** — End-to-end flow from mission to completion
+2. **[Missions](docs/missions.md)** — Writing outcome-driven mission statements
+3. **[Flights](docs/flights.md)** — Creating technical specifications with pre/post checklists
+4. **[Flight Logs](docs/flight-logs.md)** — Recording execution progress and decisions
+5. **[Legs](docs/legs.md)** — Structuring AI-optimized implementation steps
+6. **[Workflow](docs/workflow.md)** — End-to-end flow from mission to completion
 
 ## Core Concepts
 
@@ -88,18 +85,12 @@ Documentation becomes progressively more structured as it moves down the hierarc
 Each level tracks progress through defined states:
 
 - **Missions**: `planning` → `active` → `completed` (or `aborted`)
-- **Flights**: `planning` → `ready` → `in-flight` → `landed` (or `diverted`)
-- **Legs**: `queued` → `in-flight` → `review` → `completed` (or `blocked`)
+- **Flights**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
+- **Legs**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
 
-### Roles
+### Scaling
 
-Flight Control scales from solo developers to full teams:
-
-**Solo** — One person fills all roles, using AI as their crew. The methodology provides structure and continuity across sessions.
-
-**Team** — Roles split across people:
-- **Crew** executes flights (Commander + Flight Engineer, 1:1 pairing)
-- **Mission Control** oversees operations (Flight Director, Ops Director, Technical Architects)
+Flight Control scales from solo developers to teams. The methodology provides structure and continuity across sessions regardless of team size.
 
 ## Artifact Organization
 

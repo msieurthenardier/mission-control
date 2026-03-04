@@ -54,6 +54,44 @@ Early versions stored crew definitions in `.flightops/phases/`. The current conv
 
 ---
 
+### 003 — Update lifecycle states to unified model
+
+Flight Control now uses a unified lifecycle for both flights and legs: `planning → ready → in-flight → landed → completed` (or `aborted`). This replaces the old divergent states:
+
+- **Flights**: `diverted` → `aborted`; added `completed` after `landed`
+- **Legs**: `queued` → `planning`; `review` → `landed`; `blocked` → `aborted`; added `ready` and `completed`
+
+**Detection** (returns true if migration is needed):
+
+```bash
+grep -rql 'queued\|diverted\|blocked\|review.*completed' "{target-project}/.flightops/ARTIFACTS.md" 2>/dev/null
+```
+
+> **Note:** This runs after migrations 001 and 002, so it checks the post-rename `.flightops/` path.
+
+**Actions:**
+
+1. Update state definitions in ARTIFACTS.md:
+   - Replace flight status line: `planning | ready | in-flight | landed | diverted` → `planning | ready | in-flight | landed | completed | aborted`
+   - Replace leg status line: `queued | in-flight | review | completed | blocked` → `planning | ready | in-flight | landed | completed | aborted`
+   - Replace flight state tracking: `planning` → `ready` → `in-flight` → `landed` (or `diverted`) → `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
+   - Replace leg state tracking: `queued` → `in-flight` → `review` → `completed` (or `blocked`) → `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
+   - Replace `landed | diverted` → `landed | aborted` in debrief templates
+   - Replace `landed/diverted` → `landed/aborted` in debrief templates
+   - Replace `completed | in-flight | blocked` → `completed | landed | in-flight | aborted` in flight log templates
+
+2. Update existing artifact files in the project (if any):
+   - In flight artifacts: replace `**Status**: diverted` → `**Status**: aborted`
+   - In leg artifacts: replace `**Status**: queued` → `**Status**: planning`, `**Status**: review` → `**Status**: landed`, `**Status**: blocked` → `**Status**: aborted`
+   - In flight log entries: replace `**Status**: blocked` → `**Status**: aborted`
+
+   Find artifacts using the locations defined in ARTIFACTS.md (typically `missions/` directory for file-based projects).
+
+**User message:**
+> Updating lifecycle states to unified model: flights and legs now share `planning → ready → in-flight → landed → completed (or aborted)`
+
+---
+
 ## Adding Future Migrations
 
 To add a new migration:

@@ -23,7 +23,7 @@ Each phase of the Flight Control workflow has a crew definition in `.flightops/a
 | `flight-debrief.md` | Crew for `/flight-debrief` (e.g., Developer provides perspective) |
 | `mission-debrief.md` | Crew for `/mission-debrief` (e.g., Architect provides perspective) |
 
-Crew files define: roles, models, interaction protocols, prompts, and signals. Customize these to change your project's team composition.
+Crew files define: roles, models, interaction protocols, prompts, and signals. Customize these to change your project's agent configuration.
 
 ---
 
@@ -44,7 +44,7 @@ The Reviewer has no knowledge of the Developer's reasoning — only the resultin
 | 1 | All acceptance criteria verified |
 | 2 | Tests passing |
 | 3 | **Update flight log** — Add leg progress entry (see below) |
-| 4 | **Mark leg complete** — Update leg status |
+| 4 | **Mark leg completed** — Update leg status to `completed` |
 | 5 | **Update flight** — Check off the leg in flight artifact |
 | 6 | **Commit/save with all artifact updates** |
 
@@ -152,7 +152,8 @@ Deferred issues go in the flight log.
 
 The orchestrator will then:
 - Mark the PR ready for human review
-- Invoke Mission Control for flight debrief
+
+The flight debrief is a separate step run via `/flight-debrief`, which transitions the flight from `landed` to `completed`.
 
 ---
 

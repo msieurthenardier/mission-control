@@ -10,7 +10,7 @@ Perform comprehensive post-flight analysis for continuous improvement.
 ## Prerequisites
 
 - Project must be initialized with `/init-project` (`.flightops/ARTIFACTS.md` must exist)
-- A flight must be completed (status `landed` or `diverted`) before debriefing
+- A flight must have status `landed` before debriefing
 
 ## Workflow
 

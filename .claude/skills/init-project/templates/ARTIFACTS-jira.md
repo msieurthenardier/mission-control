@@ -277,7 +277,7 @@ How to confirm each criterion is met:
 ```
 [Flight Debrief] {YYYY-MM-DD}
 
-**Status**: {landed | diverted}
+**Status**: {landed | aborted}
 **Duration**: {start} - {end}
 **Legs Completed**: {X of Y}
 
@@ -369,18 +369,20 @@ How to confirm each criterion is met:
 | planning | To Do |
 | ready | Ready |
 | in-flight | In Progress |
-| landed | Done |
-| diverted | Blocked / Cancelled |
+| landed | In Review |
+| completed | Done |
+| aborted | Cancelled |
 
 ### Leg (Sub-task)
 
 | Flight Control | Jira Status |
 |----------------|-------------|
-| queued | To Do |
+| planning | To Do |
+| ready | Ready |
 | in-flight | In Progress |
-| review | In Review |
+| landed | In Review |
 | completed | Done |
-| blocked | Blocked |
+| aborted | Cancelled |
 
 ---
 

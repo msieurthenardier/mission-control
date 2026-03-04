@@ -117,8 +117,8 @@ Flight Control defines these business objects (artifacts):
 ## Lifecycle States
 
 - **Missions**: `planning` → `active` → `completed` (or `aborted`)
-- **Flights**: `planning` → `ready` → `in-flight` → `landed` (or `diverted`)
-- **Legs**: `queued` → `in-flight` → `review` → `completed` (or `blocked`)
+- **Flights**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
+- **Legs**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
 
 ## Key Principles
 

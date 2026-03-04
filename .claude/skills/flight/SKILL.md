@@ -125,13 +125,6 @@ Read `{target-project}/.flightops/agent-crews/flight-design.md` for crew definit
 
 ## Guidelines
 
-### Role Engagement
-
-Consider involving these roles during flight planning:
-- **Technical Architects**: Consult on design decisions, especially for architectural changes
-- **Mission Liaison**: Clarify requirements and answer questions about stakeholder needs
-- **Flight Engineer**: May provide input on testing strategy and review approach
-
 ### Flight Sizing
 
 A well-sized flight:
@@ -170,7 +163,7 @@ Break flights into legs based on technical boundaries:
 ### Adaptive Planning
 
 - Flights can be modified during `planning` state
-- Once `in-flight`, create diversions rather than editing
+- Once `in-flight`, flights may still be modified (e.g., changing planned legs) as long as the flight log captures the change and rationale
 - New legs can be added if scope grows
 
 ## Output

@@ -81,8 +81,8 @@ Flight Control adds the missing layer: how to specify work for AI execution.
 Waterfall assumes complete upfront specification. Flight Control embraces uncertainty:
 
 - Missions can spawn new flights as understanding evolves
-- Flights can be "diverted" when circumstances change
-- Legs can be blocked and rerouted
+- Flights can be modified in-flight when circumstances change
+- Legs can be aborted and replaced
 
 ### vs. CRISP-DM / ML Workflows
 
