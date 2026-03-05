@@ -80,7 +80,7 @@ Emergent blockers and issues discovered during execution. Add items here as flig
 
 - [ ] Flight 1: {description}
 - [ ] Flight 2: {description}
-- [ ] Flight N *(optional)*: Human testing and alignment — manual verification, issue resolution, and intent alignment
+- [ ] Flight N *(optional)*: Human review and alignment — iterative verification, feedback, and adjustment with human input
 ```
 
 ---
@@ -157,7 +157,7 @@ How the objective will be achieved.
 
 - [ ] `{leg-slug}` - {Brief description}
 - [ ] `{leg-slug}` - {Brief description}
-- [ ] `manual-alignment` *(optional)* - Human testing, verification, and intent alignment
+- [ ] `human-review` *(optional)* - Iterative human review, acceptance testing, and alignment
 
 ---
 

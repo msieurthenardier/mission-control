@@ -152,7 +152,7 @@ Break flights into legs based on technical boundaries:
 
 **For schema changes**: Include explicit migration legs and verify against the live database, not just mocks
 
-**For human alignment**: During the crew interview, ask the user whether they'd like to include a final manual alignment leg. Explain that this optional leg pauses automated execution and gives them an opportunity to manually verify results, fix edge cases, and confirm the flight outcome matches intent. If the user opts in, include it as the final leg in the breakdown, marked as optional.
+**For human review and alignment**: During the crew interview, ask the user whether they'd like to include a human review and alignment leg. Explain that this optional leg pauses automated execution for iterative human review — the user verifies results, provides feedback, and the agent makes adjustments in a loop until the user is satisfied. It can also include a user acceptance checklist with specific test instructions. If the user opts in, include it in the breakdown, marked as optional.
 
 ### Pre-Flight Rigor
 

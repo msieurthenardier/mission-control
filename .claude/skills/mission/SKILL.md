@@ -134,16 +134,16 @@ This applies equally to success criteria. Criteria that name specific tools or t
 **Capability-focused criterion** (prefer):
 > Authenticated sessions persist across browser restarts for up to 24 hours
 
-### Human Alignment Flight
+### Human Review & Alignment Flight
 
-During the interview phase, ask the user whether they'd like to include a final human alignment flight. Explain that this optional flight gives them an opportunity to:
+During the interview phase, ask the user whether they'd like to include a human review and alignment flight. Explain that this optional flight creates a dedicated space for:
 
-- Manually verify outcomes against the original mission intent
-- Address unresolved issues or edge cases surfaced during prior flights
-- Make hands-on adjustments that require human judgment
-- Confirm the delivered result matches their vision
+- Iterative human review — the user reviews outcomes, provides feedback, and the agent makes adjustments in a loop until the user is satisfied
+- User acceptance testing — the user follows a checklist of specific tests and verification steps
+- Hands-on adjustments that require human judgment
+- Confirming the delivered result matches the original mission intent
 
-If the user opts in, include it as the final flight in the suggested breakdown, marked as optional.
+This flight is inherently interactive: it requires human input to drive each iteration. If the user opts in, include it in the suggested breakdown, marked as optional.
 
 ### Adaptive Planning
 
