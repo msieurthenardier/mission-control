@@ -64,7 +64,9 @@ Run `/init-project` before using the other skills on a new project to create the
 
 `/agentic-workflow` orchestrates implementation by spawning separate agents that execute code changes in the target project. The orchestrator itself never modifies source files directly.
 
-**Non-interactive skill loading:** See [Loading Skills in Non-Interactive Contexts](#loading-skills-in-non-interactive-contexts) in the Invocation Context section above.
+> **Phase gates require confirmation.** Missions must be fully agreed before designing
+> flights. Flights must be fully agreed before designing legs. Never skip ahead — get
+> explicit user confirmation at each transition.
 
 ## Projects Registry
 
@@ -80,65 +82,11 @@ The registry provides:
 - Git remote
 - Optional stack and status information
 
-## Flight Operations Directory
-
-Every project using Flight Control has a `.flightops/` directory:
-
-```
-{target-project}/
-└── .flightops/
-    ├── README.md              # Directory purpose and usage
-    ├── FLIGHT_OPERATIONS.md   # Quick reference for implementation (synced)
-    ├── ARTIFACTS.md           # Artifact system configuration (project-specific)
-    └── agent-crews/           # Project crew definitions (project-specific)
-        ├── mission-design.md
-        ├── flight-design.md
-        ├── leg-execution.md
-        ├── flight-debrief.md
-        └── mission-debrief.md
-```
-
-The `ARTIFACTS.md` file defines where and how all artifacts are stored. The `agent-crews/` directory defines per-project crew compositions — which agents the Flight Director works with during each phase, their roles, models, prompts, and interaction protocols.
-
-## Business Objects
-
-Flight Control defines these business objects (artifacts):
-
-| Object | Purpose |
-|--------|---------|
-| Mission | Outcome-driven goal definition (serves as its own briefing) |
-| Mission Debrief | Post-mission retrospective |
-| Flight | Technical specification with checklists |
-| Flight Log | Running record during execution |
-| Flight Briefing | Pre-flight summary for crew alignment |
-| Flight Debrief | Post-flight analysis |
-| Leg | Atomic implementation step |
-
 ## Lifecycle States
 
 - **Missions**: `planning` → `active` → `completed` (or `aborted`)
 - **Flights**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
 - **Legs**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
-
-## Key Principles
-
-1. **Outcome over activity**: Frame missions around results, not tasks
-2. **Phase gates require confirmation**: Complete each planning phase before starting the next:
-   - Missions must be fully agreed before designing flights
-   - Flights must be fully agreed before designing legs
-   - Never skip ahead — get explicit user confirmation at each transition
-3. **Immutability after start**: Never modify legs once `in-flight`; create new ones instead
-4. **Pre-flight rigor**: Resolve all open questions and verify prerequisites before execution
-5. **Explicit criteria**: Acceptance criteria must be binary, observable, and complete
-6. **Log during flight**: Record decisions, deviations, and anomalies in the flight log
-
-## Sizing Guidelines
-
-| Level | Duration | Typical Count |
-|-------|----------|---------------|
-| Mission | Days to weeks | 5-7 flights |
-| Flight | 1-3 days | 3-8 legs |
-| Leg | Minutes to hours | Atomic, independently completable |
 
 ## Public Repository
 

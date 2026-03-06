@@ -123,6 +123,8 @@ leg: {leg-number}
 action: implement
 
 Read leg artifact. Update leg status to in-flight. Implement to acceptance criteria.
+Run tests with a timeout flag appropriate to this project's test runner — fail fast,
+do not wait indefinitely for hanging tests. If a test hangs, isolate and fix it.
 Update flight log with outcomes. Propagate changes to artifacts (flight, mission, leg),
 CLAUDE.md, README, and other project documentation as needed. Do NOT commit yet —
 signal [HANDOFF:review-needed] when implementation is complete.

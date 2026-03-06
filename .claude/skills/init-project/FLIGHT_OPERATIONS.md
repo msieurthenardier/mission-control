@@ -82,7 +82,10 @@ Emit at the end of your response, on its own line:
 
 ### Implementation
 5. Implement to acceptance criteria
-6. Run tests
+6. Run tests with a timeout — use the test runner's timeout flag (e.g., `--timeout`,
+   `--test-timeout`, `-timeout`) so hanging tests fail fast instead of stalling.
+   If a test hangs, kill it, isolate the hanging test, and fix the root cause before
+   continuing. Log hanging tests and their resolution in the flight log.
 7. Run code review, fix Critical/Major issues
 8. Re-review until clean
 

@@ -219,3 +219,4 @@ Worktree isolation enables parallel flights on a single repo clone.
 | Artifact discrepancy | Remediate before proceeding |
 | Off the rails | Roll back to last leg commit, escalate |
 | Stale worktree (worktree strategy) | Run `git worktree prune`, recreate if needed |
+| Agent hangs on tests | Kill the agent, spawn new Developer to isolate and fix hanging tests |
