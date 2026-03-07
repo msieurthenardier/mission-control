@@ -61,7 +61,15 @@ Explore the target project's codebase to inform the technical approach:
    - What migration tooling does the project use?
    - Are there existing migration patterns to follow?
 
-### Phase 3: Crew Interview
+### Phase 3: User Input
+
+Before asking structured technical questions, share a brief summary of what you learned during context gathering and code interrogation, then prompt the user for open-ended input:
+
+- "Here's what I've gathered about the mission context and codebase: [summary]. Before I ask specific technical questions, what are your thoughts on what this flight should cover? Feel free to share approach preferences, priorities, concerns — anything that should shape this flight."
+
+Use the user's response to inform and focus the crew interview questions that follow.
+
+### Phase 4: Crew Interview
 
 Ask technical questions to resolve the approach:
 
@@ -89,13 +97,13 @@ Ask technical questions to resolve the approach:
    - "Is test automation needed, or is manual verification sufficient?"
    - "What tests should be created or updated?"
 
-### Phase 4: Spec Creation
+### Phase 5: Spec Creation
 
 Create the flight artifact using the format defined in `.flightops/ARTIFACTS.md`.
 
 Also create the flight log artifact (empty, ready for execution notes).
 
-### Phase 4b: Design Review
+### Phase 5b: Design Review
 
 Spawn an Architect agent to validate the flight spec against the real codebase before presenting it to the crew.
 
@@ -114,9 +122,9 @@ Read `{target-project}/.flightops/agent-crews/flight-design.md` for crew definit
 3. **Re-review if substantive changes were made** — spawn another Architect for a second pass
    - Skip if only minor/cosmetic fixes were applied
    - **Max 2 design review cycles** — if issues persist after 2 rounds, escalate to human
-4. **Proceed to Phase 5** with a codebase-validated spec
+4. **Proceed to Phase 6** with a codebase-validated spec
 
-### Phase 5: Iterate
+### Phase 6: Iterate
 
 1. Walk through the spec with the crew
 2. Validate technical approach is sound

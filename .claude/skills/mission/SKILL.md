@@ -44,7 +44,15 @@ Before asking questions, gather context:
    - Library documentation
    - Relevant patterns or best practices
 
-### Phase 2: Interview
+### Phase 2: User Input
+
+Before asking structured questions, share a brief summary of what you learned during research and prompt the user for open-ended input:
+
+- "Here's what I've gathered about the project so far: [summary]. Before I ask specific questions, what are your thoughts on what this mission should include? Feel free to share goals, ideas, concerns, scope preferences — anything that should shape this mission."
+
+Use the user's response to inform and focus the interview questions that follow.
+
+### Phase 3: Interview
 
 Ask about outcomes, not tasks. Focus on:
 
@@ -74,11 +82,11 @@ Ask about outcomes, not tasks. Focus on:
    - "Are there runtime dependencies?"
    - "What tooling versions are required?"
 
-### Phase 3: Draft
+### Phase 4: Draft
 
 Create the mission artifact using the format defined in `.flightops/ARTIFACTS.md`.
 
-### Phase 3b: Technical Viability Check
+### Phase 4b: Technical Viability Check
 
 Read `{target-project}/.flightops/agent-crews/mission-design.md` for crew definitions and prompts (fall back to defaults at `.claude/skills/init-project/defaults/agent-crews/mission-design.md`).
 
@@ -93,7 +101,7 @@ Read `{target-project}/.flightops/agent-crews/mission-design.md` for crew defini
    - If feasible with caveats: present caveats to user, adjust if needed
 3. **Human gives final sign-off** before proceeding
 
-### Phase 4: Iterate
+### Phase 5: Iterate
 
 Present the draft and iterate:
 
