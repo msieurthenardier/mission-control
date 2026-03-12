@@ -36,6 +36,8 @@ Example: `/agentic-workflow flight 03 for epipen mission 04`
 9. **Read git strategy** from `{target-project}/.flightops/ARTIFACTS.md` `## Git Workflow` section. Default to `branch` if the section is absent.
 10. **Set `{working-directory}`** — `branch`: the target project root; `worktree`: the worktree path (see Git Workflow section below)
 
+**Mark flight as in-flight**: After loading the flight artifact, if the flight status is `ready`, update it to `in-flight` before proceeding. If already `in-flight`, leave it as-is.
+
 If resuming a flight already in progress, verify state consistency:
 - Flight log entries must match leg statuses
 - If discrepancies exist, remediate before proceeding

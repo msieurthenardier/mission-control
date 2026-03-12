@@ -80,7 +80,7 @@ Emergent blockers and issues discovered during execution. Add items here as flig
 
 - [ ] Flight 1: {description}
 - [ ] Flight 2: {description}
-- [ ] Flight N *(optional)*: Human review and alignment — iterative verification, feedback, and adjustment with human input
+- [ ] Flight N *(optional)*: Alignment — vibe coding session for creative collaboration and hands-on adjustments
 ```
 
 ---
@@ -157,7 +157,7 @@ How the objective will be achieved.
 
 - [ ] `{leg-slug}` - {Brief description}
 - [ ] `{leg-slug}` - {Brief description}
-- [ ] `human-review` *(optional)* - Iterative human review, acceptance testing, and alignment
+- [ ] `uat-and-alignment` *(optional)* - Guided UAT session with iterative fixes
 
 ---
 
