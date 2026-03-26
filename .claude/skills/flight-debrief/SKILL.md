@@ -125,6 +125,10 @@ Evaluate whether the mission-control skills could be improved:
 
 Create the flight debrief artifact using the format defined in `.flightops/ARTIFACTS.md`.
 
+### Phase 6: Flight Status Transition
+
+Ask the user if the flight should be marked as `completed`. If confirmed, update the flight artifact's status from `landed` to `completed`.
+
 ## Guidelines
 
 ### Thoroughness Over Speed
@@ -154,7 +158,3 @@ Identify effective patterns that should be reinforced or codified.
 Create the debrief artifact using the location and format defined in `.flightops/ARTIFACTS.md`.
 
 After creating the debrief, summarize the top 3-5 most impactful recommendations.
-
-### Phase 6: Flight Status Transition
-
-Ask the user if the flight should be marked as `completed`. If confirmed, update the flight artifact's status from `landed` to `completed`.

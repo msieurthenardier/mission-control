@@ -10,7 +10,7 @@ Perform comprehensive post-mission retrospective and methodology assessment.
 ## Prerequisites
 
 - Project must be initialized with `/init-project` (`.flightops/ARTIFACTS.md` must exist)
-- A mission must be completed (status `completed` or `aborted`) before debriefing
+- A mission must have at least one completed or aborted flight before debriefing
 
 ## Workflow
 
@@ -144,6 +144,10 @@ For each flight:
 ### Phase 7: Generate Debrief
 
 Create the mission debrief artifact using the format defined in `.flightops/ARTIFACTS.md`.
+
+### Phase 8: Mission Status Transition
+
+If the mission is not already marked as `completed` or `aborted`, update the mission artifact's status to `completed`.
 
 ## Guidelines
 
