@@ -186,7 +186,8 @@ This skill creates/updates the following at project root:
         ├── flight-design.md
         ├── leg-execution.md
         ├── flight-debrief.md
-        └── mission-debrief.md
+        ├── mission-debrief.md
+        └── routine-maintenance.md
 ```
 
 ## File Sync Behavior

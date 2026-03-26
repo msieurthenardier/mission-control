@@ -6,18 +6,20 @@ This project stores Flight Control artifacts as markdown files in the repository
 
 ```
 {project}/
-└── missions/
-    └── {NN}-{mission-slug}/
-        ├── mission.md
-        ├── mission-debrief.md
-        └── flights/
-            └── {NN}-{flight-slug}/
-                ├── flight.md
-                ├── flight-log.md
-                ├── flight-briefing.md
-                ├── flight-debrief.md
-                └── legs/
-                    └── {NN}-{leg-slug}.md
+├── missions/
+│   └── {NN}-{mission-slug}/
+│       ├── mission.md
+│       ├── mission-debrief.md
+│       └── flights/
+│           └── {NN}-{flight-slug}/
+│               ├── flight.md
+│               ├── flight-log.md
+│               ├── flight-briefing.md
+│               ├── flight-debrief.md
+│               └── legs/
+│                   └── {NN}-{leg-slug}.md
+└── maintenance/
+    └── {YYYY-MM-DD}.md
 ```
 
 ## Naming Conventions
@@ -480,6 +482,63 @@ Chronological notes from work sessions.
 ## Action Items
 - [ ] {Follow-up work}
 - [ ] {Process improvements}
+```
+
+---
+
+### Maintenance Report
+
+| Property | Value |
+|----------|-------|
+| Location | `maintenance/{YYYY-MM-DD}.md` |
+| Created | After a mission or ad-hoc, during routine maintenance |
+| Purpose | Codebase health assessment and maintenance recommendation |
+
+**Format:**
+
+```markdown
+# Maintenance Report: {YYYY-MM-DD}
+
+**Date**: {report date}
+**Triggered by**: [{Mission Title}](missions/{NN}-{slug}/mission.md) *(optional — omit if ad-hoc)*
+**Assessment**: {Flight Ready | Maintenance Required}
+
+## Categories Inspected
+{Numbered list of categories that were checked}
+
+## Executive Summary
+{2-3 sentence overview of codebase health and key findings}
+
+## Findings by Category
+
+### Category {N}: {Name}
+
+| # | Finding | Severity | New/Known | Recommendation |
+|---|---------|----------|-----------|----------------|
+| {n} | {title} | {severity} | {new/known} | {recommendation} |
+
+**Details:**
+{Per-finding evidence with file paths and line numbers}
+
+## Severity Summary
+
+| Severity | Count |
+|----------|-------|
+| Critical | {N} |
+| Action Required | {N} |
+| Advisory | {N} |
+| Pass | {N} |
+
+## Known Debt Carried Forward
+{Debt items from debriefs that were acknowledged but not addressed, or "None — no prior debt context"}
+
+## Recommendations
+1. {Most impactful recommendation}
+2. {Second recommendation}
+3. {Third recommendation}
+
+## Maintenance Mission
+{Link to scaffolded mission if created, or "Not required — codebase is flight ready"}
 ```
 
 ---

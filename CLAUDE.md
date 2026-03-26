@@ -40,7 +40,7 @@ This repository contains the methodology documentation and Claude Code skills fo
 
 ## Claude Code Skills
 
-Nine skills automate the planning, execution, debrief, and oversight workflow:
+Ten skills automate the planning, execution, debrief, and oversight workflow:
 
 | Skill | Purpose |
 |-------|---------|
@@ -52,13 +52,14 @@ Nine skills automate the planning, execution, debrief, and oversight workflow:
 | `/agentic-workflow` | Drive multi-agent flight execution (design, implement, review, commit) |
 | `/flight-debrief` | Post-flight analysis for continuous improvement |
 | `/mission-debrief` | Post-mission retrospective for outcomes assessment |
+| `/routine-maintenance` | Post-mission codebase health assessment and maintenance recommendation |
 | `/daily-briefing` | Cross-project status report with health assessment and methodology insights |
 
 Run `/init-project` before using the other skills on a new project to create the flight operations reference directory and configure the artifact system.
 
 **Artifact Systems:** Each project defines how artifacts are stored in `.flightops/ARTIFACTS.md`. Skills read this configuration and adapt their output accordingly.
 
-**IMPORTANT: Planning skills produce documentation only.** `/init-project`, `/mission`, `/flight`, `/leg`, `/flight-debrief`, and `/mission-debrief` must:
+**IMPORTANT: Planning skills produce documentation only.** `/init-project`, `/mission`, `/flight`, `/leg`, `/flight-debrief`, `/mission-debrief`, and `/routine-maintenance` must:
 - **NEVER implement code changes** — only create/update artifacts
 - **NEVER modify source files** in the target project (no `.rs`, `.ts`, `.tsx`, `.json`, etc.)
 
