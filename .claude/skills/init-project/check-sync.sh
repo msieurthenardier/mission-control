@@ -10,6 +10,7 @@
 #
 # Additional output lines:
 #   agent-crews:{missing|empty|present}     - Crew directory status
+#   crew-missing:{filename}                 - Default crew file not found in project (repeats per file)
 #   legacy-layout:flight-ops                - .flight-ops/ detected (old name)
 #   legacy-layout:phases                    - phases/ detected (old name)
 #
@@ -96,6 +97,16 @@ elif [[ -z "$(ls -A "$CREW_DIR" 2>/dev/null)" ]]; then
   echo "agent-crews:empty"
 else
   echo "agent-crews:present"
+  # Check for missing crew files (new skills added since init)
+  DEFAULT_CREWS_DIR="$SOURCE_DIR/defaults/agent-crews"
+  if [[ -d "$DEFAULT_CREWS_DIR" ]]; then
+    for DEFAULT_FILE in "$DEFAULT_CREWS_DIR"/*.md; do
+      BASENAME=$(basename "$DEFAULT_FILE")
+      if [[ ! -f "$CREW_DIR/$BASENAME" ]]; then
+        echo "crew-missing:$BASENAME"
+      fi
+    done
+  fi
 fi
 
 # Report legacy layout detection

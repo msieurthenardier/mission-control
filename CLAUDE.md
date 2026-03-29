@@ -40,7 +40,7 @@ This repository contains the methodology documentation and Claude Code skills fo
 
 ## Claude Code Skills
 
-Ten skills automate the planning, execution, debrief, and oversight workflow:
+Eleven skills automate the planning, execution, debrief, and oversight workflow:
 
 | Skill | Purpose |
 |-------|---------|
@@ -53,6 +53,7 @@ Ten skills automate the planning, execution, debrief, and oversight workflow:
 | `/flight-debrief` | Post-flight analysis for continuous improvement |
 | `/mission-debrief` | Post-mission retrospective for outcomes assessment |
 | `/routine-maintenance` | Post-mission codebase health assessment and maintenance recommendation |
+| `/preflight-check` | Verify all projects have current methodology files and crew definitions |
 | `/daily-briefing` | Cross-project status report with health assessment and methodology insights |
 
 Run `/init-project` before using the other skills on a new project to create the flight operations reference directory and configure the artifact system.
