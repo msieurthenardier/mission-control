@@ -69,6 +69,15 @@ Repeat for each leg in the flight.
 
 ### 2b: Leg Implementation
 
+**Interactive/UAT legs**: If the leg is a UAT, alignment, or other interactive leg (identified by slug like `uat-*`, `alignment-*`, or explicit marking in the flight spec), do NOT spawn agents to execute it autonomously. Instead:
+1. **Design the leg** normally (2a), but keep it lightweight — the acceptance criteria are verification steps, not implementation tasks
+2. **Skip the autonomous implementation cycle** (no Developer/Reviewer agents)
+3. **Guide the human through verification steps one at a time** — present a single step, wait for the human to perform it and report results, then proceed to the next step
+4. **Fix issues inline** — if the human reports a failure, diagnose and fix it (spawning a Developer agent if code changes are needed), then re-verify that step before moving on
+5. **Commit when all steps pass** — spawn a Developer agent to update artifacts and commit
+
+The "U" in UAT is the user. The Flight Director's role is to guide, not to execute.
+
 **NEVER implement code directly.** Spawn a Developer agent via the Task tool.
 
 1. **Spawn a Developer agent** (Task tool, `subagent_type: "general-purpose"`)

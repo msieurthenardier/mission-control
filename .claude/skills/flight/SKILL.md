@@ -167,6 +167,7 @@ Break flights into legs based on technical boundaries:
 - Open questions MUST be resolved before execution
 - Design decisions MUST be documented with rationale
 - Prerequisites MUST be verified, not assumed
+- **Environment conflicts**: Flights introducing network services (ports, databases, containers) must check for conflicts with existing services on the developer's machine during planning. Ask: "What else is running that could conflict?"
 
 ### Adaptive Planning
 
