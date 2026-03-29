@@ -206,10 +206,10 @@ action: commit
 
 Review has passed. Before committing, complete ALL post-completion checklist items
 in the leg artifact:
-- Check off all acceptance criteria in the leg artifact
-- Update leg status to completed
-- Check off this leg in flight.md
-- If final leg: update flight.md status to landed, check off flight in mission.md
+1. Check off all acceptance criteria in the leg artifact
+2. Update leg status to completed
+3. Check off this leg in flight.md
+4. If final leg: update flight.md status to landed, check off flight in mission.md
 
 Then commit all changes (code + artifacts) with appropriate message.
 Signal [COMPLETE:leg].
