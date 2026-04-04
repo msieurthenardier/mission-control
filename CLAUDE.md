@@ -90,6 +90,17 @@ The registry provides:
 - **Flights**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
 - **Legs**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
 
+## Project Information Stays in Project Artifacts
+
+**Never store project-specific information in Claude Code memories** — not in mission-control's memory directory, not in any project's memory directory. Project-specific issues, bugs, technical debt, design gaps, known issues, and lessons learned belong exclusively in the project's own Flight Control artifacts:
+
+- **Flight logs** — runtime decisions, deviations, anomalies
+- **Flight debriefs** — post-flight analysis, recommendations, action items
+- **Mission known issues** — cross-flight concerns discovered during execution
+- **Design decision sections** — in flight and mission artifacts
+
+Mission-control is a neutral methodology tool. Its memory (if used at all) is reserved for methodology preferences, user collaboration preferences, and cross-cutting tooling notes — never for project-specific content.
+
 ## Public Repository
 
 This is a public repository. Keep all committed content anonymized:
