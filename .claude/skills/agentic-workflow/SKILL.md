@@ -93,9 +93,7 @@ Repeat for each leg in the flight.
 3. **If issues found**, spawn a new Developer agent to fix them
    - Provide the "Fix Review Issues" prompt from the leg-execution phase file with the Reviewer's feedback
    - Loop review/fix until the Reviewer confirms
-4. **Spawn the Developer agent to commit** after review passes
-   - Provide the "Commit" prompt from the leg-execution phase file's Prompts section
-   - The commit must include code changes, updated flight log, and leg status updated to `completed`
+4. **Commit** after review passes — include code changes, updated flight log, and leg status updated to `completed`
 
 ### 2c: Leg Transition
 
