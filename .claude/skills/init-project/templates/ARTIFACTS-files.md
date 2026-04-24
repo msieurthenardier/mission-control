@@ -159,7 +159,7 @@ How the objective will be achieved.
 
 - [ ] `{leg-slug}` - {Brief description}
 - [ ] `{leg-slug}` - {Brief description}
-- [ ] `uat-and-alignment` *(optional)* - Guided UAT session with iterative fixes
+- [ ] `hat-and-alignment` *(optional)* - Guided HAT (human acceptance test) session with iterative fixes
 
 ---
 

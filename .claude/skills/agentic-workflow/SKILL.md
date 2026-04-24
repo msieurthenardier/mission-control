@@ -71,7 +71,7 @@ Repeat for each leg in the flight.
 
 **NEVER implement code directly.** Spawn a Developer agent via the Task tool.
 
-**Interactive/UAT legs**: If the leg is a UAT, alignment, or other interactive leg (identified by slug like `uat-*`, `alignment-*`, or explicit marking in the flight spec), do NOT spawn agents to execute it autonomously. The human performs verification — the Flight Director guides them through it:
+**Interactive/HAT legs**: If the leg is a HAT (human acceptance test), alignment, or other interactive leg (identified by slug like `hat-*`, `alignment-*`, or explicit marking in the flight spec), do NOT spawn agents to execute it autonomously. The human performs verification — the Flight Director guides them through it:
 1. **Design the leg** normally (2a), but keep it lightweight — the acceptance criteria are verification steps, not implementation tasks
 2. **Skip the autonomous implementation cycle** (no Developer/Reviewer agents)
 3. **Guide the human through verification steps one at a time** — present a single step, wait for the human to perform it and report results, then proceed to the next step
