@@ -84,11 +84,11 @@ Repeat for each leg in the flight.
    - Working directory: `{working-directory}`
    - Provide the "Implement" prompt from the leg-execution phase file's Prompts section
    - The Developer updates leg status to `in-flight`, implements to acceptance criteria
-   - When done, the Developer updates leg status to `landed`, updates flight log, and signals `[HANDOFF:review-needed]` — do NOT let it commit
+   - When done, the Developer updates leg status to `landed` and updates flight log — do NOT let it commit or signal `[HANDOFF:review-needed]`
 
 ### 2c: Leg Transition
 
-After the Developer signals `[HANDOFF:review-needed]`:
+After the Developer completes a leg:
 1. Increment `legs_completed`
 2. If more autonomous legs remain → return to 2a
 3. If this was the last autonomous leg → proceed to Phase 2d
