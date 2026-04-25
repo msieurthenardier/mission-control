@@ -5,7 +5,7 @@ This project stores Flight Control artifacts as markdown files in the repository
 ## Directory Structure
 
 ```
-{project}/
+{target-project}/
 ├── missions/
 │   └── {NN}-{mission-slug}/
 │       ├── mission.md

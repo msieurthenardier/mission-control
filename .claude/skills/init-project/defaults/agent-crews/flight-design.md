@@ -6,7 +6,7 @@ technical spec and uses project-side agents to validate against the real codebas
 ## Crew
 
 ### Architect
-- **Context**: {project}/
+- **Context**: {target-project}/
 - **Model**: Sonnet
 - **Role**: Reviews flight specs for technical soundness. Validates design
   decisions, prerequisites, technical approach, and leg breakdown against

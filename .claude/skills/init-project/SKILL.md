@@ -33,7 +33,7 @@ Check for legacy directory layouts and offer to migrate them.
 2. **Run detection checks** for each migration in order (001, 002, ...)
 3. **If no migrations are needed**, proceed silently to the next step
 4. **If any migrations are needed**, present a summary to the user:
-   > "Detected legacy directory layout in {project}. The following migrations are available:"
+   > "Detected legacy directory layout in {target-project}. The following migrations are available:"
    >
    > - _Each applicable migration's user message_
    >
@@ -61,13 +61,13 @@ The script outputs one of:
 Based on the status:
 
 **If `missing`**:
-> "Flight operations directory not found. Create `{project}/.flightops/` with methodology references?"
+> "Flight operations directory not found. Create `{target-project}/.flightops/` with methodology references?"
 
 **If `outdated`**:
-> "Flight operations references in {project} are outdated. Update?"
+> "Flight operations references in {target-project} are outdated. Update?"
 
 **If `current`**:
-> "Flight operations references are up-to-date in {project}."
+> "Flight operations references are up-to-date in {target-project}."
 
 If the user confirms, create/update the directory:
 
@@ -166,7 +166,7 @@ This project uses [Flight Control](https://github.com/msieurthenardier/mission-c
 
 After creating or updating the directory, inform the user:
 
-> "If you have Claude Code running in {project}, restart it to pick up the new flight operations references."
+> "If you have Claude Code running in {target-project}, restart it to pick up the new flight operations references."
 
 This ensures Claude Code loads the new files into its context when working in the target project.
 
@@ -175,7 +175,7 @@ This ensures Claude Code loads the new files into its context when working in th
 This skill creates/updates the following at project root:
 
 ```
-{project}/
+{target-project}/
 ├── CLAUDE.md                  # Updated with Flight Operations section
 └── .flightops/               # Hidden directory for Flight Control
     ├── README.md              # Explains the directory purpose

@@ -49,7 +49,7 @@ Aviation succeeds through layered planning and clear handoffs. Pilots follow fli
 
 3. **Initialize your project** — Run `/init-project` and select your project. This creates `.flightops/` in your target project with artifact configuration, methodology reference, and crew definitions.
 
-4. **Review agent crew files** — Check the files in `{project}/.flightops/agent-crews/`. These define the crew composition (roles, models, prompts) for each phase. Customize them to your needs.
+4. **Review agent crew files** — Check the files in `{target-project}/.flightops/agent-crews/`. These define the crew composition (roles, models, prompts) for each phase. Customize them to your needs.
 
 5. **Create a mission** — Run `/mission`. This interviews you about desired outcomes and creates a mission artifact in your target project.
 
