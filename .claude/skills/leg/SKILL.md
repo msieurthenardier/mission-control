@@ -79,12 +79,31 @@ Deep dive into the specific implementation:
    - What error handling is required?
    - If this leg modifies database schemas: does it include migration creation AND execution? Both must happen in the same leg — a schema defined but never migrated is a gap.
 
-5. **Identify dependent code** (for interface changes)
+5. **State-machine reachability audit**
+
+   For every state, status, or lifecycle value this leg introduces or relies on, verify nothing in a lower layer makes the state unreachable.
+
+   - Enumerate the infrastructure layers that could foreclose the state: DB constraints (FK ON DELETE behaviors, NOT NULL, CHECK constraints, triggers), application caches and their invalidation rules, API/protocol version compatibility, fallback handlers that silently mask the state, and indexes that imply assumptions.
+   - Audit existing tests for assertions that contradict the new design. A test that pins behavior the new state machine breaks must be inverted, renamed, or deleted as part of this leg — not after. The rename pattern (e.g., `test_X_does_Y` → `test_X_does_not_do_Y` with the assertion inverted) is preferred over delete-and-readd because it documents the intent shift in git blame.
+   - When a design requires a row to persist past a referenced entity's deletion, explicitly inspect the schema's FK behaviors and any tests that pin them. A `ON DELETE CASCADE` on a referencing column will silently delete the row your design needs to keep.
+
+6. **Cache freshness contract**
+
+   For every cache (in-memory dict, query result cache, computed derived state, frontend session storage) this leg reads from or populates, declare an explicit freshness contract.
+
+   - **Source of truth**: which underlying data does this cache reflect?
+   - **Rebuild trigger**: pick exactly one — per-call rebuild, TTL with value, invalidation event, or accepted permanent staleness until process restart.
+   - **Maximum staleness acceptable to the user**: be specific. "Until process restart" is rarely acceptable for user-facing state where users expect their edits to apply.
+   - **User-action invalidation map**: list every user action that mutates the source-of-truth, and confirm each one invalidates or refreshes the cache. If a user can edit X in one UI surface but the cached X never sees the edit elsewhere, that mismatch will surface as a bug — name it now.
+
+   Conflating "the cached object works fine" with "the cached object reflects current config" is a common error. State health and state freshness are different contracts.
+
+7. **Identify dependent code** (for interface changes)
    - Does this leg modify shared interfaces?
    - What files consume these interfaces?
    - Should updating consumers be part of this leg?
 
-6. **Identify platform considerations**
+8. **Identify platform considerations**
    - Does this leg touch OS-specific features?
    - What platform differences might affect implementation?
 
