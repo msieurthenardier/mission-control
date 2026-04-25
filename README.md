@@ -32,7 +32,7 @@ Aviation succeeds through layered planning and clear handoffs. Pilots follow fli
 
 ## Agentic Workflow
 
-**LLM orchestrators**: Run `/agentic-workflow` to drive multi-agent flight execution with Claude Code. The skill orchestrates the full leg cycle — design, implement, review, commit — using three separate Claude instances.
+**LLM orchestrators**: Run `/agentic-workflow` to drive multi-agent flight execution with Claude Code. The skill designs and implements each leg in turn, then runs a single code review and commit across the whole flight, using separate Claude instances for the Flight Director, Developer, and Reviewer roles.
 
 ## Getting Started
 
@@ -55,7 +55,7 @@ Aviation succeeds through layered planning and clear handoffs. Pilots follow fli
 
 6. **Design a flight** — Run `/flight` to break the mission into a technical specification with pre/in/post-flight checklists.
 
-7. **Execute** — Run `/agentic-workflow` to drive multi-agent implementation. This orchestrates design, implement, review, and commit cycles across legs.
+7. **Execute** — Run `/agentic-workflow` to drive multi-agent implementation. This designs and implements each leg in turn, then reviews and commits the whole flight in one pass at the end.
 
 8. **Debrief** — Run `/flight-debrief` and `/mission-debrief` after completion to capture lessons learned.
 

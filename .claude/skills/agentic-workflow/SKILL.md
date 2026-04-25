@@ -1,11 +1,11 @@
 ---
 name: agentic-workflow
-description: Active orchestrator for multi-agent flight execution. Drives the full leg cycle (design, implement, review, commit) using three separate Claude instances.
+description: Active orchestrator for multi-agent flight execution. Drives leg design per leg, then batches implementation across all autonomous legs, with a single code review and commit at the end of the flight.
 ---
 
 # Agentic Workflow
 
-Orchestrate multi-agent flight execution. You drive the full leg cycle — designing legs, spawning Developer and Reviewer agents, and managing git workflow — for a target project's flight.
+Orchestrate multi-agent flight execution. You drive the full leg cycle — designing legs, spawning Developer and Reviewer agents, and managing git workflow — for a target project's flight. Leg design is reviewed per leg, but code review and commit are deferred until after the last autonomous leg completes. This eliminates per-leg review/commit overhead while keeping the same leg design and implementation structure.
 
 ## Prerequisites
 
@@ -76,34 +76,37 @@ Repeat for each leg in the flight.
 2. **Skip the autonomous implementation cycle** (no Developer/Reviewer agents)
 3. **Guide the human through verification steps one at a time** — present a single step, wait for the human to perform it and report results, then proceed to the next step
 4. **Fix issues inline** — if the human reports a failure, diagnose and fix it (spawning a Developer agent if code changes are needed), then re-verify that step before moving on
-5. **Commit when all steps pass** — spawn a Developer agent to update artifacts and commit
+5. **Commit when all steps pass** — update artifacts and commit
 
-**Standard (autonomous) legs**: Follow the Developer/Reviewer cycle below.
+**Standard (autonomous) legs**: Spawn a Developer agent — but do NOT review or commit after each leg.
 
 1. **Spawn a Developer agent** (Task tool, `subagent_type: "general-purpose"`)
    - Working directory: `{working-directory}`
    - Provide the "Implement" prompt from the leg-execution phase file's Prompts section
    - The Developer updates leg status to `in-flight`, implements to acceptance criteria
-   - When done, the Developer updates leg status to `landed`, updates flight log, and signals `[HANDOFF:review-needed]` — do NOT let it commit
-2. **Spawn a Reviewer agent** (Task tool, `subagent_type: "general-purpose"`)
+   - When done, the Developer updates leg status to `landed` and updates flight log — do NOT let it commit or signal `[HANDOFF:review-needed]`
+
+### 2c: Leg Transition
+
+After the Developer completes a leg:
+1. Increment `legs_completed`
+2. If more autonomous legs remain → return to 2a
+3. If this was the last autonomous leg → proceed to Phase 2d
+
+### 2d: Flight Review and Commit
+
+After all autonomous legs are implemented (all uncommitted):
+
+1. **Spawn a Reviewer agent** (Task tool, `subagent_type: "general-purpose"`)
    - Working directory: `{working-directory}`
    - Provide the "Review" prompt from the leg-execution phase file's Prompts section
    - The Reviewer evaluates ALL uncommitted changes against acceptance criteria and code quality
    - The Reviewer signals `[HANDOFF:confirmed]` or lists issues with severity
-3. **If issues found**, spawn a new Developer agent to fix them
+2. **If issues found**, spawn a new Developer agent to fix them
    - Provide the "Fix Review Issues" prompt from the leg-execution phase file with the Reviewer's feedback
    - Loop review/fix until the Reviewer confirms
-4. **Commit** after review passes — include code changes, updated flight log, and leg status updated to `completed`
-
-### 2c: Leg Transition
-
-After `[COMPLETE:leg]` (all git/PR operations run from `{working-directory}`):
-1. Increment `legs_completed`
-2. **Manage PR**:
-   - **First leg**: Open a draft PR with the leg checklist in the body (see PR Body Format below), then check off the completed leg
-   - **Subsequent legs**: Use `gh pr edit --body` to check off the newly completed leg in the existing PR body
-3. If more legs remain → return to 2a
-4. If all legs complete → proceed to Phase 3
+3. **Commit** after review passes — include all code changes, updated flight log, and all leg statuses updated to `completed`
+4. **Manage PR**: Open a draft PR with the leg checklist in the body (see PR Body Format below), all legs checked off
 
 ## Phase 3: Flight Completion
 
@@ -163,9 +166,8 @@ Both strategies use the same branch naming, commit format, PR lifecycle, and PR 
 
 **Commit message format:**
 ```
-leg/{number}: {description}
+flight/{number}: {description}
 
-Flight: {flight-number}
 Mission: {mission-number}
 ```
 
@@ -173,8 +175,7 @@ Mission: {mission-number}
 
 | Event | Action |
 |-------|--------|
-| First leg complete | Open draft PR with leg checklist in body |
-| Each leg complete | Commit code + artifacts, update PR checklist |
+| All legs complete | Open draft PR with all legs checked off |
 | Flight landed | Mark PR ready for review |
 
 **PR body format:**
@@ -188,8 +189,8 @@ Mission: {mission-number}
 
 ## Legs
 
-- [ ] `{leg-slug}` — {brief description}
-- [ ] `{leg-slug}` — {brief description}
+- [x] `{leg-slug}` — {brief description}
+- [x] `{leg-slug}` — {brief description}
 ```
 
 ### Strategy: Branch

@@ -40,7 +40,7 @@ This repository contains the methodology documentation and Claude Code skills fo
 
 ## Claude Code Skills
 
-Twelve skills automate the planning, execution, debrief, and oversight workflow:
+Eleven skills automate the planning, execution, debrief, and oversight workflow:
 
 | Skill | Purpose |
 |-------|---------|
@@ -49,8 +49,7 @@ Twelve skills automate the planning, execution, debrief, and oversight workflow:
 | `/mission` | Create outcome-driven missions through research and interview |
 | `/flight` | Create technical flight specs from missions |
 | `/leg` | Generate implementation guidance for LLM execution |
-| `/agentic-workflow` | Drive multi-agent flight execution (design, implement, review, commit) |
-| `/fast-agentic-workflow` | Streamlined flight execution — implement entire flight, review once, retroactive leg docs |
+| `/agentic-workflow` | Drive multi-agent flight execution (design per leg, batch implement, single review and commit) |
 | `/flight-debrief` | Post-flight analysis for continuous improvement |
 | `/mission-debrief` | Post-mission retrospective for outcomes assessment |
 | `/routine-maintenance` | Post-mission codebase health assessment and maintenance recommendation |
