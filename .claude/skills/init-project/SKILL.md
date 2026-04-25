@@ -79,33 +79,12 @@ cp "${SKILL_DIR}/README.md" "{target-project}/.flightops/"
 
 ### 5. Configure Artifact System (New Projects Only)
 
-**Only if ARTIFACTS.md doesn't exist**, ask the user to select an artifact system:
-
-> "How should mission, flight, and leg artifacts be stored?"
-
-Available templates:
-- **files** — Markdown files in the repository (`templates/ARTIFACTS-files.md`)
-- **jira** — Jira issues: Epics, Stories, Sub-tasks (`templates/ARTIFACTS-jira.md`)
-
-#### 5a. Check for Setup Questions
-
-After the user selects a template, read the template file and check if it contains a `## Setup Questions` section with a table of questions.
-
-If setup questions exist:
-1. Parse the questions from the table (first column contains the questions)
-2. Ask the user each question interactively
-3. Replace the placeholder answers in the table with the user's responses
-
-#### 5b. Copy and Populate Template
-
-Copy the selected template, with answers populated if setup questions were asked:
+**Only if ARTIFACTS.md doesn't exist**, copy the template:
 
 ```bash
-cp "${SKILL_DIR}/templates/ARTIFACTS-{selection}.md" \
+cp "${SKILL_DIR}/templates/ARTIFACTS-files.md" \
    "{target-project}/.flightops/ARTIFACTS.md"
 ```
-
-If setup questions were answered, update the ARTIFACTS.md file to replace the placeholder answers with the user's responses.
 
 **If ARTIFACTS.md already exists**, do not modify it — it's project-specific and may have been customized.
 

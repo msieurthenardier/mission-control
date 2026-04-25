@@ -106,13 +106,7 @@ Mission
     └── Leg
 ```
 
-How you store these artifacts depends on your project's needs. Flight Control supports multiple artifact systems:
-
-- **Markdown files** — Version-controlled documentation in your repository
-- **Issue trackers** — Jira, Linear, GitHub Issues with linked relationships
-- **Hybrid** — Missions in markdown, flights/legs as tickets
-
-Each project configures its artifact system during initialization. The methodology and Claude Code skills adapt to your choice.
+By default, artifacts are stored as version-controlled markdown files in your project's repository. Each project's `.flightops/ARTIFACTS.md` describes where and how artifacts live — skills read this file to determine locations and formats. You can adapt it to other backends (Jira, Linear, GitHub Issues, hybrid setups) by editing this file directly; only the markdown-files template ships out of the box.
 
 ## Claude Code Skills
 
