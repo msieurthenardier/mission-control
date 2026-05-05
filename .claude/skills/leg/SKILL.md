@@ -111,6 +111,34 @@ Deep dive into the specific implementation:
 
 Create the leg artifact using the format defined in `.flightops/ARTIFACTS.md`.
 
+### Phase 3b: Citation Verification
+
+Before marking the leg `ready`, mechanically validate every code-location citation in the draft artifact against current code. Citations drift between when a flight is designed and when its legs are designed (intervening legs commit changes; source artifacts age). Catching drift here prevents the implementing agent from chasing a stale `file:line` into the wrong code.
+
+1. **Extract citations**
+   - Scan the leg artifact for code-location references matching `path/to/file.ext:line` or `path/to/file.ext:line-line` patterns
+   - Also collect symbol-form citations: `path/to/file.ext:symbol_name`
+   - Skip references to non-source artifacts (`mission.md:42`, `flight.md:100`) — those are out of scope
+
+2. **Verify each citation**
+   - Read the cited location in current code
+   - Compare against the snippet, symbol, or surrounding description provided in the leg
+   - Classify each:
+     - **`OK`** — content at the cited location matches the description
+     - **`drifted`** — content moved; the description is still accurate but the line number is wrong
+     - **`gone`** — described content no longer exists in the file (or the file itself is gone)
+     - **`unverifiable`** — citation has no snippet/symbol and the description is too vague to confirm
+
+3. **Repair drift inline**
+   - For `drifted`: locate the new line number via grep on the snippet/symbol and update the citation in the leg artifact
+   - For `gone`: do not silently retire — flag for human review (the gap may have been independently fixed, OR the leg may now be obsolete)
+   - For `unverifiable`: rewrite the citation using one of the durable forms (see "Citing Code Locations" guideline)
+
+4. **Append a Citation Audit summary**
+   - At the bottom of the leg artifact, add a `## Citation Audit` section
+   - If all citations verified clean: one sentence — `N citations verified against current code at leg design time.`
+   - If any drift was repaired or flagged: list each one with classification and resolution
+
 ## Guidelines
 
 ### Writing Effective Objectives
@@ -150,6 +178,21 @@ For accessibility work, include specific checks:
 - Keyboard navigation sequences
 - Screen reader commands to test
 - Automated tool commands (Lighthouse, axe-core)
+
+### Citing Code Locations
+
+When the leg artifact references specific code, prefer durable forms over bare line numbers. Line numbers drift; symbols and snippets do not.
+
+| Form | Example | When to use |
+|------|---------|-------------|
+| `file:symbol` | `the_one/api.py:create_provider` | Most cases — symbol names survive line shifts |
+| `file:line — "snippet"` | `the_one/api.py:805 — "raise ProviderConfigError"` | When a specific line matters; the snippet is a self-verifier |
+| `file:CONSTANT_NAME` | `web/middleware.py:GATED_METHODS` | Module-level constants and assignments |
+| `file:line` (bare) | `api.py:805` | **Avoid** — brittle, no way to verify drift |
+
+The snippet form is especially valuable: it lets Phase 3b mechanically confirm the cited content didn't move, and it tells the implementing agent exactly what they're looking at without needing to chase the line number.
+
+When in doubt, include both — `the_one/api.py:805 (in create_provider) — "raise ProviderConfigError if base_url is empty"` — symbol + line + snippet covers all three drift modes.
 
 ### Implementation Guidance
 
