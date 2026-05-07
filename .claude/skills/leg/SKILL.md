@@ -100,7 +100,7 @@ Deep dive into the specific implementation:
 
 7. **Identify dependent code** (for interface changes)
    - Does this leg modify shared interfaces?
-   - What files consume these interfaces?
+   - What files consume these interfaces? Run `grep -rn '<changed_symbol>' tests/ src/`; if any test or non-leg-scope source imports or calls it, signature changes break any "prior tests pass UNMODIFIED" acceptance criterion.
    - Should updating consumers be part of this leg?
 
 8. **Identify platform considerations**
