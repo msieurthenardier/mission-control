@@ -178,6 +178,7 @@ Each agent receives:
    - Provide the "Inspect Codebase" prompt from the crew file's Prompts section
    - Include: applicable category list, project stack info, known debt from debriefs, user's areas of concern, and **scope assignment from the delegation plan**
    - For partitioned inspections: each Inspector agent receives its module/area scope and only the categories relevant to its assignment
+   - In addition to the crew prompt, the Flight Director directly instructs the Inspector to: scan recent flight debriefs for any test metrics observations (timing, failures, skipped tests, flakes) and look for trends across them — rising suite times, recurring flakes, growing skip lists, persistent failures. Surface concrete optimization recommendations as Category 2 findings (e.g. parallelization, mocking, fixture hoisting, slow-test extraction, runner config), each tied to evidence from the trend.
    - The Inspector performs broad automated checks and returns structured findings per category
 
 #### Security Reviewer

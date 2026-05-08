@@ -37,6 +37,12 @@ Create a technical flight spec from a mission.
    - What's been completed vs. in progress?
    - Are there dependencies on other flights?
 
+6. **Review recent flight debriefs for relevant observations**
+   - Read recent flight debriefs in the project (within and adjacent to this mission)
+   - Look for test metrics observations: known slow suites, recurring flakes, persistent failures, growing skip lists — anything narrated by prior debriefs
+   - Look for unresolved technical concerns or recommendations that touch this flight's likely scope
+   - Carry forward into the technical approach and risk picture: e.g. "this area has slow integration tests, account for that in time estimates"; "known flake in suite X, plan to fix or quarantine if touching that area"; "prior debrief flagged Y — verify whether still relevant"
+
 ### Phase 1b: Upstream Reconnaissance
 
 **Applies when**: The flight sources work items from a prior artifact that cites specific code locations — a maintenance report, a flight or mission debrief's "action items" / "follow-ups" section, an issue tracker, or a security audit. Skip this phase for greenfield flights where no source artifact pre-enumerates findings.
