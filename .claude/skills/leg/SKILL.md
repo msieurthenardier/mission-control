@@ -135,7 +135,7 @@ Before marking the leg `ready`, mechanically validate every code-location citati
    - For `unverifiable`: rewrite the citation using one of the durable forms (see "Citing Code Locations" guideline)
 
 4. **Append a Citation Audit summary**
-   - At the bottom of the leg artifact, add a `## Citation Audit` section
+   - At the bottom of the leg artifact, append a clearly-titled section (something like `## Citation Audit` if the project's leg conventions don't dictate otherwise) summarizing the audit
    - If all citations verified clean: one sentence — `N citations verified against current code at leg design time.`
    - If any drift was repaired or flagged: list each one with classification and resolution
 
