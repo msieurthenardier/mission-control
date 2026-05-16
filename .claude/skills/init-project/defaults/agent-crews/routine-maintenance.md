@@ -463,6 +463,7 @@ For each finding, assign one of:
 - Does this finding represent a real risk, or is it noise?
 - Is the severity proportional to the actual impact?
 - Would this compound if left for another cycle?
+- Is the infrastructure or framing this finding pertains to still serving its original purpose, or has it drifted into "maybe-someday" territory?
 - Is this a new discovery or previously acknowledged debt?
 - Do multiple reviewers corroborate the same issue?
 - Are any reviewer assessments questionable — too alarmist or too dismissive?

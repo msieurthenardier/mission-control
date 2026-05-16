@@ -201,6 +201,8 @@ Break flights into legs based on technical boundaries:
 
 **For documentation**: Consider whether README, CLAUDE.md, or other docs need updates as part of this flight — especially for flights adding new CLI commands, API endpoints, or configuration options
 
+**For carry-forward debt from prior debriefs**: when multiple small items touch the same files or directories, bundle them into a single shared-surface leg rather than scheduling separate flights or letting them decay. Items that don't share a surface stay separate — bundling unrelated work just to "pull forward" is how scope creep enters maintenance work.
+
 **For schema changes**: Include explicit migration legs and verify against the live database, not just mocks
 
 **For HAT and alignment**: During the crew interview, ask the user whether they'd like to include an interactive HAT (human acceptance test) and alignment leg. Explain that this optional leg is a guided HAT session — the agent walks the user through a series of tests and verification steps, fixing issues along the way until the user is satisfied with the results. If the user opts in, include it in the breakdown, marked as optional.
