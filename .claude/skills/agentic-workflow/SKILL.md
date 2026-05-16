@@ -44,6 +44,8 @@ If resuming a flight already in progress, verify state consistency:
 
 Repeat for each leg in the flight.
 
+**Mid-execution scope changes**: if the work in this flight stops serving its original purpose (operator pivots, prior assumptions invalidated), don't rewrite the mission/flight artifacts in place. Preserve the original framing as commentary, record the pivot decision in the flight-log Flight Director Notes with rationale, and treat the new framing as the live spec going forward. If the pivot supersedes content in an upstream artifact (maintenance report, prior debrief), annotate at the artifact header rather than rewriting the body — inspection records are snapshots, not living plans.
+
 ### 2a: Leg Design
 
 1. **Design the leg** using the `/leg` skill (if the Skill tool is unavailable, read `.claude/skills/leg/SKILL.md` and follow the workflow directly)
@@ -139,15 +141,7 @@ Signals are part of the Flight Control methodology and are NOT configurable per-
 
 ## Flight Director Decision Log
 
-The Flight Director must maintain transparency about its own decisions. After each major orchestration step, log what happened and why in the flight log under a `### Flight Director Notes` subsection:
-
-1. **Phase file loading** — Record which phase file was loaded (project or default fallback) and what crew was extracted
-2. **Agent spawning** — Record which agent was spawned, with what prompt, and what model
-3. **Review cycle decisions** — When incorporating feedback, note what was accepted/rejected and why
-4. **Escalation decisions** — When choosing between "fix and re-review" vs "escalate to human," note the reasoning
-5. **Signal interpretation** — When a crew agent's output is ambiguous, note how it was interpreted
-
-This is not a separate file — it goes in the flight log alongside leg entries. The goal is that anyone reviewing the flight log can understand not just what the crew did, but why the Flight Director made the orchestration choices it did.
+Log orchestration decisions in the flight log under `### Flight Director Notes` — phase file loaded, agents spawned, review-cycle calls, escalations, signal interpretations. Anyone reading the log should understand not just what the crew did but why MC made the choices it did.
 
 ## Git Workflow
 
