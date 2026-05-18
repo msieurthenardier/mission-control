@@ -111,6 +111,12 @@ See `docs/artifacts-md-ambiguities.md` for the full review of how the current AR
 
 Mission-control is a neutral methodology tool. Its memory (if used at all) is reserved for methodology preferences, user collaboration preferences, and cross-cutting tooling notes — never for project-specific content.
 
+## Never Leak Operator Identity
+
+Never write the operator's machine username or absolute home paths (`/home/<user>/...`, `/Users/<user>/...`, `C:\Users\<user>\...`) into any generated content — artifacts, code, tests, commit messages, PR descriptions, log excerpts pasted into docs.
+
+Use repo-relative paths (`src/foo/bar.ts`), `~/projects/<slug>/...`, or `<username>` placeholders instead. If you spot a leaked path in existing content, flag it and offer to scrub.
+
 ## Public Repository
 
 This is a public repository. Keep all committed content anonymized:
