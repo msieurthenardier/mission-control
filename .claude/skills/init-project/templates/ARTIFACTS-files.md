@@ -18,8 +18,14 @@ This project stores Flight Control artifacts as markdown files in the repository
 │               ├── flight-debrief.md
 │               └── legs/
 │                   └── {NN}-{leg-slug}.md
-└── maintenance/
-    └── {YYYY-MM-DD}.md
+├── maintenance/
+│   └── {YYYY-MM-DD}.md
+└── tests/
+    └── behavior/
+        └── {slug}.md                  ← behavior-test spec
+            {slug}/runs/
+              ├── {YYYY-MM-DD-HH-MM-SS}.md   ← run log
+              └── {YYYY-MM-DD-HH-MM-SS}/     ← evidence dir (gitignored)
 ```
 
 ## Naming Conventions
@@ -543,6 +549,122 @@ Chronological notes from work sessions.
 
 ---
 
+### Behavior Test — Spec
+
+| Property | Value |
+|----------|-------|
+| Location | `tests/behavior/{slug}.md` |
+| Created | Inline during planning conversations (flight, leg, mission, debrief, maintenance). See `.claude/skills/behavior-test/AUTHORING.md` on the mission-control side. |
+| Updated | When the spec drifts from observed system behavior |
+| Purpose | Re-runnable, AI-driven, multi-step acceptance test against real UI / API / shell / filesystem |
+| Run via | `/behavior-test {slug}` |
+
+The run skill executes tests using the **Witnessed** verification pattern — every action is judged by an independent Validator agent. The pattern guarantees that the agent that did the work is never the same agent that decides whether the work was correct.
+
+**Format:**
+
+```markdown
+# Behavior Test: {Title}
+
+**Slug**: `{slug}`
+**Status**: draft | active | archived
+**Created**: {YYYY-MM-DD}
+**Last Run**: {YYYY-MM-DD-HH-MM-SS | never}
+
+## Intent
+One paragraph: what this test verifies and why this paradigm fits (vs unit/integration tests).
+
+## Preconditions
+- Environment / fixture state required before running.
+- Each precondition is operator-checkable; the run skill confirms readiness before spawning agents.
+
+## Observables Required
+What kinds of observables the test reads — and which apparatus (MCP / tool) measures each. The Executor discovers apparatus by name pattern at run time.
+
+- browser (DOM state, page content — measured via chrome-devtools, playwright, or similar)
+- shell (stdout, stderr, exit code — measured via Bash)
+- http (response status / body / headers — measured via curl via shell or dedicated MCP)
+- filesystem (file contents, directory listings — measured via Read / Write / Bash)
+
+## Steps
+
+| # | Actions | Expected Results |
+|---|---------|------------------|
+| 1 | Navigate browser to `{url}`. Wait for `{element}`. Click `{element}`. | `{observable result}` — e.g., page loads, toggle is in expected state, etc. |
+| 2 | (Setup row, no judgment) | (empty) |
+| 3 | (Wait point, no actions) | Within `{timeout}`, `{observable result}`. |
+| 4 | Multi-action: do X, then do Y, then do Z. | Multi-expectation: A is true AND B is true. |
+
+**Row conventions:**
+- One row = one logical checkpoint (may bundle multiple actions + multiple expected results).
+- Actions and Expected Results are in plain English — human-performable.
+- Empty Actions = wait point; the Executor idles while the Validator polls.
+- Empty Expected Results = pure setup; the Validator skips judgment.
+- Use `[a11y]` marker in Expected Results to flag accessibility-relevant checks (picked up by the optional Accessibility Validator).
+
+## Out of Scope
+What this test does NOT verify (link related tests).
+
+## Variants (optional)
+Parametrized re-runs with different inputs.
+```
+
+---
+
+### Behavior Test — Run Log
+
+| Property | Value |
+|----------|-------|
+| Location | `tests/behavior/{slug}/runs/{YYYY-MM-DD-HH-MM-SS}.md` |
+| Created | At the end of each `/behavior-test {slug}` invocation |
+| Purpose | Per-run record: verdict, per-step results, Executor + Validator trace, evidence references |
+
+**Format:**
+
+```markdown
+# Behavior Test Run: {slug} — {timestamp}
+
+**Spec**: [tests/behavior/{slug}.md](../{slug}.md)
+**Status**: pass | fail | partial | aborted
+**Started**: {iso8601}
+**Completed**: {iso8601}
+**Duration**: {hh:mm:ss}
+**Executor**: {sub-agent id}
+**Validator**: {sub-agent id}
+
+## Summary
+{n_pass} / {n_total} steps passed. {n_fail} failed; {n_inconclusive} inconclusive.
+
+## Step Results
+
+### Step {N} — {PASS | FAIL | INCONCLUSIVE | SKIPPED}
+- **Actions taken**: {executor's report of what was performed}
+- **Raw state**: {one-line summary or excerpt}
+- **Expected**: {verbatim from spec}
+- **Verdict**: {pass/fail/inconclusive} — {validator's reasoning}
+- **Evidence**: [{relative path}](./{ts}/{filename})
+- **Validator notes**: {optional}
+- **Operator decision**: {continued | halted | rerun-step} (only when step failed)
+
+## Orchestrator Notes
+{Decisions made during the run: model preferences, specialized validators spawned, operator interventions.}
+
+## Closing Summaries
+
+### Executor closing
+{Executor's freeform closing summary — anomalies, environment hiccups.}
+
+### Validator closing
+{Validator's freeform closing summary — spec-quality observations, patterns of failure.}
+
+## Operator Notes
+{Post-run reflections.}
+```
+
+**Evidence directory** `tests/behavior/{slug}/runs/{ts}/` — gitignored. Holds screenshots, snapshot dumps, response bodies, file captures referenced by the run log.
+
+---
+
 ## State Tracking
 
 States are tracked in the frontmatter or status field of each artifact:
@@ -552,6 +674,8 @@ States are tracked in the frontmatter or status field of each artifact:
 | Mission | `planning` → `active` → `completed` (or `aborted`) |
 | Flight | `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`) |
 | Leg | `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`) |
+| Behavior Test Spec | `draft` → `active` → `archived` |
+| Behavior Test Run | `pass` \| `fail` \| `partial` \| `aborted` (terminal; never edited after the run completes) |
 
 ## Conventions
 

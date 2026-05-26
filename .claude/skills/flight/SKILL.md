@@ -146,6 +146,8 @@ Create the flight artifact using the format defined in `.flightops/ARTIFACTS.md`
 
 Also create the flight log artifact (empty, ready for execution notes).
 
+**Verification approach — consider behavior tests.** If the flight's acceptance criteria need real-environment observation that unit/integration tests can't cover (UI flows, multi-component interactions, AI agent behavior), author one or more **behavior test** specs inline as part of this phase. A behavior test is a Zephyr-style Action | Expected Result table run via `/behavior-test {slug}` with two live agents (Executor + Validator) using the Witnessed pattern. Write the spec to the configured behavior-test directory (per ARTIFACTS.md; default `tests/behavior/{slug}.md`); reference the slug in the flight's Verification section. See `.claude/skills/behavior-test/AUTHORING.md` for the authoring guide (when to use, interview shape, spec format, common pitfalls). Don't author them speculatively — only when the verification cost is justified by the value of real-environment observation.
+
 ### Phase 5b: Design Review
 
 Spawn an Architect agent to validate the flight spec against the real codebase before presenting it to the crew.

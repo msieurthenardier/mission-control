@@ -160,6 +160,8 @@ Criteria must be:
 
 **Strong**: "User model exists in `prisma/schema.prisma`"
 
+**Behavior tests as acceptance criteria.** When a criterion can only be verified by acting on the running system (UI flow, multi-component interaction, AI agent behavior), author a **behavior test** spec inline rather than enumerating fragile verification steps in the leg. A behavior test is a Zephyr-style Action | Expected Result table run via `/behavior-test {slug}` with two live agents using the Witnessed pattern. Write the spec to the configured behavior-test directory (per ARTIFACTS.md; default `tests/behavior/{slug}.md`); reference the slug in this leg's acceptance criteria as "Run `/behavior-test {slug}` and confirm pass." See `.claude/skills/behavior-test/AUTHORING.md` for the authoring guide.
+
 ### Verification Steps
 
 Tell the agent exactly *how* to confirm each criterion:

@@ -92,6 +92,44 @@ grep -rql 'queued\|diverted\|blocked\|review.*completed' "{target-project}/.flig
 
 ---
 
+### 004 — Install behavior-test artifacts and crew
+
+Behavior tests are a new acceptance-test paradigm (AI-driven, multi-step, Witnessed pattern) shipped via the `/behavior-test` skill on the mission-control side. Each target project needs the spec/run-log format added to its `ARTIFACTS.md` and the Executor + Validator crew prompts installed at `.flightops/agent-crews/behavior-tests-execution.md` so the run skill can drive its agents through the project.
+
+**Detection** (returns true if migration is needed):
+
+```bash
+[[ ! -f "{target-project}/.flightops/agent-crews/behavior-tests-execution.md" ]] || \
+  ! grep -q "Behavior Test — Spec" "{target-project}/.flightops/ARTIFACTS.md" 2>/dev/null
+```
+
+> **Note:** This runs after migrations 001-003, so it checks the post-rename `.flightops/` path.
+
+**Actions:**
+
+1. Install the crew file (Executor + Validator role definitions + prompts):
+   ```bash
+   cp ".claude/skills/init-project/defaults/agent-crews/behavior-tests-execution.md" \
+      "{target-project}/.flightops/agent-crews/behavior-tests-execution.md"
+   ```
+   If the destination already exists (operator may have a customized copy from a prior partial install), prompt: overwrite, skip, or diff-and-merge.
+
+2. Append the behavior-test artifact sections to the project's `ARTIFACTS.md`:
+   - Add the "Behavior Test — Spec" section + format example.
+   - Add the "Behavior Test — Run Log" section + format example.
+   - Add `tests/behavior/{slug}.md` line to the Directory Structure tree.
+   - Add the two new rows to the State Tracking table:
+     - `Behavior Test Spec | draft → active → archived`
+     - `Behavior Test Run | pass | fail | partial | aborted` (terminal)
+   - Reference: the canonical sections live in `.claude/skills/init-project/templates/ARTIFACTS-files.md`.
+
+   If the operator has heavily modified ARTIFACTS.md (e.g., uses a non-filesystem artifact backend), surface the proposed insertions and ask before writing. Defer to operator on placement.
+
+**User message:**
+> Installing behavior-test artifact sections (spec + run-log format) in ARTIFACTS.md and the run-time crew (Executor + Validator) at `.flightops/agent-crews/behavior-tests-execution.md`. These let `/behavior-test {slug}` run behavior tests against this project. Existing artifacts unaffected.
+
+---
+
 ## Adding Future Migrations
 
 To add a new migration:

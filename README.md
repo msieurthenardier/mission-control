@@ -123,6 +123,7 @@ Flight Control includes Claude Code skills for interactive planning:
 | `/agentic-workflow` | Drive multi-agent flight execution |
 | `/mission-debrief` | Post-mission retrospective for outcomes assessment |
 | `/daily-briefing` | Cross-project status report with health assessment |
+| `/behavior-test` | Run a behavior test — live two-agent execution (Executor + Validator) against real UI / API / shell / filesystem, Zephyr-style Action \| Expected Result spec. Specs are authored inline during planning conversations (see `.claude/skills/behavior-test/AUTHORING.md`). |
 
 ## Recommended Workflow
 

@@ -36,11 +36,13 @@ Flight Control is an AI-first software development lifecycle methodology using a
 - **Flights** (balanced) — Technical specifications with pre/in/post-flight checklists, hours-to-days scope
 - **Legs** (AI-optimized) — Structured implementation steps with explicit acceptance criteria, minutes-to-hours scope
 
+Alongside the planning hierarchy, Flight Control includes **behavior tests** — Zephyr-style multi-step acceptance tests run with two live AI agents (an Executor that performs each step's actions and an independent Validator that judges each step's expected results) using the **Witnessed** pattern. Behavior tests verify real-environment behavior (UI flows, multi-component interactions, AI agent behavior) that doesn't fit unit/integration tests. Specs are authored inline during planning conversations and run via the `/behavior-test` skill. See `.claude/skills/behavior-test/AUTHORING.md` for the authoring guide.
+
 This repository contains the methodology documentation and Claude Code skills for interactive planning.
 
 ## Claude Code Skills
 
-Eleven skills automate the planning, execution, debrief, and oversight workflow:
+Twelve skills automate the planning, execution, debrief, oversight, and acceptance-test workflows:
 
 | Skill | Purpose |
 |-------|---------|
@@ -55,6 +57,7 @@ Eleven skills automate the planning, execution, debrief, and oversight workflow:
 | `/routine-maintenance` | Post-mission codebase health assessment and maintenance recommendation |
 | `/preflight-check` | Verify all projects have current methodology files and crew definitions |
 | `/daily-briefing` | Cross-project status report with health assessment and methodology insights |
+| `/behavior-test` | Run a behavior test — spawn two live agents (Executor + Validator) using the Witnessed pattern (every action judged by an independent agent), drive them through the spec's Zephyr-style Action \| Expected Result table with mid-test communication, write a run log with evidence. For real-environment verification (UI / API / shell / filesystem) that doesn't fit unit tests. Specs are authored inline during planning conversations — see `.claude/skills/behavior-test/AUTHORING.md` for the authoring guide. |
 
 Run `/init-project` before using the other skills on a new project to create the flight operations reference directory and configure the artifact system.
 
