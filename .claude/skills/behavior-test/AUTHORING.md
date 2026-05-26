@@ -25,6 +25,38 @@ Two concepts the spec is built on:
 
 If the operator stalls when asked "what's the observable for that expected result?", the spec isn't ready. That's the load-bearing question of authoring.
 
+## Rendered State, Not Internal State
+
+Within a single observable taxonomy, prefer the form of the observable that reflects what a real observer would perceive, not the form that's easiest to query. For the browser frame in particular: prefer **rendered state** (what the user actually sees) over **internal state** (what the DOM happens to say).
+
+Concretely:
+- **A screenshot** is the strongest evidence of rendered state — it captures the literal pixels.
+- **The accessibility tree** (a11y snapshot) is the second-strongest — it's the system's contract for what assistive tech (and by extension a perceiving user) can know about the page.
+- **The DOM** is weaker. An element can exist in the DOM with `.checked === true` while being styled `display: none`, sized 0×0, clipped out of viewport, or positioned off-screen. A spec or eval that reads `.checked` and sees `true` will declare "the toggle is on" even when no human can possibly see a toggle.
+
+The same hazard exists in non-browser frames in milder form: shell `echo` may write to a closed FD; an HTTP endpoint may return 200 with an empty body; a file may exist but be unreadable. Observe what would be perceived, not what would be queried.
+
+**For specs**: write Expected Results in user-perceivable terms ("the toggle is visible and unchecked", "the success banner appears", "the chart shows three bars"). Do not write Expected Results that reference DOM internals (`#cf-toggle.checked === true`, `[data-foo=bar] is present`). Channel coupling at the Expected Result level is the same pitfall as channel coupling at the Action level (see "Channel coupling in Actions" in Common Pitfalls).
+
+**For evidence at run time**: the Executor captures screenshots and a11y snapshots first; structured DOM evals are supplementary and used only when they add information the higher-fidelity evidence doesn't (e.g., reading the value of a non-visible internal state for diagnostic context, never as primary evidence).
+
+**For verdicts**: the Validator weights screenshot and a11y observations above DOM evals. An element that's queryable but not rendered is a real-world failure; the Validator should call it that way, not pass it because the DOM agreed.
+
+This rule earns its keep in cases like a toggle whose JavaScript correctly tracks state but whose CSS class is broken — the DOM says the state is right; the user sees nothing. A behavior test that validates the DOM will pass; a behavior test that validates the rendered UI will fail. The latter is what the test is for.
+
+## Same Observable Taxonomy — The Frame Discipline
+
+Within a single row of the Step Table, the Actions and Expected Results should belong to a **similar observable taxonomy** — the categories listed in "Observables Required" (browser, shell, http, filesystem). Action in the browser frame ("click the toggle") → Expected Result in the browser frame ("the success banner appears"). Action in the shell frame ("run `./script.sh`") → Expected Result observable through the shell ("exit code 0, stdout contains 'ok'").
+
+A behavior test models how a real observer experiences the system. A user posting a Discord message sees the bot's reply (browser); they don't see the SQLite audit log (filesystem). A test that asserts "the bot replied AND the audit log shows `disposition=stepped`" mixes frames — the technical observable adds precision, but it also couples the test to internal implementation a user-facing test shouldn't depend on. Lean toward the human-friendly observable; treat technical observables as escape hatches that justify themselves.
+
+**When crossing frames is legitimate**:
+- The system has multiple internal states that collapse to the same user-facing outcome (e.g., "bot is silent" could mean "policy decided no" OR "system error" — only the audit log distinguishes).
+- The action triggers an asynchronous side effect with no UI surface (email sent, webhook fired, queue job enqueued).
+- The test is verifying internal contracts (migration ran, secret rotation took effect, cache invalidated).
+
+When you do cross frames, mark the row with `[mixed-frame]` in the Expected Results cell and add a one-sentence justification. If the cross-frame observable is being used to distinguish internal states the user can't see, also note the gap as system observability debt — the UI might benefit from surfacing the distinction.
+
 ## When to Author a Behavior Test
 
 Trigger points during planning conversations:
@@ -71,6 +103,8 @@ Each precondition should be operator-checkable: "the app is running on X URL", "
 
 Avoid hidden preconditions ("the database has the default seed data") — make them explicit so a future operator running the test in a fresh environment doesn't get mystery failures.
 
+Preconditions that can decay over time — external services, authenticated sessions, warm caches, time-bounded credentials, background workers — should be paired with an **active verification**, not just a declaration. Either include a precondition-check step at the top of the spec that probes the live state, or note a precheck script the operator runs immediately before invoking the test. A precondition that's true at authoring time and false at run time is a silent test failure waiting to happen, often surfacing several steps later as a confusing cascade.
+
 ### 5. The Step Table — the load-bearing work
 
 This is where you build the Zephyr-style two-column table.
@@ -93,6 +127,8 @@ Until the test is complete.
 - **A row can have Actions only (no Expected Result)** — useful when setting up state. The Validator skips judgment and the Orchestrator advances. Mark "(setup row, no judgment)" in the Expected Results cell.
 - **A row can have Expected Results only (no Actions)** — useful as an asynchronous waitpoint. Mark "(wait point, no actions)" in the Actions cell. The Validator polls or observes until the expected result is met or a timeout elapses.
 - **Use `[a11y]` markers** on Expected Results that need accessibility judgment — picked up by the optional Accessibility Validator at run time.
+- **Stay in the observer's frame**: Actions and Expected Results within a row should share an observable taxonomy. Browser → browser, shell → shell, etc. Cross-frame rows need a justification and a `[mixed-frame]` marker. See "Same Observable Taxonomy" above.
+- **Defeat client-side caching across mutation boundaries**: If Step N modifies state that a later step expects to observe through the same client, the later step's Action should begin with a deliberate cache defeat (hard reload, re-fetch, or whatever the apparatus exposes). Single-page applications and other client-side caches commonly serve stale in-memory state on navigation without re-fetching from the backend, masking the mutation and producing a false-pass or confusing false-fail. Don't assume the client noticed.
 
 ### 6. Out of Scope
 
@@ -163,9 +199,15 @@ One paragraph: what this test verifies and why this paradigm fits.
 
 **Assumptions in Preconditions that aren't actually checked.** "The database is clean" is a precondition. If the operator can't actually verify it (no UI, no API endpoint), either add a step to make it observable or replace with a more concrete precondition ("the operator ran `./scripts/reset-db.sh` within the last 60 seconds").
 
+**Declared-but-decaying preconditions.** Worse than an unchecked precondition is a precondition that was true at authoring time but can silently lapse — token expiry, warm-cache cooldown, external-service availability, background-worker liveness. Pair every decay-prone precondition with an active probe at run time, either as a precondition-check step in the spec or as a precheck script the operator runs before invoking the test.
+
 **No Out of Scope section.** Tests without explicit boundaries drift to verifying everything, become slow + fragile + hard to maintain. Authoring is incomplete without naming what the test doesn't cover.
 
-**Channel coupling in Actions.** Writing "execute `document.querySelector('[data-toggle]').click()`" couples the Action to a specific browser-automation API. Write "click the toggle" instead; the Executor figures out which apparatus performs the click. The spec stays apparatus-agnostic; the operator can read it; future Executors with different MCPs still understand it.
+**Channel coupling in Actions.** Writing "execute `document.querySelector('[data-toggle]').click()`" couples the Action to a specific browser-automation API. Write "click the toggle" instead; the Executor figures out which apparatus performs the click. The spec stays apparatus-agnostic; the operator can read it; future Executors with different MCPs still understand it. The same rule applies to Expected Results — write "the toggle is checked", not "`#toggle.checked === true`".
+
+**Cross-frame Expected Results.** A row where the Action is a UI click but the Expected Result is a database query has slipped out of the user's frame. The technical observable might be correct, but the test no longer models the user's experience. Default to the same observable taxonomy as the Action; cross frames only when the user-facing observable can't distinguish the cases you need to distinguish, and when you do, mark `[mixed-frame]` and justify in one sentence. See "Same Observable Taxonomy" above.
+
+**DOM-checked-but-invisible.** Within the browser frame, an Expected Result like "the toggle is checked" is satisfied by `.checked === true` even when the toggle is styled `display: none`, sized 0×0, or rendered with no visible chrome (broken CSS class, missing wrapper component). The DOM is happy; the user sees nothing. Specs and Validator verdicts must rest on what's actually rendered — screenshot + a11y tree — not on what's queryable. See "Rendered State, Not Internal State" above.
 
 ## Iterating on Specs
 

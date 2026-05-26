@@ -65,6 +65,18 @@ For the conceptual background (observable + apparatus, testability discipline, W
 - Bias toward "looks fine, moving on" if the same agent both acts and judges. Independence forces a colder verdict.
 - Each context stays focused on its job; the Validator doesn't bloat with browser snapshots; the Executor doesn't pollute working memory with judgment criteria.
 
+## Execution Modes: Live vs Re-spawn-Per-Step
+
+The architecture above assumes the Orchestrator can both spawn an agent AND continue it across turns (the "live" mode). Some session contexts lose the continuation capability — for example, sessions resumed after auto-summarization may not have the multi-turn agent-continuation tool loaded even though `Agent` is still available. The Orchestrator MUST verify continuation is available at the start of the run; if it isn't, the run falls back to **re-spawn-per-step**: a fresh Executor (and Validator) per row, with the prior step's outcomes summarized into the prompt as context. The fallback is degraded but functional, and is preferable to silently proceeding as if the architecture were intact.
+
+**Re-spawn-per-step caveats** (these are operating-mode constraints, not authoring constraints):
+
+- **Browser apparatus state persists across spawns** because the browser process is shared infrastructure — each new agent can re-attach to the same tabs/pages. Other apparatus state (auth tokens cached in memory, in-process sessions) does not. Spec authors should not assume in-agent context survives a re-spawn.
+- **No "ask the Executor" loop**: the Validator cannot reach back to a prior Executor for follow-up state. If the row needs cross-agent collaboration, write the Executor's report richly enough that the Validator can render verdict without follow-up.
+- **Long Expected-Result wait windows are an execution risk** in this mode. A single agent that blocks on a long sleep can exhaust its runtime budget before producing a report. Steps with waits longer than ~30 seconds must be split: one spawn performs the Action, the wait happens in the Orchestrator's own real-time (not the agent's), then a second spawn captures the post-state. Alternatively, poll the apparatus on a tighter cadence so each agent invocation returns quickly. The live-agent default avoids this problem because the wait is real time outside the agent's budget; re-spawn does not have that luxury.
+
+The Orchestrator should announce the active mode to the operator before Phase 4 starts, and note the mode in the run log under `### Orchestrator Notes`.
+
 ## Invocation
 
 ```
@@ -93,6 +105,7 @@ Spawn via `Agent` tool with `subagent_type: general-purpose`, using the **Execut
 - Hands over the full spec (so the Executor has context for what's coming).
 - Establishes apparatus discovery — "scan registered MCPs by name pattern; report which observables you can measure."
 - Establishes the per-step report format.
+- **Establishes evidence-fidelity ordering**: for the browser frame, capture rendered state first (screenshot + accessibility snapshot) and treat DOM evals as supplementary diagnostic context, never as primary evidence. An element that's DOM-present but visually missing must be reported as such — `raw_state` describes what would be perceived, not just what was queried. See "Rendered State, Not Internal State" in AUTHORING.md.
 
 The Executor returns `[READY]` + its agent ID after scanning apparatus. The Orchestrator keeps the agent ID for SendMessage continuation.
 
@@ -105,6 +118,8 @@ Spawn via `Agent` tool with `subagent_type: general-purpose`, using the **Valida
 - Establishes the role: "you will judge each step's Expected Results when I send the Executor's raw state. Do not pre-judge upcoming steps."
 - Hands over the full spec (Validator sees what's coming so it can flag spec-level concerns proactively).
 - Establishes the per-step verdict format.
+- **Establishes frame-aware judgment**: when an Expected Result is marked `[mixed-frame]`, weight the observable in the same taxonomy as the row's Action; the cross-frame observable is supplementary, present only to distinguish internal states the user-facing observable collapses. A pass on the user-facing observable plus a fail on the supplementary observable is a real fail (the system is behaving differently from the spec's distinguishing case); a fail on the user-facing observable is a fail regardless of the supplementary observable. See "Same Observable Taxonomy" in AUTHORING.md.
+- **Establishes rendered-state precedence**: weight screenshot and a11y observations above DOM-state observations. An element that's DOM-queryable but not rendered (broken CSS, hidden ancestor, zero-sized chrome) is a fail at the user-perceivable level even when the DOM agrees with the Expected Result. The Validator's verdict reflects what a user sees, not what JavaScript can read. See "Rendered State, Not Internal State" in AUTHORING.md.
 
 The Validator returns `[READY]` + its agent ID, optionally with spec-level concerns reported.
 
