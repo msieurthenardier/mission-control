@@ -95,7 +95,7 @@ The argument is the spec's slug (no path, no extension). The skill resolves the 
 4. Validate spec shape — required sections: Intent, Preconditions, Observables Required, Steps table, Out of Scope. If any is missing or empty → STOP with a clear error.
 5. Confirm preconditions with the operator. For preconditions that need human action ("operator is logged in", "test fixture exists"), wait for explicit confirmation before spawning agents.
 6. Compute run timestamp `YYYY-MM-DD-HH-MM-SS` (UTC).
-7. Create the evidence directory `{behavior-test-dir}/<slug>/runs/<ts>/`. Add the runs directory to `.gitignore` if not already there.
+7. Compute the ephemeral evidence directory: `/tmp/behavior-tests/<project-slug>/<slug>/<ts>/`. Create it. **This is never under the project tree.** Evidence files (screenshots, snapshots, eval JSON, log captures) are local-only and not committed — they may contain PII (operator-visible chat, sidebar member lists, env-derived IDs) and are cheap to regenerate by re-running the spec. The only behavior-test artifacts that ever live in the project tree are the spec (`{behavior-test-dir}/<slug>.md`) and the run log (`{behavior-test-dir}/<slug>/runs/<ts>.md`).
 
 ### Phase 2: Spawn Executor (live)
 
@@ -217,7 +217,7 @@ For authoring guidance (interview shape, row conventions, common pitfalls), see 
 - **Raw state**: {one-line summary or excerpt}
 - **Expected**: {verbatim from spec}
 - **Verdict**: {pass/fail/inconclusive} — {validator's reasoning}
-- **Evidence**: [evidence/step-N.png](./{ts}/step-N.png)
+- **Evidence**: `step-N-screenshot.png`, `step-N-snapshot.txt` (ephemeral; see file header note)
 - **Validator notes**: {optional}
 - **Operator decision**: {continued | halted | rerun-step} (only when step failed)
 
@@ -236,7 +236,13 @@ For authoring guidance (interview shape, row conventions, common pitfalls), see 
 {Post-run reflections.}
 ```
 
-Evidence directory `{behavior-test-dir}/<slug>/runs/<ts>/` — gitignored. Holds screenshots, snapshot dumps, response bodies, file captures referenced by the run log.
+The run log should include a header line noting the ephemeral evidence path used for this run, e.g.:
+
+```
+**Evidence (ephemeral, local-only, not committed)**: lived at `/tmp/behavior-tests/<project>/<slug>/<ts>/` during the run; re-derivable by re-running the spec.
+```
+
+This makes the local-only nature explicit to anyone reading the committed run log later.
 
 ---
 
@@ -263,10 +269,11 @@ If an observable the spec requires has no matching apparatus, the Executor signa
 
 ## Evidence Handling
 
-- Evidence files live under `{behavior-test-dir}/<slug>/runs/<ts>/`.
-- The evidence directory is **gitignored** per the user-global "test snapshots not committed" rule. The skill adds the runs directory to `.gitignore` on first run if not already gitignored.
-- Run-log markdown files (`runs/<ts>.md`) are NOT gitignored — they are the artifact of record. Evidence is referenced from the log via relative paths.
-- A teammate looking at a committed run log sees the verdict + per-step reasoning + Executor's reports, but does NOT see the screenshots unless they re-run.
+- Evidence files live at an **ephemeral path outside the project tree** (default: `/tmp/behavior-tests/<project-slug>/<slug>/<ts>/`). They are never committed and never written into the project's source tree.
+- The reason is twofold: (a) evidence files routinely contain operator-visible UI surfaces with PII (member lists, real-name peers, profile chrome, env-derived IDs), (b) screenshots and per-step JSON dumps would bloat the repo with content that a fresh test run regenerates cheaply.
+- Run-log markdown files (`{behavior-test-dir}/<slug>/runs/<ts>.md`) DO live in the project tree and are committed — they are the artifact of record. The run log captures the prose evidence (verdicts, raw_state descriptions, Validator reasoning) that survives without the binary artifacts.
+- Per-step entries in the run log reference evidence files by name only (e.g., `\`step-3-screenshot.png\``), without paths — the file names identify what was captured; the bytes only exist on the original run's machine.
+- A teammate reading a committed run log sees the verdict + per-step reasoning + Executor's structured reports. To inspect the bytes, they re-run the spec.
 
 ---
 

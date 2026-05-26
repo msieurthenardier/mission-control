@@ -22,10 +22,15 @@ This project stores Flight Control artifacts as markdown files in the repository
 │   └── {YYYY-MM-DD}.md
 └── tests/
     └── behavior/
-        └── {slug}.md                  ← behavior-test spec
-            {slug}/runs/
-              ├── {YYYY-MM-DD-HH-MM-SS}.md   ← run log
-              └── {YYYY-MM-DD-HH-MM-SS}/     ← evidence dir (gitignored)
+        ├── {slug}.md                       ← behavior-test spec (committed)
+        └── {slug}/runs/
+            └── {YYYY-MM-DD-HH-MM-SS}.md    ← run log (committed)
+
+# Evidence directory lives at an ephemeral path OUTSIDE the project tree:
+#   /tmp/behavior-tests/{project-slug}/{slug}/{YYYY-MM-DD-HH-MM-SS}/
+# Never written into tests/behavior/. Holds screenshots, snapshot dumps,
+# eval JSON, log captures. Local-only; cheap to regenerate by re-running.
+# Two reasons: (a) PII risk in screenshots/snapshots, (b) repo bloat.
 ```
 
 ## Naming Conventions
@@ -661,7 +666,7 @@ Parametrized re-runs with different inputs.
 {Post-run reflections.}
 ```
 
-**Evidence directory** `tests/behavior/{slug}/runs/{ts}/` — gitignored. Holds screenshots, snapshot dumps, response bodies, file captures referenced by the run log.
+**Evidence directory**: `/tmp/behavior-tests/{project-slug}/{slug}/{ts}/` — outside the project tree, never committed. Holds screenshots, snapshot dumps, response bodies, file captures referenced by the run log. Skipping commit is deliberate: evidence routinely captures operator-visible UI (member lists, real-name peers, profile chrome) and would be repo bloat. Re-derive by re-running the spec.
 
 ---
 
