@@ -105,6 +105,14 @@ Avoid hidden preconditions ("the database has the default seed data") — make t
 
 Preconditions that can decay over time — external services, authenticated sessions, warm caches, time-bounded credentials, background workers — should be paired with an **active verification**, not just a declaration. Either include a precondition-check step at the top of the spec that probes the live state, or note a precheck script the operator runs immediately before invoking the test. A precondition that's true at authoring time and false at run time is a silent test failure waiting to happen, often surfacing several steps later as a confusing cascade.
 
+**Cache mode.** Default is `cold` — the Executor defeats apparatus cache (fresh tab, hard-reload, fresh HTTP connections) before Step 1. To opt into `warm`, add this line near the top of the spec (before Preconditions):
+
+```markdown
+**Cache:** warm
+```
+
+Use `warm` only when the spec depends on prior-run state (session-restore from `localStorage`, browser-cache behavior itself, a flow that needs `sessionStorage` from a prior page). Document the reason in Intent so the directive isn't accidentally removed.
+
 ### 5. The Step Table — the load-bearing work
 
 This is where you build the Zephyr-style two-column table.

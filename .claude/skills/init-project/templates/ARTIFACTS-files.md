@@ -575,6 +575,7 @@ The run skill executes tests using the **Witnessed** verification pattern — ev
 **Status**: draft | active | archived
 **Created**: {YYYY-MM-DD}
 **Last Run**: {YYYY-MM-DD-HH-MM-SS | never}
+**Cache:** *(optional; default `cold`. Set to `warm` to skip cache-defeat — see AUTHORING.md "Cache mode".)*
 
 ## Intent
 One paragraph: what this test verifies and why this paradigm fits (vs unit/integration tests).

@@ -94,8 +94,9 @@ The argument is the spec's slug (no path, no extension). The skill resolves the 
 3. Read the spec at `{resolved-dir}/<slug>.md`. If missing → STOP with instruction to author one inline (see AUTHORING.md) before running.
 4. Validate spec shape — required sections: Intent, Preconditions, Observables Required, Steps table, Out of Scope. If any is missing or empty → STOP with a clear error.
 5. Confirm preconditions with the operator. For preconditions that need human action ("operator is logged in", "test fixture exists"), wait for explicit confirmation before spawning agents.
-6. Compute run timestamp `YYYY-MM-DD-HH-MM-SS` (UTC).
-7. Compute the ephemeral evidence directory: `/tmp/behavior-tests/<project-slug>/<slug>/<ts>/`. Create it. **This is never under the project tree.** Evidence files (screenshots, snapshots, eval JSON, log captures) are local-only and not committed — they may contain PII (operator-visible chat, sidebar member lists, env-derived IDs) and are cheap to regenerate by re-running the spec. The only behavior-test artifacts that ever live in the project tree are the spec (`{behavior-test-dir}/<slug>.md`) and the run log (`{behavior-test-dir}/<slug>/runs/<ts>.md`).
+6. **Resolve cache mode.** Default is `cold`. If the spec has a top-level `**Cache:** warm` line, mode is `warm`. Pass the resolved mode to the Executor: Initial prompt. Record the mode in the run log's Orchestrator Notes.
+7. Compute run timestamp `YYYY-MM-DD-HH-MM-SS` (UTC).
+8. Compute the ephemeral evidence directory: `/tmp/behavior-tests/<project-slug>/<slug>/<ts>/`. Create it. **This is never under the project tree.** Evidence files (screenshots, snapshots, eval JSON, log captures) are local-only and not committed — they may contain PII (operator-visible chat, sidebar member lists, env-derived IDs) and are cheap to regenerate by re-running the spec. The only behavior-test artifacts that ever live in the project tree are the spec (`{behavior-test-dir}/<slug>.md`) and the run log (`{behavior-test-dir}/<slug>/runs/<ts>.md`).
 
 ### Phase 2: Spawn Executor (live)
 
@@ -106,8 +107,9 @@ Spawn via `Agent` tool with `subagent_type: general-purpose`, using the **Execut
 - Establishes apparatus discovery — "scan registered MCPs by name pattern; report which observables you can measure."
 - Establishes the per-step report format.
 - **Establishes evidence-fidelity ordering**: for the browser frame, capture rendered state first (screenshot + accessibility snapshot) and treat DOM evals as supplementary diagnostic context, never as primary evidence. An element that's DOM-present but visually missing must be reported as such — `raw_state` describes what would be perceived, not just what was queried. See "Rendered State, Not Internal State" in AUTHORING.md.
+- **Establishes cache mode.** Default `cold`: the Executor defeats apparatus cache (fresh browser tab + hard-reload, fresh HTTP connections, no inherited cwd) before signaling `[READY]`. Mode `warm` (spec opt-in via `**Cache:** warm`) skips the defeat. Stale apparatus state masks real bugs — cold is the safe default; warm is only for specs that genuinely depend on prior-run state.
 
-The Executor returns `[READY]` + its agent ID after scanning apparatus. The Orchestrator keeps the agent ID for SendMessage continuation.
+The Executor returns `[READY]` + its agent ID after scanning apparatus and (in cold mode) defeating cache. The Orchestrator keeps the agent ID for SendMessage continuation.
 
 If the Executor signals `[BLOCKED:no-apparatus-<observable>]`, abort the run before Phase 3 (Validator is never spawned).
 

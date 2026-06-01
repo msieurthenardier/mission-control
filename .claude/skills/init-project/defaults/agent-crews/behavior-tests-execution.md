@@ -155,6 +155,7 @@ The Orchestrator substitutes these in prompts at runtime:
 | `{spec-content}` | Verbatim spec markdown | Initial prompts |
 | `{run-timestamp}` | The run's timestamp (UTC, YYYY-MM-DD-HH-MM-SS) | All prompts |
 | `{evidence-dir}` | Absolute path to the evidence directory | Initial + per-step |
+| `{cache-mode}` | Resolved cache mode (`cold` default; `warm` if spec opts in) | Executor: Initial |
 | `{step-number}` | Current step index (1-based) | Per-step prompts |
 | `{step-actions}` | The current step's Actions cell | Per-step Executor prompt |
 | `{step-expected}` | The current step's Expected Results cell | Per-step Validator prompt |
@@ -181,13 +182,28 @@ LIFECYCLE
   Observables Required section. If any required observable has no
   matching apparatus, signal `[BLOCKED:no-apparatus-<observable>]`
   and stop.
-- After that: signal `[READY]` and wait. Do NOT start any steps until
-  I send you a step instruction.
+- Cache mode is `{cache-mode}` (one of `cold` or `warm`). If `cold`,
+  defeat apparatus cache before `[READY]` (see CACHE DEFEAT below).
+  If `warm`, skip.
+- Signal `[READY]` with the cache mode noted ("`[READY]` — cache-cold"
+  or "`[READY]` — cache-warm"). Wait.
 - Per step: I will SendMessage you with the step number and Actions.
   Perform them. Capture raw state. Save evidence files to
   {evidence-dir}. Return a structured report. Wait for the next step.
 - At end: I will send `[CLOSING]`. Return your freeform closing
   summary and terminate.
+
+CACHE DEFEAT (cold mode only)
+Per apparatus, ensure no prior-run state bleeds into this run:
+- Browser: fresh page context (`new_page` or equivalent); if Step 1's
+  URL is in the spec, hard-reload with cache bypass (e.g.
+  `ignoreCache=true`); else defer to Step 1.
+- HTTP: fresh connection (no pooled streams from prior runs).
+- Filesystem: do not inherit cwd from prior runs; cd explicitly at
+  Step 1.
+
+Rationale: stale apparatus state makes a run appear to exercise
+post-change behavior while actually exercising pre-change cache.
 
 THE FULL SPEC (for context — actions and expected results sections
 both visible, so you can see what's coming and what the Validator will
