@@ -130,6 +130,8 @@ Ask technical questions to resolve the approach:
    - Document choices and rationale
    - Get agreement on trade-offs
    - Note constraints discovered
+   - For any criterion verified against the real environment, the behavior test's **apparatus** (which measurement surface drives and observes it) is itself a design decision — vet it like any other
+   - A DD that rests on an empirical premise should have that premise verified before it's locked
 
 4. **Prerequisites verification**
    - "Is [dependency] ready?"
@@ -146,7 +148,7 @@ Create the flight artifact using the format defined in `.flightops/ARTIFACTS.md`
 
 Also create the flight log artifact (empty, ready for execution notes).
 
-**Verification approach — consider behavior tests.** If the flight's acceptance criteria need real-environment observation that unit/integration tests can't cover (UI flows, multi-component interactions, AI agent behavior), author one or more **behavior test** specs inline as part of this phase. A behavior test is a Zephyr-style Action | Expected Result table run via `/behavior-test {slug}` with two live agents (Executor + Validator) using the Witnessed pattern. Write the spec to the configured behavior-test directory (per ARTIFACTS.md; default `tests/behavior/{slug}.md`); reference the slug in the flight's Verification section. See `.claude/skills/behavior-test/AUTHORING.md` for the authoring guide (when to use, interview shape, spec format, common pitfalls). Don't author them speculatively — only when the verification cost is justified by the value of real-environment observation.
+**Verification approach — consider behavior tests.** If the flight's acceptance criteria need real-environment observation that unit/integration tests can't cover (UI flows, multi-component interactions, AI agent behavior), author one or more **behavior test** specs inline as part of this phase — draft them now, before legs are locked, so the apparatus choice and key observable shape the leg breakdown rather than being retrofitted. At minimum a draft fixes the key observable and a rough step count; the apparatus choice is a Design Decision (see Phase 4). A behavior test is a Zephyr-style Action | Expected Result table run via `/behavior-test {slug}` with two live agents (Executor + Validator) using the Witnessed pattern. Write the spec to the configured behavior-test directory (per ARTIFACTS.md; default `tests/behavior/{slug}.md`); reference the slug in the flight's Verification section. See `.claude/skills/behavior-test/AUTHORING.md` for the authoring guide (when to use, interview shape, spec format, common pitfalls). Don't author them speculatively — only when the verification cost is justified by the value of real-environment observation.
 
 ### Phase 5b: Design Review
 
