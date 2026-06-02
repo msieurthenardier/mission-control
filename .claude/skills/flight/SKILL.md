@@ -132,6 +132,7 @@ Ask technical questions to resolve the approach:
    - Note constraints discovered
    - For any criterion verified against the real environment, the behavior test's **apparatus** (which measurement surface drives and observes it) is itself a design decision — vet it like any other
    - A DD that rests on an empirical premise should have that premise verified before it's locked
+   - **Premise-audit the apparatus on BOTH axes — can it *act*, and can it *observe*?** It's easy to audit only the feasibility/ingestion premise ("can the apparatus drive the system the way a real actor would?") and forget the **assertion/observability premise** ("can the apparatus *observe*, through an existing surface, everything the acceptance criteria must assert?"). Both are static facts checkable at planning with code citations. A skipped observability audit surfaces later as a mid-flight scramble for a way to read the state under test — e.g. a verification harness that can drive real traffic but then can't locate or read the record that traffic produced, forcing a test-only seam to be added reactively. Cite the read path (the endpoint/projection/log the assertion will consume) alongside the act path when locking the apparatus DD.
 
 4. **Prerequisites verification**
    - "Is [dependency] ready?"
