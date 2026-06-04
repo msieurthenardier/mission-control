@@ -1,11 +1,11 @@
 ---
 name: routine-maintenance
-description: Post-mission codebase health assessment. Run after `/mission-debrief` to verify the codebase is flight-ready or scaffold a maintenance mission. Per-flight findings instead roll into the next flight or accumulate into an end-of-mission maintenance flight — not into this skill.
+description: Between-mission codebase health assessment. Run after `/mission-debrief`, never after an individual flight, to verify the codebase is flight-ready or scaffold a maintenance mission. Per-flight findings instead roll into the next flight or accumulate into an end-of-mission maintenance flight — not into this skill.
 ---
 
 # Routine Maintenance
 
-Perform an exhaustive, aviation-style codebase inspection after a mission completes. Produces a findings report and optionally scaffolds a maintenance mission for significant issues.
+Perform an exhaustive, aviation-style codebase inspection after a mission completes — not after individual flights. Produces a findings report and optionally scaffolds a maintenance mission for significant issues.
 
 ## Prerequisites
 
@@ -292,7 +292,7 @@ Create the maintenance report artifact at the location defined in `.flightops/AR
 
 **Only if**: Overall assessment is Maintenance Required AND the user confirmed they want a maintenance mission. Only the findings the user selected in Phase 6 are scaffolded — deferred findings remain in the report for future cycles.
 
-This phase produces the full artifact tree — mission, flights, and legs — so the maintenance work is ready for `/agentic-workflow` execution without running `/mission`, `/flight`, or `/leg` separately.
+This phase produces the mission and its flights, ready for `/agentic-workflow` to design and execute the legs. It does not scaffold legs and does not run `/mission` or `/flight` separately.
 
 #### 8a. Mission
 
@@ -313,30 +313,12 @@ Each flight gets its own directory with `flight.md` and `flight-log.md`. Use the
 - **Status**: `ready` — maintenance flights skip the Pre-Flight phase (no open questions or design decisions to resolve for concrete fixes). Mark Pre-Flight Checklist items as N/A.
 - **Mission**: Link back to the maintenance mission
 - **Objective**: What this group of fixes accomplishes
-- **Technical Approach**: Brief description of the fix strategy per finding
-- **Legs**: List the legs from step 8c
+- **Technical Approach**: Per finding, the fix strategy plus the Inspector's evidence and Architect's recommendation — enough for `/agentic-workflow` to design legs. One finding maps to one leg.
 - Populate all other standard flight sections. Mark sections with no relevant content as "N/A".
 
 The `flight-log.md` is created empty (header only) — it will be populated during execution.
 
-#### 8c. Legs
-
-Each flight gets one leg per discrete fix. Create leg files using the standard format from `.flightops/ARTIFACTS.md` with these fields populated:
-
-- **Status**: `ready`
-- **Flight**: Link back to the flight
-- **Objective**: Fix one specific finding (reference the finding number from the report)
-- **Context**: Link to the maintenance report finding and the Architect's recommendation
-- **Inputs/Outputs**: Files that exist before and after the fix
-- **Acceptance Criteria**: The specific condition that resolves the finding — derived from the Architect's recommendation
-- **Verification Steps**: How to confirm the fix (e.g., "run `npm audit` and confirm no high/critical vulnerabilities", "run `cargo clippy` with no warnings")
-- **Implementation Guidance**: Concrete steps to resolve the finding, based on the Inspector's evidence and the Architect's recommendation
-- **Files Affected**: List files identified in the Inspector's evidence
-- Mark sections with no relevant content as "N/A" (e.g., Edge Cases for straightforward dependency updates).
-
-Keep legs atomic — one finding, one fix. If a finding requires touching many files but is conceptually one change (e.g., "replace all `any` casts"), that's still one leg.
-
-#### 8d. Update Report Backlink
+#### 8c. Update Report Backlink
 
 After scaffolding, update the "Maintenance Mission" section at the bottom of the maintenance report (from Phase 7) with a link to the newly created mission.
 
@@ -344,7 +326,7 @@ After scaffolding, update the "Maintenance Mission" section at the bottom of the
 
 ### Read-Only Inspection
 
-This skill NEVER modifies source files, configuration, or dependencies in the target project. The Inspector runs checks and reports findings. The only files created are the maintenance report and optionally a full maintenance mission scaffold (mission, flights, and legs) — all are Flight Control artifacts.
+This skill NEVER modifies source files, configuration, or dependencies in the target project. The Inspector runs checks and reports findings. The only files created are the maintenance report and optionally a maintenance mission scaffold (mission and flights) — all are Flight Control artifacts.
 
 ### Output Discipline
 
@@ -386,4 +368,4 @@ After generating the report, summarize:
 1. Overall assessment (Flight Ready or Maintenance Required)
 2. Count of findings by severity
 3. Top recommendations
-4. Whether a maintenance mission was scaffolded (and if so, how many flights and legs)
+4. Whether a maintenance mission was scaffolded (and if so, how many flights)
