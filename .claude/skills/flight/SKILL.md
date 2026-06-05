@@ -218,6 +218,7 @@ Break flights into legs based on technical boundaries:
 - Design decisions MUST be documented with rationale
 - Prerequisites MUST be verified, not assumed
 - **Environment conflicts**: Flights introducing network services (ports, databases, containers) must check for conflicts with existing services on the developer's machine during planning. Ask: "What else is running that could conflict?"
+- **Live behavior-test execution prerequisites**: When a flight names a behavior test as an acceptance gate, record as prerequisites — verified at planning — both the apparatus-audited environment (running instance, live browser/MCP, fixtures) and the crew-execution capability: a session with multi-turn sub-agent continuation (SendMessage) for the live Executor + Validator. Probe the apparatus and confirm continuation before the flight lands.
 
 ### Adaptive Planning
 
