@@ -7,10 +7,13 @@ conversations (flight, leg, mission, debrief, maintenance) rather than via
 a dedicated authoring skill — see `.claude/skills/behavior-test/AUTHORING.md`
 on the mission-control side for the authoring guide.
 
-The defining feature: **two persistent agents** stay alive across the entire
-test via SendMessage continuation. The Orchestrator drives the step cursor;
-the Executor performs each step's Actions when handed one; the Validator
-judges each step's Expected Results when handed the Executor's raw state.
+The Orchestrator drives the step cursor; the Executor performs each step's
+Actions when handed one; the Validator judges each step's Expected Results
+when handed the Executor's raw state. By default the Orchestrator re-spawns
+a fresh Executor and Validator per step (each handed prior steps' outcomes
+as context). When live `SendMessage` continuation is available (experimental,
+requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`), two persistent agents
+instead stay alive across the whole test.
 
 The two-role separation is the load-bearing discipline: if one agent both
 acted and judged, it would tend to confabulate success. Independence forces
@@ -21,8 +24,8 @@ a colder verdict.
 ### Executor
 - **Context**: `{target-project}/` — loads the project's CLAUDE.md.
 - **Model**: Sonnet (override per-project if needed).
-- **Lifetime**: Spawned once at run start; alive across all steps via
-  SendMessage continuation.
+- **Lifetime**: Re-spawned per checkpoint by default; alive across all
+  checkpoints when live `SendMessage` continuation is available.
 - **Role**: Performs the Actions for each step the Orchestrator sends.
   Reports raw observed state. Makes NO pass/fail judgments.
 - **Tools**: All — including any registered browser MCPs (chrome-devtools,
@@ -35,7 +38,8 @@ a colder verdict.
 - **Model**: Sonnet (default; **NEVER Opus** — mirrors the existing crew
   discipline from `leg-execution.md`). Validator needs judgment + reading
   comprehension, not raw reasoning power.
-- **Lifetime**: Spawned once at run start; alive across all steps.
+- **Lifetime**: Re-spawned per checkpoint by default; alive across all
+  checkpoints when live `SendMessage` continuation is available.
 - **Role**: For each step the Orchestrator sends (with the Executor's raw
   state + the spec's Expected Results), renders PASS / FAIL / INCONCLUSIVE.
   May take its own fresh observations independently if the Executor's
@@ -87,35 +91,36 @@ parses.
 
 ### Lifecycle
 
+A **checkpoint** is a step with an Expected Result. The cursor advances
+by checkpoint; steps without an Expected Result (setup rows) are folded
+into the next checkpoint's Executor turn. Below describes live mode. In
+re-spawn mode (default), each `SendMessage` is instead a fresh agent
+spawn carrying the spec + prior steps' outcomes.
+
 1. Orchestrator validates the spec + computes the run timestamp.
 2. Orchestrator spawns **Executor** with the Executor: Initial prompt
    (full spec + role intro). Executor returns `[READY]` + its agent ID.
 3. Orchestrator spawns **Validator** with the Validator: Initial prompt
    (full spec + role intro). Validator returns `[READY]` + its agent ID.
-4. For each row N in the Steps table:
-   1. Orchestrator `SendMessage`s Executor with Step N's Actions →
-      Executor performs → returns `[STEP:N:done]` + structured report.
+4. For each checkpoint N (N = the checkpoint's step number):
+   1. Orchestrator `SendMessage`s Executor the Actions of every step from
+      after the previous checkpoint through step N → Executor performs →
+      returns `[STEP:N:done]` + structured report.
    2. Orchestrator extracts the structured subset; `SendMessage`s
-      Validator with Step N's Expected Results + Executor's structured
+      Validator with step N's Expected Results + Executor's structured
       report → Validator judges → returns
       `[VERDICT:N:pass|fail|inconclusive]` + structured verdict.
-   3. Orchestrator records the step result.
+   3. Orchestrator records the checkpoint result.
    4. If verdict is fail/inconclusive, Orchestrator may prompt the
-      operator: continue / halt / rerun-step. Default: continue.
+      operator: continue / halt / rerun-checkpoint. Default: continue.
 5. Orchestrator `SendMessage`s both agents `[CLOSING]` →
    both return their freeform closing summaries.
 6. Orchestrator composes the run log + surfaces summary to operator.
 
-### Actions-only rows
+### Wait-point checkpoints
 
-If row N has no Expected Results (pure setup), the Orchestrator skips
-Step 4.2 above (no Validator call) and advances directly. The step's
-record in the run log notes `verdict: skipped (setup row)`.
-
-### Wait-point rows
-
-If row N has no Actions (pure waitpoint), the Orchestrator skips Step
-4.1 above (no Executor call) and goes directly to Validator with just
+If checkpoint N has no Actions (pure waitpoint), the Orchestrator skips
+Step 4.1 above (no Executor call) and goes directly to Validator with just
 the Expected Results. The Validator polls or observes independently
 until either the expected result is observed or a reasonable timeout
 elapses (default: 30s; spec may override).
@@ -174,7 +179,7 @@ run: {run-timestamp}
 
 You are the Executor for behavior test `{test-slug}` on project
 `{project-slug}`. You will perform Actions step-by-step as the
-Orchestrator sends them via SendMessage.
+Orchestrator sends them.
 
 LIFECYCLE
 - Now: scan registered MCPs by name pattern. Report which apparatus
@@ -187,7 +192,7 @@ LIFECYCLE
   If `warm`, skip.
 - Signal `[READY]` with the cache mode noted ("`[READY]` — cache-cold"
   or "`[READY]` — cache-warm"). Wait.
-- Per step: I will SendMessage you with the step number and Actions.
+- Per step: I will send you the step number and Actions.
   Perform them. Capture raw state. Save evidence files to
   {evidence-dir}. Return a structured report. Wait for the next step.
 - At end: I will send `[CLOSING]`. Return your freeform closing
@@ -268,14 +273,14 @@ run: {run-timestamp}
 
 You are the Validator for behavior test `{test-slug}` on project
 `{project-slug}`. You will judge Expected Results step-by-step as the
-Orchestrator sends them via SendMessage.
+Orchestrator sends them.
 
 LIFECYCLE
 - Now: read the full spec for context. Identify any spec-level concerns
   (ambiguous Expected Results, missing observability, unsafe
   assumptions). Report them in your `[READY]` message.
 - Then: signal `[READY]` and wait. Do NOT pre-judge upcoming steps.
-- Per step: I will SendMessage you with (a) the step's Expected
+- Per step: I will send you (a) the step's Expected
   Results from the spec and (b) the Executor's structured report.
   Judge whether the Expected Results were met. Render PASS / FAIL /
   INCONCLUSIVE. Wait for the next step.

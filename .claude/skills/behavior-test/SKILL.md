@@ -14,7 +14,7 @@ A behavior test is a structured acceptance test for AI-driven systems that needs
 - **Executor** — performs each step's Actions when sent one. Reports raw observed state. Makes no judgments.
 - **Validator** — judges each step's Expected Results against the Executor's raw state. Renders PASS / FAIL / INCONCLUSIVE per step.
 
-Both agents stay alive across the entire test via SendMessage continuation. The Orchestrator (you, loading this skill) drives the step cursor.
+The Orchestrator (you, loading this skill) drives the cursor, which advances by checkpoint (a step with an Expected Result). By default each checkpoint re-spawns fresh agents (see Execution Modes); if live `SendMessage` continuation is available, both agents instead stay alive across the whole test.
 
 The verification model is called the **Witnessed** pattern: every action is judged by an independent agent. The agent that did the work is never the same agent that decides whether the work was correct.
 
@@ -30,7 +30,7 @@ For the conceptual background (observable + apparatus, testability discipline, W
 
 - The target project must be initialized with `/init-project` (`.flightops/ARTIFACTS.md` must exist).
 - A behavior-test spec must exist at the project's configured behavior-test directory (default `tests/behavior/<slug>.md`).
-- The Orchestrator must have the `Agent` (Task) tool to spawn sub-agents and `SendMessage` to continue them turn-by-turn.
+- The Orchestrator must have the `Agent` (Task) tool to spawn sub-agents. Live `SendMessage` continuation is optional; without it the run uses re-spawn-per-checkpoint (see Execution Modes).
 - The apparatus needed for the spec's Observables Required section must be registered as MCPs (or available natively via Bash / Read / Write). The Executor scans at session start and aborts if any required observable has no matching apparatus.
 - The operator may need to set up fixtures (test data, accounts, isolated environments) — preconditions in the spec are operator-confirmed before agents spawn.
 
@@ -65,11 +65,11 @@ For the conceptual background (observable + apparatus, testability discipline, W
 - Bias toward "looks fine, moving on" if the same agent both acts and judges. Independence forces a colder verdict.
 - Each context stays focused on its job; the Validator doesn't bloat with browser snapshots; the Executor doesn't pollute working memory with judgment criteria.
 
-## Execution Modes: Live vs Re-spawn-Per-Step
+## Execution Modes: Live vs Re-spawn-Per-Checkpoint
 
-The architecture above assumes the Orchestrator can both spawn an agent AND continue it across turns (the "live" mode). Some session contexts lose the continuation capability — for example, sessions resumed after auto-summarization may not have the multi-turn agent-continuation tool loaded even though `Agent` is still available. The Orchestrator MUST verify continuation is available at the start of the run; if it isn't, the run falls back to **re-spawn-per-step**: a fresh Executor (and Validator) per row, with the prior step's outcomes summarized into the prompt as context. The fallback is degraded but functional, and is preferable to silently proceeding as if the architecture were intact.
+**Re-spawn-per-checkpoint is the default.** Live continuation requires the `SendMessage` tool, which is experimental and only present when `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` is set at launch — so in most sessions it is simply absent (not in the toolset, not loadable via ToolSearch). This is the normal case, not a failure. The Orchestrator checks for `SendMessage` at the start of the run: if absent, it uses **re-spawn-per-checkpoint** (a fresh Executor and Validator per checkpoint, with prior steps' outcomes summarized into the prompt as context) and notes the mode; if present, it uses the live two-agent mode (both agents stay alive across all steps). Do not surface the absence of `SendMessage` as an error.
 
-**Re-spawn-per-step caveats** (these are operating-mode constraints, not authoring constraints):
+**Re-spawn-per-checkpoint caveats** (these are operating-mode constraints, not authoring constraints):
 
 - **Browser apparatus state persists across spawns** because the browser process is shared infrastructure — each new agent can re-attach to the same tabs/pages. Other apparatus state (auth tokens cached in memory, in-process sessions) does not. Spec authors should not assume in-agent context survives a re-spawn.
 - **No "ask the Executor" loop**: the Validator cannot reach back to a prior Executor for follow-up state. If the row needs cross-agent collaboration, write the Executor's report richly enough that the Validator can render verdict without follow-up.
@@ -125,20 +125,22 @@ Spawn via `Agent` tool with `subagent_type: general-purpose`, using the **Valida
 
 The Validator returns `[READY]` + its agent ID, optionally with spec-level concerns reported.
 
-### Phase 4: Step Loop
+### Phase 4: Checkpoint Loop
 
-For each row N in the Steps table (1-indexed):
+A **checkpoint** is a step that has an Expected Result — the point where the Validator judges. Steps without an Expected Result (actions-only setup rows) are not checkpoints; their Actions are folded into the next checkpoint's Executor turn. The cursor advances by checkpoint, not by row, so validation only fires where there's something testable. `N` is the step number of the checkpoint's row.
 
-1. **SendMessage to Executor**: "Step N. Actions: <row.actions>. Perform them; report raw state when done."
+In live mode, "SendMessage to X" continues the persistent agent. In re-spawn mode (default), it means spawn a fresh agent with the spec + prior steps' outcomes as context — so a re-spawn happens per checkpoint, not per row.
+
+For each checkpoint N (in step order):
+
+1. **SendMessage to Executor**: the Actions of every step from after the previous checkpoint through step N, in order. "Perform them; report raw state when done." (If step N has no Actions — a pure wait point — skip the Executor call and go to step 4.)
 2. Receive Executor's response: structured `{actions_taken, raw_state, evidence_paths, executor_notes}`. Save evidence files into the run's evidence dir.
-3. **If the row has no Expected Result** (actions-only setup row): record the step in the run log and advance to step N+1 without invoking the Validator.
-4. **If the row has no Actions** (wait point): skip step 1 (no Executor call); SendMessage to Validator with Expected Results only, allow polling/timeout.
-5. **SendMessage to Validator**: "Step N's raw state from Executor: <executor's structured subset>. Expected Result(s): <row.expected_results>. Render verdict."
-6. Receive Validator's response: structured `{verdict, reasoning, evidence_paths, validator_notes}`.
-7. **Record step result** in the in-memory run log.
-8. **Decide whether to continue**:
-   - `pass` → continue to step N+1.
-   - `fail` → ask the operator: continue (capture full picture), halt (don't waste time on dependent steps), or rerun-step (give the Executor another shot). Default: continue.
+3. **SendMessage to Validator**: "Checkpoint N's raw state from Executor: <executor's structured subset>. Expected Result(s): <row.expected_results>. Render verdict." (Pure wait point: send Expected Results only; allow polling/timeout.) Judge before advancing, so the Validator can still re-observe live state if the Executor's evidence is insufficient.
+4. Receive Validator's response: structured `{verdict, reasoning, evidence_paths, validator_notes}`.
+5. **Record checkpoint result** in the in-memory run log, noting any setup steps folded in.
+6. **Decide whether to continue**:
+   - `pass` → continue to the next checkpoint.
+   - `fail` → ask the operator: continue (capture full picture), halt (don't waste time on dependent steps), or rerun-checkpoint (give the Executor another shot). Default: continue.
    - `inconclusive` → record as inconclusive; ask the operator whether to continue.
 
 ### Phase 5: Teardown
@@ -154,16 +156,16 @@ After the last step (or halt):
 
 ```
 behavior-test run: <slug> @ <timestamp>
-  PASS: <n> / <total> steps
-  FAIL: <n> / <total> steps
-    - Step 3: <one-line reason>
-  INCONCLUSIVE: <n> / <total> steps
-    - Step 5: <one-line reason>
+  PASS: <n> / <total> checkpoints
+  FAIL: <n> / <total> checkpoints
+    - Checkpoint 3: <one-line reason>
+  INCONCLUSIVE: <n> / <total> checkpoints
+    - Checkpoint 5: <one-line reason>
   Evidence: <evidence-dir>
   Run log:  <run-log-path>
 ```
 
-If any step failed or was inconclusive, ask the operator: re-run, fix system + re-run, update spec (which loops back to inline authoring during the active conversation), or mark known issue.
+If any checkpoint failed or was inconclusive, ask the operator: re-run, fix system + re-run, update spec (which loops back to inline authoring during the active conversation), or mark known issue.
 
 ---
 
@@ -210,18 +212,18 @@ For authoring guidance (interview shape, row conventions, common pitfalls), see 
 
 ## Summary
 
-{n_pass} / {n_total} steps passed. {n_fail} failed; {n_inconclusive} inconclusive.
+{n_pass} / {n_total} checkpoints passed. {n_fail} failed; {n_inconclusive} inconclusive.
 
-## Step Results
+## Checkpoint Results
 
-### Step {N} — {PASS | FAIL | INCONCLUSIVE | SKIPPED}
-- **Actions taken**: {executor's report of what was performed}
+### Checkpoint {N} — {PASS | FAIL | INCONCLUSIVE | SKIPPED}
+- **Actions taken**: {executor's report of what was performed, incl. any setup steps folded in}
 - **Raw state**: {one-line summary or excerpt}
 - **Expected**: {verbatim from spec}
 - **Verdict**: {pass/fail/inconclusive} — {validator's reasoning}
 - **Evidence**: `step-N-screenshot.png`, `step-N-snapshot.txt` (ephemeral; see file header note)
 - **Validator notes**: {optional}
-- **Operator decision**: {continued | halted | rerun-step} (only when step failed)
+- **Operator decision**: {continued | halted | rerun-checkpoint} (only when checkpoint failed)
 
 ## Orchestrator Notes
 {Decisions made during the run: model preferences, specialized validators spawned, operator interventions.}
@@ -285,10 +287,10 @@ Crew agents use these signals (Orchestrator parses from agent output):
 
 | Signal | Emitted by | Meaning |
 |--------|-----------|---------|
-| `[READY]` | Executor or Validator | Agent has loaded the spec; awaiting step instructions. |
-| `[STEP:N:done]` | Executor | Step N's actions completed; structured report attached. |
-| `[STEP:N:exception]` | Executor | Step N's actions raised an exception; report includes the exception. |
-| `[VERDICT:N:pass/fail/inconclusive]` | Validator | Step N verdict rendered; structured verdict attached. |
+| `[READY]` | Executor or Validator | Agent has loaded the spec; awaiting checkpoint instructions. |
+| `[STEP:N:done]` | Executor | All actions through checkpoint N (step number N) completed; structured report attached. |
+| `[STEP:N:exception]` | Executor | An action en route to checkpoint N raised an exception; report includes the exception. |
+| `[VERDICT:N:pass/fail/inconclusive]` | Validator | Checkpoint N verdict rendered; structured verdict attached. |
 | `[BLOCKED:no-apparatus-<observable>]` | Executor | Required observable has no matching apparatus; abort the run. |
 | `[BLOCKED:reason]` | Executor or Validator | Other blocking reason; abort the run. |
 | `[CLOSING]` | Executor or Validator | Closing summary attached; safe for agent to terminate. |
@@ -301,7 +303,7 @@ Crew agents use these signals (Orchestrator parses from agent output):
 |-----------|--------|
 | Spec file missing | STOP; instruct operator to author one inline (see AUTHORING.md). |
 | Required apparatus missing for an observable | STOP at Executor's `[READY]`-time apparatus scan; abort with clear error. |
-| Executor exception mid-step | Validator still judges the step (based on what was reported); continue per operator's continue/halt/rerun-step preference. |
+| Executor exception mid-checkpoint | Validator still judges the checkpoint (based on what was reported); continue per operator's continue/halt/rerun-checkpoint preference. |
 | Validator times out | Mark the step inconclusive; ask operator; continue. |
 | Operator interrupts mid-run | Send both agents `[CLOSING]`; mark run `aborted`; write partial run log. |
 | Agent loses context (SendMessage error) | Re-spawn with the full spec + a "resume at step N" instruction. Note the re-spawn in Orchestrator Notes. |
@@ -314,7 +316,7 @@ Orchestrator logs decisions in the run log under `### Orchestrator Notes`:
 
 - Which model preferences were applied + why.
 - Whether a specialized validator (Accessibility, Visual) was spawned + why.
-- Any operator-side intervention (continue, halt, rerun-step decisions per failing step).
+- Any operator-side intervention (continue, halt, rerun-checkpoint decisions per failing checkpoint).
 - Any agent re-spawn (context loss recovery).
 
 This mirrors the `agentic-workflow` `### Flight Director Notes` discipline: the Orchestrator's decisions are auditable from the run log alone.
