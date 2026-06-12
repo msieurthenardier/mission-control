@@ -76,7 +76,6 @@ Ask about outcomes, not tasks. Focus on:
    - "How will each criterion be verified?"
    - "Do any criteria name specific tools or technologies? Reframe as capabilities."
    - "Could each criterion be satisfied by more than one implementation approach?"
-   - Flag any criterion that's only observable against the real environment as behavior-test-backed, so the flight that owns it plans the spec.
 
 5. **Environment requirements**
    - "What development environment will be used?"

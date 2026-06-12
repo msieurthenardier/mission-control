@@ -147,8 +147,6 @@ Ask the user if the flight should be marked as `completed`. If confirmed, update
 Avoid vague recommendations. Instead of "improve documentation," say:
 - "Add a 'Devcontainer Commands' section to CLAUDE.md documenting the docker exec workflow"
 
-When the debrief surfaces a "we should have caught this with a test" insight (especially behavior that needs real-environment observation — UI flow, multi-component interaction, AI agent behavior), recommend authoring a **behavior test** spec as a follow-up action. See `.claude/skills/behavior-test/AUTHORING.md`. The spec gets written during the next planning conversation; the test gets run via `/behavior-test {slug}` thereafter.
-
 ### Distinguish Severity
 - **Critical**: Would have prevented significant rework or failure
 - **Important**: Would have meaningfully improved efficiency

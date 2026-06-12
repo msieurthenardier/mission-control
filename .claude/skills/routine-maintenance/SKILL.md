@@ -286,8 +286,6 @@ Create the maintenance report artifact at the location defined in `.flightops/AR
 - Delegation effectiveness notes (for refining future inspections)
 - Recommendations
 
-**Regression-gate recommendations**: when a finding identifies a behavior worth pinning against future regression (especially one that requires real-environment observation — UI flow, multi-component interaction, AI agent behavior), recommend authoring a **behavior test** spec for it. The next planning conversation (or the scaffolded maintenance mission's flight design) writes the spec inline. See `.claude/skills/behavior-test/AUTHORING.md` for when behavior tests fit and how to author one.
-
 ### Phase 8: Scaffold Maintenance Mission (conditional)
 
 **Only if**: Overall assessment is Maintenance Required AND the user confirmed they want a maintenance mission. Only the findings the user selected in Phase 6 are scaffolded — deferred findings remain in the report for future cycles.
