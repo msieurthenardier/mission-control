@@ -187,7 +187,7 @@ Key concepts:
 Where things live:
 - **Spec format**: `ARTIFACTS.md`'s "Behavior Test — Spec" section is authoritative.
 - **Spec files**: `tests/behavior/{slug}.md` (or wherever ARTIFACTS.md configures).
-- **Run logs**: `tests/behavior/{slug}/runs/{ts}.md` (committed) + `tests/behavior/{slug}/runs/{ts}/` evidence dir (gitignored).
+- **Run logs**: `tests/behavior/{slug}/runs/{ts}.md` (committed). Evidence lives at an ephemeral path outside the project tree (`/tmp/behavior-tests/...`), never committed.
 - **Crew (Executor + Validator) prompts**: `.flightops/agent-crews/behavior-tests-execution.md` (project-modifiable scaffolding shipped by `/init-project`).
 
 Workflow:

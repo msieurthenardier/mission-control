@@ -34,7 +34,7 @@ For the conceptual background (observable + apparatus, testability discipline, W
 - The apparatus needed for the spec's Observables Required section must be registered as MCPs (or available natively via Bash / Read / Write). The Executor scans at session start and aborts if any required observable has no matching apparatus.
 - The operator may need to set up fixtures (test data, accounts, isolated environments) — preconditions in the spec are operator-confirmed before agents spawn.
 
-## Architecture: Two Live Agents
+## Architecture: Two Agents
 
 ```
                       ┌───────────────────────┐
@@ -56,7 +56,7 @@ For the conceptual background (observable + apparatus, testability discipline, W
                        real environment (UI, API, shell, fs)
 ```
 
-**Why live agents instead of spawn-per-step**:
+**What live mode adds over re-spawn** (when `SendMessage` is available — see Execution Modes):
 - Browser state persists between steps — an Executor that's already on the target page doesn't need to re-navigate.
 - Conversational context lets the Executor reference earlier steps without re-explaining.
 - The Validator can ask the Executor for follow-up state without re-loading the run.
@@ -172,29 +172,7 @@ If any checkpoint failed or was inconclusive, ask the operator: re-run, fix syst
 
 ## Spec Format
 
-The canonical spec format lives in `{target-project}/.flightops/ARTIFACTS.md` under the "Behavior Test — Spec" section. The skill reads each spec at run time and validates its shape against the format expected there. The spec format is repeated here only as a sanity reference; ARTIFACTS.md is authoritative.
-
-```markdown
-# Behavior Test: {Title}
-
-**Slug**: `{slug}`
-**Status**: draft | active | archived
-**Created**: {YYYY-MM-DD}
-**Last Run**: {YYYY-MM-DD-HH-MM-SS | never}
-
-## Intent
-## Preconditions
-## Observables Required
-## Steps
-| # | Actions | Expected Results |
-|---|---------|------------------|
-| 1 | ... | ... |
-
-## Out of Scope
-## Variants (optional)
-```
-
-For authoring guidance (interview shape, row conventions, common pitfalls), see [`AUTHORING.md`](./AUTHORING.md).
+The canonical spec format lives in `{target-project}/.flightops/ARTIFACTS.md` under the "Behavior Test — Spec" section — ARTIFACTS.md is authoritative; this skill validates each spec's shape against it at run time (Phase 1, step 4). For authoring guidance (interview shape, row conventions, common pitfalls), see [`AUTHORING.md`](./AUTHORING.md).
 
 ---
 
@@ -253,10 +231,7 @@ This makes the local-only nature explicit to anyone reading the committed run lo
 
 ## Observability
 
-Two concepts, deliberately distinct:
-
-- **Observable** — a measurable property of the system the test cares about. Toggle state. Response status code. File contents. Audit-log entry. Borrowed from physics: an observable is what can be measured; everything else is metaphysics.
-- **Apparatus** — the tool that does the measuring. A browser MCP for DOM observables. `curl` for HTTP observables. A `Read` tool for filesystem observables.
+An **observable** is a measurable property of the system under test; the **apparatus** is the tool that measures it (full conceptual treatment: AUTHORING.md). Operationally:
 
 The Executor is **apparatus-agnostic**. The spec's "Observables Required" lists the kinds of observables in human terms; the Executor scans available MCPs at session start to find apparatus that can measure each:
 
