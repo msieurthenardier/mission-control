@@ -87,6 +87,14 @@ defined by the behavior-tests methodology in the skill, not in this file.
 Do not modify signal names here — they must match what the Orchestrator
 parses.
 
+The same applies to the protocol requirements inside the prompts below —
+the per-step report schema, the Validator's judgment rules (evidence-for-pass,
+rendered-state precedence, frame-aware judgment), and the role-separation
+rules. They are defined in the behavior-test skill, which issues them
+per-spawn and supplements this file's prompts if any are missing. Customize
+phrasing and add project specifics freely; removing a protocol requirement
+here does not remove it from the run.
+
 ## Interaction Protocol
 
 ### Lifecycle

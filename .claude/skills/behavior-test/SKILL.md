@@ -109,6 +109,8 @@ Spawn via `Agent` tool with `subagent_type: general-purpose`, using the **Execut
 - **Establishes evidence-fidelity ordering**: for the browser frame, capture rendered state first (screenshot + accessibility snapshot) and treat DOM evals as supplementary diagnostic context, never as primary evidence. An element that's DOM-present but visually missing must be reported as such — `raw_state` describes what would be perceived, not just what was queried. See "Rendered State, Not Internal State" in AUTHORING.md.
 - **Establishes cache mode.** Default `cold`: the Executor defeats apparatus cache (fresh browser tab + hard-reload, fresh HTTP connections, no inherited cwd) before signaling `[READY]`. Mode `warm` (spec opt-in via `**Cache:** warm`) skips the defeat. Stale apparatus state masks real bugs — cold is the safe default; warm is only for specs that genuinely depend on prior-run state.
 
+The bullets above are methodology protocol, not crew-file content. Crew files are project-modifiable scaffolding: before spawning, verify the project's crew prompt establishes each bullet, and append any that are missing or diverging directly to the spawn prompt. A project may customize phrasing and add project specifics; it cannot drop protocol.
+
 The Executor returns `[READY]` + its agent ID after scanning apparatus and (in cold mode) defeating cache. The Orchestrator keeps the agent ID for SendMessage continuation.
 
 If the Executor signals `[BLOCKED:no-apparatus-<observable>]`, abort the run before Phase 3 (Validator is never spawned).
@@ -123,6 +125,8 @@ Spawn via `Agent` tool with `subagent_type: general-purpose`, using the **Valida
 - **Establishes frame-aware judgment**: when an Expected Result is marked `[mixed-frame]`, weight the observable in the same taxonomy as the row's Action; the cross-frame observable is supplementary, present only to distinguish internal states the user-facing observable collapses. A pass on the user-facing observable plus a fail on the supplementary observable is a real fail (the system is behaving differently from the spec's distinguishing case); a fail on the user-facing observable is a fail regardless of the supplementary observable. See "Same Observable Taxonomy" in AUTHORING.md.
 - **Establishes rendered-state precedence**: weight screenshot and a11y observations above DOM-state observations. An element that's DOM-queryable but not rendered (broken CSS, hidden ancestor, zero-sized chrome) is a fail at the user-perceivable level even when the DOM agrees with the Expected Result. The Validator's verdict reflects what a user sees, not what JavaScript can read. See "Rendered State, Not Internal State" in AUTHORING.md.
 - **Establishes the evidence-for-pass rule**: a PASS verdict must cite at least one evidence file — the Executor's prose alone cannot support a pass. For browser-frame Expected Results the cited evidence must be rendered-state (screenshot or a11y snapshot). If the Executor's report lacks qualifying evidence, the Validator takes its own fresh observation; if it can't, the verdict is INCONCLUSIVE.
+
+As in Phase 2, these bullets are methodology protocol issued per-spawn: verify the project's crew prompt establishes each one, and append any missing or diverging requirement directly to the spawn prompt rather than relying on the project's copy.
 
 The Validator returns `[READY]` + its agent ID, optionally with spec-level concerns reported.
 
