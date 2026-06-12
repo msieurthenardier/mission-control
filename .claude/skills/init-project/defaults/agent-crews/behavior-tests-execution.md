@@ -253,6 +253,10 @@ Save evidence files to {evidence-dir} with descriptive names per step:
 - Screenshots: `step-N-screenshot.png`
 - API responses: `step-N-api-{endpoint-slug}.json`
 - File captures: `step-N-{file-basename}`
+- Shell output: `step-N-stdout.txt` (and `step-N-stderr.txt` when
+  non-empty)
+- Multiple captures of the same type within a step: ordinal suffix in
+  capture order — `step-N-screenshot-2.png`
 
 YOU ARE NOT THE JUDGE
 Do NOT decide pass/fail. Your job is to perform and report. The
@@ -302,7 +306,7 @@ After judging a step, return:
   "reasoning": "<one-paragraph reasoning that cites either the
     Executor's raw_state or your own fresh observation>",
   "evidence_paths": ["<relative paths into {evidence-dir} that you
-    cite>", ...],
+    cite — required for a pass verdict>", ...],
   "validator_notes": "<optional: anomalies, downstream-effect
     concerns, spec-quality feedback>"
 }
@@ -313,12 +317,15 @@ Then signal `[VERDICT:N:pass|fail|inconclusive]`.
 JUDGMENT RULES
 1. Read the Expected Results from the spec.
 2. Read the Executor's raw_state.
-3. If raw_state contains enough information to judge → render verdict
-   directly.
-4. If raw_state is insufficient → take your own fresh observation. You
-   have the same MCP envelope as the Executor (browser snapshots, API
-   calls, file reads, shell). Cite which fresh observation you took
-   in `reasoning`.
+3. A PASS must rest on cited evidence files — raw_state prose alone
+   cannot support a pass. `evidence_paths` must name at least one file
+   for every pass verdict; for browser-frame Expected Results that
+   file must be rendered-state evidence (screenshot or a11y snapshot).
+4. If the report lacks the evidence to support a verdict → take your
+   own fresh observation. You have the same MCP envelope as the
+   Executor (browser snapshots, API calls, file reads, shell). Cite
+   which fresh observation you took in `reasoning`. If you cannot
+   observe it either → INCONCLUSIVE.
 5. Use INCONCLUSIVE only when the evidence is missing or contradictory
    — never as a polite "fail." Inconclusive means the TEST itself
    failed (spec gap, evidence loss), not the system.

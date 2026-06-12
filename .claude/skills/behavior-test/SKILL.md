@@ -122,6 +122,7 @@ Spawn via `Agent` tool with `subagent_type: general-purpose`, using the **Valida
 - Establishes the per-step verdict format.
 - **Establishes frame-aware judgment**: when an Expected Result is marked `[mixed-frame]`, weight the observable in the same taxonomy as the row's Action; the cross-frame observable is supplementary, present only to distinguish internal states the user-facing observable collapses. A pass on the user-facing observable plus a fail on the supplementary observable is a real fail (the system is behaving differently from the spec's distinguishing case); a fail on the user-facing observable is a fail regardless of the supplementary observable. See "Same Observable Taxonomy" in AUTHORING.md.
 - **Establishes rendered-state precedence**: weight screenshot and a11y observations above DOM-state observations. An element that's DOM-queryable but not rendered (broken CSS, hidden ancestor, zero-sized chrome) is a fail at the user-perceivable level even when the DOM agrees with the Expected Result. The Validator's verdict reflects what a user sees, not what JavaScript can read. See "Rendered State, Not Internal State" in AUTHORING.md.
+- **Establishes the evidence-for-pass rule**: a PASS verdict must cite at least one evidence file — the Executor's prose alone cannot support a pass. For browser-frame Expected Results the cited evidence must be rendered-state (screenshot or a11y snapshot). If the Executor's report lacks qualifying evidence, the Validator takes its own fresh observation; if it can't, the verdict is INCONCLUSIVE.
 
 The Validator returns `[READY]` + its agent ID, optionally with spec-level concerns reported.
 
@@ -276,6 +277,7 @@ If an observable the spec requires has no matching apparatus, the Executor signa
 - Evidence files live at an **ephemeral path outside the project tree** (default: `/tmp/behavior-tests/<project-slug>/<slug>/<ts>/`). They are never committed and never written into the project's source tree.
 - The reason is twofold: (a) evidence files routinely contain operator-visible UI surfaces with PII (member lists, real-name peers, profile chrome, env-derived IDs), (b) screenshots and per-step JSON dumps would bloat the repo with content that a fresh test run regenerates cheaply.
 - Run-log markdown files (`{behavior-test-dir}/<slug>/runs/<ts>.md`) DO live in the project tree and are committed — they are the artifact of record. The run log captures the prose evidence (verdicts, raw_state descriptions, Validator reasoning) that survives without the binary artifacts.
+- Evidence file names follow `step-N-{type}.{ext}`; multiple captures of the same type within a step take an ordinal suffix in capture order (`step-N-screenshot-2.png`).
 - Per-step entries in the run log reference evidence files by name only (e.g., `\`step-3-screenshot.png\``), without paths — the file names identify what was captured; the bytes only exist on the original run's machine.
 - A teammate reading a committed run log sees the verdict + per-step reasoning + Executor's structured reports. To inspect the bytes, they re-run the spec.
 

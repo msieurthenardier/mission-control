@@ -128,7 +128,7 @@ A flight (or a specific leg) may declare its acceptance criteria via a **behavio
 - A leg authored during Phase 2a may reference a behavior-test slug instead of (or in addition to) inline verification steps — e.g., "Acceptance: `/behavior-test discord-engagement` passes."
 - When the Flight Director reaches such a leg, run the test by invoking `/behavior-test {slug}` directly (not by spawning a Developer agent — the run skill orchestrates its own crew).
 - The behavior-test's run log lands at `tests/behavior/{slug}/runs/{ts}.md` (committed) with evidence at `tests/behavior/{slug}/runs/{ts}/` (gitignored). The leg's flight-log entry references the run log.
-- If the behavior-test fails, treat it like any other acceptance failure: investigate, fix in a new commit (no amend), re-run.
+- A failing behavior test is an unmet acceptance criterion: **the leg does not land while the test fails.** Investigate, fix in a new commit (no amend), re-run. If the operator instead accepts the failure as a known issue, the leg may land with that disposition recorded in the flight-log entry alongside the run-log path — the flight debrief carries it forward.
 
 **Authoring behavior-test specs**: specs are written inline during planning conversations (flight design, leg design), not via a dedicated skill. See `.claude/skills/behavior-test/AUTHORING.md` for the authoring guide (interview shape, spec format, common pitfalls). Format is canonical in the target project's `.flightops/ARTIFACTS.md`.
 

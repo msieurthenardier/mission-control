@@ -69,7 +69,13 @@ Trigger points during planning conversations:
 | `/routine-maintenance` | A finding is worth a regression gate — make the test now so future flights can re-run it. |
 | `/flight-debrief` / `/mission-debrief` | A debrief surfaces "we should have caught this with a test" — author it as a follow-up action. |
 
-**Anti-pattern**: authoring a behavior test for something a unit test already covers. The behavior-test format is heavyweight (two live agents, evidence directory, run logs). Use it for tests where the cost is justified by the value of real-environment observation.
+**When NOT to author one.** A behavior test costs two agent spawns per checkpoint in the default re-spawn mode — a six-checkpoint spec is ~12 spawns against one `curl` + assert in an integration test. Do not author one when:
+
+- a unit or integration test can observe the same contract (single-service API behavior, database invariants, pure logic);
+- the Expected Results would only read structured output an ordinary test can assert on;
+- the spec would duplicate an existing test at a different altitude.
+
+Behavior tests earn their cost only where the observable lives in the real environment: rendered UI, cross-component flows, AI-agent behavior, post-deploy verification. An authored spec is also a maintenance liability — a spec that sits `draft`/never-run is rot, not coverage. Author the test when there's a concrete intent to run it.
 
 ## The Interview Shape
 
