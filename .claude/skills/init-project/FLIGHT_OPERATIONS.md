@@ -173,6 +173,39 @@ A table defined in SCHEMA but never created via migration is a gap — treat sch
 
 ---
 
+## Behavior Tests
+
+When verification needs **real-environment observation** that unit/integration tests can't provide — testing the running app's UI through a browser, hitting a real API, watching multi-component interactions across UI + DB + queue — author a **behavior test** spec inline during flight or leg planning.
+
+A behavior test is a Zephyr-style two-column **Action | Expected Result** table (human-readable, human-performable) that runs via two live AI agents using the **Witnessed** pattern: an Executor performs each step's Actions; an independent Validator judges each step's Expected Results. The two roles stay alive across the entire test; the orchestrator drives the step cursor. Every action is judged by an agent that didn't perform it — that separation forces a colder verdict than self-judging.
+
+Key concepts:
+- **Observable** — a measurable property of the system the test cares about (toggle state, response code, file contents, log line). Borrowed from physics.
+- **Apparatus** — the tool that measures the observable (browser MCP, curl, Read tool). The Executor scans available apparatus at run start and matches them against the spec's Observables Required list.
+- **Testability discipline**: every Expected Result must reference an observable. If you can't write a measurable Expected Result, the system isn't observable at this layer — find a coarser surface or wire instrumentation.
+
+Where things live:
+- **Spec format**: `ARTIFACTS.md`'s "Behavior Test — Spec" section is authoritative.
+- **Spec files**: `tests/behavior/{slug}.md` (or wherever ARTIFACTS.md configures).
+- **Run logs**: `tests/behavior/{slug}/runs/{ts}.md` (committed). Evidence lives at an ephemeral path outside the project tree (`/tmp/behavior-tests/...`), never committed.
+- **Crew (Executor + Validator) prompts**: `.flightops/agent-crews/behavior-tests-execution.md` (project-modifiable scaffolding shipped by `/init-project`).
+
+Workflow:
+1. During flight or leg planning, identify a verification need that warrants a behavior test (e.g., "the new toggle must persist across page reload AND reach the backend AND survive a process restart").
+2. Author the spec inline using the format in ARTIFACTS.md. Write it to the configured behavior-test directory.
+3. Reference the spec slug in the parent artifact's acceptance criteria — e.g., the leg says "Run `/behavior-test <slug>` to verify acceptance."
+4. The operator (or the agentic-workflow at HAT time) invokes `/behavior-test <slug>` to execute. The skill spawns the live Executor + Validator crew, drives the step loop, and writes a run log with verdict + evidence.
+
+When NOT to use a behavior test:
+- Pure logic / data transforms → unit tests.
+- Strict equality on fixtures → unit / integration tests.
+- One-shot verification you'll never re-check → debrief note.
+- A single deterministic script can verify it → Playwright / pytest.
+
+The behavior-test format is heavyweight (two live agents, evidence directory, run logs); use it for tests where the cost is justified by the value of real-environment observation.
+
+---
+
 ## Key Principles
 
 1. **Flight log is ground truth** — Read it first, update it always

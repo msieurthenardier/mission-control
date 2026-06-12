@@ -119,6 +119,21 @@ After all autonomous legs are implemented (all uncommitted):
 
 The flight debrief is a separate step run via `/flight-debrief` after the flight lands. The debrief transitions the flight to `completed`.
 
+## Behavior Tests as Acceptance Verification
+
+A flight (or a specific leg) may declare its acceptance criteria via a **behavior test** spec — a Zephyr-style two-column Action | Expected Result table, run via the `/behavior-test` skill with two live AI agents (Executor + Validator) using the Witnessed pattern. Behavior tests verify real-environment observation that doesn't fit unit/integration tests (UI flows, multi-component interactions, AI agent behavior).
+
+**Where they fit in this workflow:**
+
+- A leg authored during Phase 2a may reference a behavior-test slug instead of (or in addition to) inline verification steps — e.g., "Acceptance: `/behavior-test discord-engagement` passes."
+- When the Flight Director reaches such a leg, run the test by invoking `/behavior-test {slug}` directly (not by spawning a Developer agent — the run skill orchestrates its own crew).
+- The behavior-test's run log lands at `tests/behavior/{slug}/runs/{ts}.md` (committed); evidence lives at an ephemeral path outside the project tree and is never committed (see the behavior-test skill's Evidence Handling). The leg's flight-log entry references the run log.
+- A failing behavior test is an unmet acceptance criterion: **the leg does not land while the test fails.** Investigate, fix in a new commit (no amend), re-run. If the operator instead accepts the failure as a known issue, the leg may land with that disposition recorded in the flight-log entry alongside the run-log path — the flight debrief carries it forward.
+
+**Authoring behavior-test specs**: specs are written inline during planning conversations (flight design, leg design), not via a dedicated skill. See `.claude/skills/behavior-test/AUTHORING.md` for the authoring guide (interview shape, spec format, common pitfalls). Format is canonical in the target project's `.flightops/ARTIFACTS.md`.
+
+**Crew prompts** (Executor + Validator) live at `{target-project}/.flightops/agent-crews/behavior-tests-execution.md` — installed by `/init-project` and modifiable per project.
+
 ## Architecture
 
 The Flight Director (you) orchestrates according to this skill. Project crew composition, roles, models, and prompts are defined in `{target-project}/.flightops/agent-crews/leg-execution.md`.
