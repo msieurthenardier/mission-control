@@ -160,6 +160,8 @@ Criteria must be:
 
 **Strong**: "User model exists in `prisma/schema.prisma`"
 
+**Behavior tests as acceptance criteria.** When a criterion can only be verified by acting on the running system (UI flow, multi-component interaction, AI agent behavior), author a **behavior test** spec inline rather than enumerating fragile verification steps in the leg. If the owning flight already drafted a spec during planning, a verification or HAT leg references that draft rather than designing the apparatus from scratch here. A behavior test is a Zephyr-style Action | Expected Result table run via `/behavior-test {slug}` with two live agents using the Witnessed pattern. Write the spec to the configured behavior-test directory (per ARTIFACTS.md; default `tests/behavior/{slug}.md`); reference the slug in this leg's acceptance criteria as "Run `/behavior-test {slug}` and confirm pass." See `.claude/skills/behavior-test/AUTHORING.md` for the authoring guide.
+
 ### Verification Steps
 
 Tell the agent exactly *how* to confirm each criterion:
@@ -185,14 +187,14 @@ When the leg artifact references specific code, prefer durable forms over bare l
 
 | Form | Example | When to use |
 |------|---------|-------------|
-| `file:symbol` | `the_one/api.py:create_provider` | Most cases — symbol names survive line shifts |
-| `file:line — "snippet"` | `the_one/api.py:805 — "raise ProviderConfigError"` | When a specific line matters; the snippet is a self-verifier |
+| `file:symbol` | `src/api.py:create_provider` | Most cases — symbol names survive line shifts |
+| `file:line — "snippet"` | `src/api.py:805 — "raise ProviderConfigError"` | When a specific line matters; the snippet is a self-verifier |
 | `file:CONSTANT_NAME` | `web/middleware.py:GATED_METHODS` | Module-level constants and assignments |
 | `file:line` (bare) | `api.py:805` | **Avoid** — brittle, no way to verify drift |
 
 The snippet form is especially valuable: it lets Phase 3b mechanically confirm the cited content didn't move, and it tells the implementing agent exactly what they're looking at without needing to chase the line number.
 
-When in doubt, include both — `the_one/api.py:805 (in create_provider) — "raise ProviderConfigError if base_url is empty"` — symbol + line + snippet covers all three drift modes.
+When in doubt, include both — `src/api.py:805 (in create_provider) — "raise ProviderConfigError if base_url is empty"` — symbol + line + snippet covers all three drift modes.
 
 ### Implementation Guidance
 

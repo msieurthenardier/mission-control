@@ -163,6 +163,8 @@ Be candid about what didn't work. The debrief is for learning, not for blame.
 ### Actionable Insights
 Every lesson should have a "so what?" — how should future missions be different?
 
+When a mission-level insight identifies a behavior that should be pinned as a regression gate (especially needing real-environment observation), recommend authoring a **behavior test** spec. See `.claude/skills/behavior-test/AUTHORING.md`. The spec gets written during the next mission's planning; the test runs via `/behavior-test {slug}`.
+
 ### Methodology Feedback
 This is the best time to identify improvements to Flight Control itself.
 
