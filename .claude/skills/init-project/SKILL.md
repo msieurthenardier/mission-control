@@ -25,33 +25,32 @@ Run `/init-project` when:
    - Brief description
 3. Optionally offer to add the project to `projects.md`
 
-### 2. Check and Apply Migrations
+### 2. Detect Drift and Apply Migrations
 
-Check for legacy directory layouts and offer to migrate them.
-
-1. **Read `migrations.md`** from the skill directory (`${SKILL_DIR}/migrations.md`)
-2. **Run detection checks** for each migration in order (001, 002, ...)
-3. **If no migrations are needed**, proceed silently to the next step
-4. **If any migrations are needed**, present a summary to the user:
-   > "Detected legacy directory layout in {target-project}. The following migrations are available:"
-   >
-   > - _Each applicable migration's user message_
-   >
-   > "Apply these migrations?"
-5. **On confirmation**, apply the actions for each applicable migration in order
-6. **On decline**, warn the user that some skills may not work correctly with the old layout, but continue using whatever directory structure exists
-
-### 3. Check Sync Status
-
-Run the hash comparison script to determine sync status:
+Run the drift detector once — it reports synced-file status, crew status, and any pending migrations:
 
 ```bash
-bash "${SKILL_DIR}/check-sync.sh" \
+bash "${SKILL_DIR}/check-drift.sh" \
   "${SKILL_DIR}" \
   "{target-project}/.flightops"
 ```
 
-The script outputs one of:
+Keep its full output; step 3 reuses the first line. To handle migrations:
+
+1. **Collect `migration-pending:{id}` lines** from the output. If there are none, proceed silently to the next step.
+2. **Read `migrations.md`** for each reported id's rationale, actions, and user message.
+3. **Present a summary** to the user:
+   > "Detected an outdated layout in {target-project}. The following migrations are available:"
+   >
+   > - _Each pending migration's user message_
+   >
+   > "Apply these migrations?"
+4. **On confirmation**, apply each pending migration's actions in ascending id order (later migrations assume earlier ones have run).
+5. **On decline**, warn the user that some skills may not work correctly until migrated, but continue with the existing layout.
+
+### 3. Sync Status
+
+The first line of the `check-drift.sh` output from step 2 is the synced-file status:
 - `missing` - Directory doesn't exist in target project
 - `outdated` - Directory exists but files differ from source
 - `current` - All files are up-to-date

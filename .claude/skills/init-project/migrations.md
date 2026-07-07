@@ -1,6 +1,6 @@
 # Init-Project Migrations
 
-When `/init-project` runs, it checks for legacy directory layouts from earlier versions of Flight Control and offers to migrate them. Migrations are idempotent — they only apply when the old layout is detected and the new layout doesn't yet exist.
+When `/init-project` runs, it upgrades projects from earlier versions of Flight Control. Detection is not done here — `check-drift.sh` is the single source of migration detection; it emits a `migration-pending:{id}` line for each migration that applies. This file describes, per id, *why* the migration exists, the *actions* to apply, and the *user message* to show. Migrations are idempotent: once applied, the corresponding `migration-pending:{id}` no longer fires.
 
 ## Migration Registry
 
@@ -8,11 +8,7 @@ When `/init-project` runs, it checks for legacy directory layouts from earlier v
 
 Early versions of Flight Control used `.flight-ops/` (with a hyphen). The current convention is `.flightops/` (no hyphen).
 
-**Detection** (returns true if migration is needed):
-
-```bash
-[[ -d "{target-project}/.flight-ops" && ! -d "{target-project}/.flightops" ]]
-```
+**Detected by** `check-drift.sh` → `migration-pending:001`.
 
 **Actions:**
 
@@ -34,13 +30,7 @@ Early versions of Flight Control used `.flight-ops/` (with a hyphen). The curren
 
 Early versions stored crew definitions in `.flightops/phases/`. The current convention is `.flightops/agent-crews/`.
 
-**Detection** (returns true if migration is needed):
-
-```bash
-[[ -d "{target-project}/.flightops/phases" && ! -d "{target-project}/.flightops/agent-crews" ]]
-```
-
-> **Note:** This runs after migration 001, so it checks the post-rename `.flightops/` path.
+**Detected by** `check-drift.sh` → `migration-pending:002`. Apply after 001 (operates on the post-rename `.flightops/` path).
 
 **Actions:**
 
@@ -61,21 +51,15 @@ Flight Control now uses a unified lifecycle for both flights and legs: `planning
 - **Flights**: `diverted` → `aborted`; added `completed` after `landed`
 - **Legs**: `queued` → `planning`; `review` → `landed`; `blocked` → `aborted`; added `ready` and `completed`
 
-**Detection** (returns true if migration is needed):
-
-```bash
-grep -rql 'queued\|diverted\|blocked\|review.*completed' "{target-project}/.flightops/ARTIFACTS.md" 2>/dev/null
-```
-
-> **Note:** This runs after migrations 001 and 002, so it checks the post-rename `.flightops/` path.
+**Detected by** `check-drift.sh` → `migration-pending:003`. Apply after 001–002.
 
 **Actions:**
 
 1. Update state definitions in ARTIFACTS.md:
    - Replace flight status line: `planning | ready | in-flight | landed | diverted` → `planning | ready | in-flight | landed | completed | aborted`
    - Replace leg status line: `queued | in-flight | review | completed | blocked` → `planning | ready | in-flight | landed | completed | aborted`
-   - Replace flight state tracking: `planning` → `ready` → `in-flight` → `landed` (or `diverted`) → `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
-   - Replace leg state tracking: `queued` → `in-flight` → `review` → `completed` (or `blocked`) → `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
+   - If a legacy `State Tracking` table is present, replace flight state tracking: `planning → ready → in-flight → landed (or diverted)` → `planning → ready → in-flight → landed → completed (or aborted)`
+   - If a legacy `State Tracking` table is present, replace leg state tracking: `queued → in-flight → review → completed (or blocked)` → `planning → ready → in-flight → landed → completed (or aborted)`
    - Replace `landed | diverted` → `landed | aborted` in debrief templates
    - Replace `landed/diverted` → `landed/aborted` in debrief templates
    - Replace `completed | in-flight | blocked` → `completed | landed | in-flight | aborted` in flight log templates
@@ -85,7 +69,7 @@ grep -rql 'queued\|diverted\|blocked\|review.*completed' "{target-project}/.flig
    - In leg artifacts: replace `**Status**: queued` → `**Status**: planning`, `**Status**: review` → `**Status**: landed`, `**Status**: blocked` → `**Status**: aborted`
    - In flight log entries: replace `**Status**: blocked` → `**Status**: aborted`
 
-   Find artifacts using the locations defined in ARTIFACTS.md (typically `missions/` directory for file-based projects).
+   Find artifacts using the locations defined in ARTIFACTS.md (typically the `missions/` directory for file-based projects).
 
 **User message:**
 > Updating lifecycle states to unified model: flights and legs now share `planning → ready → in-flight → landed → completed (or aborted)`
@@ -96,14 +80,7 @@ grep -rql 'queued\|diverted\|blocked\|review.*completed' "{target-project}/.flig
 
 Behavior tests are a new acceptance-test paradigm (AI-driven, multi-step, Witnessed pattern) shipped via the `/behavior-test` skill on the mission-control side. Each target project needs the spec/run-log format added to its `ARTIFACTS.md` and the Executor + Validator crew prompts installed at `.flightops/agent-crews/behavior-tests-execution.md` so the run skill can drive its agents through the project.
 
-**Detection** (returns true if migration is needed):
-
-```bash
-[[ ! -f "{target-project}/.flightops/agent-crews/behavior-tests-execution.md" ]] || \
-  ! grep -q "Behavior Test — Spec" "{target-project}/.flightops/ARTIFACTS.md" 2>/dev/null
-```
-
-> **Note:** This runs after migrations 001-003, so it checks the post-rename `.flightops/` path.
+**Detected by** `check-drift.sh` → `migration-pending:004`. Apply after 001–003.
 
 **Actions:**
 
@@ -128,13 +105,39 @@ Behavior tests are a new acceptance-test paradigm (AI-driven, multi-step, Witnes
 
 ---
 
+### 005 — Install Git Conventions section
+
+Branch and commit naming used to be hardcoded in the `/agentic-workflow` skill. It now defers to a `Git Conventions` section in the project's `ARTIFACTS.md` (branch/commit naming is a project convention, not protocol). Projects initialized before this change lack the section, leaving the Flight Director with no branch-naming source.
+
+**Detected by** `check-drift.sh` → `migration-pending:005`. Apply after 001–004.
+
+**Actions:**
+
+1. Append a `Git Conventions` section to the project's `ARTIFACTS.md`, using the Flight Control defaults as the starting point:
+
+   ```markdown
+   ## Git Conventions
+
+   How flight work is named in version control. Skills read these — adjust them to match your VCS conventions.
+
+   - **Flight branch**: `flight/{number}-{slug}` — created at flight start (`git checkout -b flight/{number}-{slug}`)
+   - **Commit subject**: `flight/{number}: {description}`, with a `Mission: {mission-number}` trailer
+   ```
+
+   - Reference: the canonical section lives in `.claude/skills/init-project/templates/ARTIFACTS-files.md`.
+   - If the operator has heavily modified ARTIFACTS.md, surface the proposed insertion and ask before writing. Defer to operator on placement.
+
+**User message:**
+> Adding a `Git Conventions` section (branch + commit naming) to ARTIFACTS.md. `/agentic-workflow` now reads branch/commit naming from here instead of hardcoding it, so you can match your VCS conventions. Existing artifacts unaffected.
+
+---
+
 ## Adding Future Migrations
 
 To add a new migration:
 
-1. Assign the next sequential ID (e.g., `003`)
-2. Write a **Detection** check that returns true only when the migration is needed and false if already applied (idempotent)
-3. List the **Actions** to perform — prefer `mv` over copy-and-delete to preserve file contents and git history
-4. Write a short **User message** shown during the migration summary
-5. Consider ordering — if the migration depends on a previous one having run, note that in the detection section
-6. Keep migrations non-destructive: rename and update references, never delete user content
+1. Assign the next sequential ID (e.g., `006`)
+2. Add its detection to `check-drift.sh` — emit `migration-pending:{id}` when the migration is needed, and nothing once it's been applied (idempotent)
+3. Document it here: rationale, the **Actions** to perform (prefer `mv` over copy-and-delete to preserve file contents and git history), and a short **User message**
+4. Note ordering if it depends on an earlier migration having run
+5. Keep migrations non-destructive: rename and update references, never delete user content

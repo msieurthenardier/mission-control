@@ -28,6 +28,18 @@ Read .claude/skills/{skill-name}/SKILL.md and execute the workflow described the
 
 If `projects.md` does not exist in this repository, suggest running `/init-mission-control` to set up the projects registry before proceeding with any other skills.
 
+### Per-Project Drift Check
+
+The first time you engage a specific project in a session — after resolving it from `projects.md`, before running a project skill or answering questions about its Flight Control state — check whether its methodology has drifted:
+
+```bash
+bash .claude/skills/init-project/check-drift.sh \
+  .claude/skills/init-project \
+  "{target-project}/.flightops"
+```
+
+If the output contains any `migration-pending:{id}` lines (or an `outdated` status), tell the user the project is behind the current methodology and **recommend running `/init-project`** to apply the migrations — then continue with what they asked. Recommend only; never apply migrations yourself (`/init-project` owns that, with confirmation). Run this at most once per project per session.
+
 ## Project Overview
 
 Flight Control is an AI-first software development lifecycle methodology using aviation metaphors. It organizes work into three hierarchical levels:
