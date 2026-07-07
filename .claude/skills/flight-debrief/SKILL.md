@@ -25,7 +25,7 @@ Perform comprehensive post-flight analysis for continuous improvement.
    - Do not proceed without the artifact configuration
 
 3. **Read the artifact configuration**
-   - Read `{target-project}/.flightops/ARTIFACTS.md` for artifact locations and formats
+   - Read `{target-project}/.flightops/ARTIFACTS.md` for how this project handles each artifact — its storage location, format, and any actions the project defines at create and transition time (e.g., transitioning a ticket, posting a notification)
 
 4. **Load flight documentation**
    - Read the mission for overall context and success criteria
@@ -130,11 +130,11 @@ Evaluate whether the mission-control skills could be improved:
 
 ### Phase 5: Generate Debrief
 
-Create the flight debrief artifact using the format defined in `.flightops/ARTIFACTS.md`.
+Persist the flight debrief artifact following the conventions `.flightops/ARTIFACTS.md` defines for it.
 
 ### Phase 6: Flight Status Transition
 
-Ask the user if the flight should be marked as `completed`. If confirmed, update the flight artifact's status from `landed` to `completed`.
+Ask the user if the flight should be marked as `completed`. If confirmed, update the flight artifact's status from `landed` to `completed`, and perform any transition-time handling the project's `.flightops/ARTIFACTS.md` defines for that transition (default: none).
 
 ## Guidelines
 
@@ -164,6 +164,6 @@ Identify effective patterns that should be reinforced or codified.
 
 ## Output
 
-Create the debrief artifact using the location and format defined in `.flightops/ARTIFACTS.md`.
+Deliverable: the debrief artifact, persisted per the conventions `.flightops/ARTIFACTS.md` defines for it.
 
 After creating the debrief, summarize the top 3-5 most impactful recommendations.

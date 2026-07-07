@@ -25,7 +25,7 @@ Generate detailed implementation guidance for LLM execution.
    - Do not proceed without the artifact configuration
 
 3. **Read the artifact configuration**
-   - Read `{target-project}/.flightops/ARTIFACTS.md` for artifact locations and formats
+   - Read `{target-project}/.flightops/ARTIFACTS.md` for how this project handles each artifact — its storage location, format, and any actions the project defines at create and transition time (e.g., transitioning a ticket, posting a notification)
 
 4. **Read the parent flight**
    - Understand the objective being achieved
@@ -109,7 +109,7 @@ Deep dive into the specific implementation:
 
 ### Phase 3: Guidance Generation
 
-Create the leg artifact using the format defined in `.flightops/ARTIFACTS.md`.
+Persist the leg artifact following the conventions `.flightops/ARTIFACTS.md` defines for it.
 
 ### Phase 3b: Citation Verification
 
@@ -238,4 +238,4 @@ Once a leg is `in-flight`:
 
 ## Output
 
-Create the leg artifact using the location and format defined in `.flightops/ARTIFACTS.md`.
+Deliverable: the leg artifact, persisted per the conventions `.flightops/ARTIFACTS.md` defines for it.

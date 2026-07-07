@@ -185,7 +185,7 @@ The canonical spec format lives in `{target-project}/.flightops/ARTIFACTS.md` un
 ```markdown
 # Behavior Test Run: {slug} — {timestamp}
 
-**Spec**: [tests/behavior/{slug}.md](../{slug}.md)
+**Spec**: [{slug}.md](../{slug}.md)
 **Status**: pass | fail | partial | aborted
 **Started**: {iso8601}
 **Completed**: {iso8601}

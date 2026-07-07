@@ -100,8 +100,7 @@ Mission Control skills run in projects whose owners can customize `.flightops/AR
 - **Do not read project-owned artifacts by section heading.** When a skill needs to extract information from a prior debrief, maintenance report, or other project-owned artifact, frame the instruction by intent — what the agent is looking for — and let the agent locate it within whatever structure the project uses. Reading by literal heading name (e.g. `## Action Items`, `## Test Suite Timing`) breaks silently the moment a project owner renames or removes that section.
 - **Do not write into project-owned artifacts at named anchors.** When a skill inserts content into a project artifact, describe the destination semantically ("in the section the project uses for X") rather than by literal heading. If the skill is appending a new section, suggest a heading without prescribing it as a contract.
 - **Do not rely on crew prompt files to carry skill-required instructions.** The Flight Director must issue per-spawn instructions directly from the SKILL.md, even when the crew file also contains an overlapping prompt. Crew files are project-modifiable scaffolding; SKILL.md is the protocol.
-
-See `docs/artifacts-md-ambiguities.md` for the full review of how the current ARTIFACTS.md template muddles this boundary.
+- **Defer to ARTIFACTS.md for the whole persistence procedure, not two named fields.** A skill reads ARTIFACTS.md for how the project handles each artifact — storage location, format, and any actions the project defines at create and transition time (opening a ticket, posting a notification). Don't extract a capped "location and format"; that silently drops project-defined side-effects, and don't hardcode artifact paths. Protocol — state values, lifecycle, taxonomy, invariants — lives in the skills, never in ARTIFACTS.md.
 
 ## Project Information Stays in Project Artifacts
 

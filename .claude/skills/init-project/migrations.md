@@ -118,9 +118,7 @@ Behavior tests are a new acceptance-test paradigm (AI-driven, multi-step, Witnes
    - Add the "Behavior Test — Spec" section + format example.
    - Add the "Behavior Test — Run Log" section + format example.
    - Add `tests/behavior/{slug}.md` line to the Directory Structure tree.
-   - Add the two new rows to the State Tracking table:
-     - `Behavior Test Spec | draft → active → archived`
-     - `Behavior Test Run | pass | fail | partial | aborted` (terminal)
+   - If the project's ARTIFACTS.md still uses a legacy `State Tracking` table (pre-encoding-only layout), add two rows for the behavior-test spec/run states. Newer layouts carry those states inline in the format blocks, so no table edit is needed.
    - Reference: the canonical sections live in `.claude/skills/init-project/templates/ARTIFACTS-files.md`.
 
    If the operator has heavily modified ARTIFACTS.md (e.g., uses a non-filesystem artifact backend), surface the proposed insertions and ask before writing. Defer to operator on placement.

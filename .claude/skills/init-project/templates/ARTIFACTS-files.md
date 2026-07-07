@@ -40,6 +40,15 @@ This project stores Flight Control artifacts as markdown files in the repository
 
 ---
 
+## Git Conventions
+
+How flight work is named in version control. Skills read these — adjust them to match your VCS conventions.
+
+- **Flight branch**: `flight/{number}-{slug}` — created at flight start (`git checkout -b flight/{number}-{slug}`)
+- **Commit subject**: `flight/{number}: {description}`, with a `Mission: {mission-number}` trailer
+
+---
+
 ## Core Artifacts
 
 ### Mission
@@ -248,19 +257,8 @@ How to confirm each criterion is met:
 
 ---
 
-## Post-Completion Checklist
-
-**Complete ALL steps before signaling `[COMPLETE:leg]`:**
-
-- [ ] All acceptance criteria verified
-- [ ] Tests passing
-- [ ] Update flight-log.md with leg progress entry
-- [ ] Set this leg's status to `completed` (in this file's header)
-- [ ] Check off this leg in flight.md
-- [ ] If final leg of flight:
-  - [ ] Update flight.md status to `landed`
-  - [ ] Check off flight in mission.md
-- [ ] Commit all changes together (code + artifacts)
+## Post-Completion
+Completion steps — status transitions, flight-log update, checking off in the parent flight, and commit — are Flight Control protocol, driven by the execution workflow. Not repeated here.
 ```
 
 ---
@@ -671,22 +669,14 @@ Parametrized re-runs with different inputs.
 
 ---
 
-## State Tracking
+## Status Encoding
 
-States are tracked in the frontmatter or status field of each artifact:
-
-| Artifact | States |
-|----------|--------|
-| Mission | `planning` → `active` → `completed` (or `aborted`) |
-| Flight | `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`) |
-| Leg | `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`) |
-| Behavior Test Spec | `draft` → `active` → `archived` |
-| Behavior Test Run | `pass` \| `fail` \| `partial` \| `aborted` (terminal; never edited after the run completes) |
+Each artifact records its status in a `**Status**:` line (shown in the Format blocks above). Use that one encoding — don't split status across frontmatter and status lines. The valid status values and lifecycle for each artifact type are Flight Control protocol, owned by the skills; this file records status, it doesn't define the value set.
 
 ## Conventions
 
-- **Immutability**: Never modify legs once `in-flight`; create new ones instead
-- **Append-only logs**: Flight logs are append-only during execution
+Project policies chosen at init — revise to taste:
+
 - **Flight briefings**: Created before execution, not modified after
 - **Debriefs**: Created after completion, may be updated with follow-up notes
 - **Mission as briefing**: The mission.md document serves as both definition and briefing (no separate mission-briefing.md)

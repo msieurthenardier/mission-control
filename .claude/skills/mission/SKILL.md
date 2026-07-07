@@ -27,7 +27,7 @@ Before asking questions, gather context:
    - Do not proceed without the artifact configuration
 
 3. **Read the artifact configuration**
-   - Read `{target-project}/.flightops/ARTIFACTS.md` for artifact locations and formats
+   - Read `{target-project}/.flightops/ARTIFACTS.md` for how this project handles each artifact — its storage location, format, and any actions the project defines at create and transition time (e.g., transitioning a ticket, posting a notification)
 
 4. **Explore the target project's codebase**
    - Project structure and architecture
@@ -85,7 +85,7 @@ Ask about outcomes, not tasks. Focus on:
 
 ### Phase 4: Draft
 
-Create the mission artifact using the format defined in `.flightops/ARTIFACTS.md`.
+Persist the mission artifact following the conventions `.flightops/ARTIFACTS.md` defines for it.
 
 ### Phase 4b: Technical Viability Check
 
@@ -155,4 +155,4 @@ During the interview phase, ask the user whether they'd like to include an align
 
 ## Output
 
-Create the mission artifact using the location and format defined in `.flightops/ARTIFACTS.md`.
+Deliverable: the mission artifact, persisted per the conventions `.flightops/ARTIFACTS.md` defines for it.

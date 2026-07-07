@@ -24,10 +24,10 @@ Perform an exhaustive, aviation-style codebase inspection after a mission comple
    - Do not proceed without the artifact configuration
 
 3. **Read the artifact configuration**
-   - Read `{target-project}/.flightops/ARTIFACTS.md` for artifact locations and formats
+   - Read `{target-project}/.flightops/ARTIFACTS.md` for how this project handles each artifact — its storage location, format, and any actions the project defines at create and transition time (e.g., transitioning a ticket, posting a notification)
 
 4. **Load prior maintenance reports (if any exist)**
-   - Read previous reports in `maintenance/` to identify deferred findings from earlier cycles
+   - Read previous maintenance reports (at the location `.flightops/ARTIFACTS.md` defines for them) to identify deferred findings from earlier cycles
    - Deferred findings are those documented in prior reports but not addressed by a maintenance mission
    - This ensures recurring issues are tracked across cycles rather than re-discovered as "new"
 
@@ -271,7 +271,7 @@ The goal is a mission that can land in a single focused session. All findings ar
 
 ### Phase 7: Generate Maintenance Report
 
-Create the maintenance report artifact at the location defined in `.flightops/ARTIFACTS.md` (typically `maintenance/YYYY-MM-DD.md`). If a report already exists for today's date, append a numeric suffix (e.g., `2026-03-26-2.md`).
+Persist the maintenance report following the conventions `.flightops/ARTIFACTS.md` defines for it. If a report already exists for the same date, disambiguate per the project's naming (e.g., append a numeric suffix).
 
 **Report contents:**
 - Title (date-based) and date
@@ -296,10 +296,10 @@ This phase produces the mission and its flights, ready for `/agentic-workflow` t
 
 #### 8a. Mission
 
-Scan existing `missions/` directories to determine the next sequence number `{NN}`. Create `missions/{NN}-maintenance/mission.md` using the standard mission format from `.flightops/ARTIFACTS.md`:
+Scan existing missions (at the location `.flightops/ARTIFACTS.md` defines) to determine the next sequence number per the project's naming conventions. Create the maintenance mission (slug `{NN}-maintenance`) following the mission conventions in `.flightops/ARTIFACTS.md`:
 - **Status**: `planning`
 - **Outcome**: "Resolve codebase health issues identified in maintenance report {YYYY-MM-DD}"
-- **Context**: Link to the maintenance report in `maintenance/{YYYY-MM-DD}.md`
+- **Context**: Link to the maintenance report created in Phase 7 (at its ARTIFACTS.md location)
 - **Success Criteria**: One criterion per selected finding
 - **Flights**: List the flights from step 8b
 - Populate all standard mission sections. Mark sections with no relevant content as "N/A" (e.g., Open Questions, Stakeholders).
@@ -308,7 +308,7 @@ Scan existing `missions/` directories to determine the next sequence number `{NN
 
 Re-group the user's selected findings into flights. Use the Architect's recommended groupings as a starting point, but adjust for any findings the user removed or added during Phase 6 scoping. Typical groupings: one flight per category with actionable findings, or by technical area when findings from different categories affect the same subsystem.
 
-Each flight gets its own directory with `flight.md` and `flight-log.md`. Use the standard formats from `.flightops/ARTIFACTS.md` with these maintenance-specific notes:
+Create each flight — spec plus an empty flight log — following the flight conventions in `.flightops/ARTIFACTS.md`, with these maintenance-specific notes:
 
 - **Status**: `ready` — maintenance flights skip the Pre-Flight phase (no open questions or design decisions to resolve for concrete fixes). Mark Pre-Flight Checklist items as N/A.
 - **Mission**: Link back to the maintenance mission
@@ -316,11 +316,11 @@ Each flight gets its own directory with `flight.md` and `flight-log.md`. Use the
 - **Technical Approach**: Per finding, the fix strategy plus the Inspector's evidence and Architect's recommendation — enough for `/agentic-workflow` to design legs. One finding maps to one leg.
 - Populate all other standard flight sections. Mark sections with no relevant content as "N/A".
 
-The `flight-log.md` is created empty (header only) — it will be populated during execution.
+The flight log is created empty (header only) — it will be populated during execution.
 
 #### 8c. Update Report Backlink
 
-After scaffolding, update the "Maintenance Mission" section at the bottom of the maintenance report (from Phase 7) with a link to the newly created mission.
+After scaffolding, update the maintenance report's mission-link section — the one its format reserves for a scaffolded mission — with a link to the newly created mission.
 
 ## Guidelines
 
@@ -362,7 +362,7 @@ Report what you find, even if the codebase is in great shape. A clean report is 
 
 ## Output
 
-Create the maintenance report artifact using the location and format defined in `.flightops/ARTIFACTS.md`.
+Deliverable: the maintenance report, persisted per the conventions `.flightops/ARTIFACTS.md` defines for it.
 
 After generating the report, summarize:
 1. Overall assessment (Flight Ready or Maintenance Required)

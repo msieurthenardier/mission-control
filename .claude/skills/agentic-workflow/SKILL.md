@@ -24,7 +24,7 @@ Example: `/agentic-workflow flight 03 for epipen mission 04`
 ## Phase 1: Context Loading
 
 1. **Read `projects.md`** to find the target project's path
-2. **Read `{target-project}/.flightops/ARTIFACTS.md`** for artifact locations
+2. **Read `{target-project}/.flightops/ARTIFACTS.md`** for how this project handles each artifact — storage location, format, and any actions the project defines at create and transition time (e.g., transitioning a ticket, posting a notification). Honor these when you or a spawned agent moves an artifact through its lifecycle.
 3. **Read `{target-project}/.flightops/agent-crews/leg-execution.md`** for project crew definitions, interaction protocol, and prompts (fall back to defaults at `.claude/skills/init-project/defaults/agent-crews/leg-execution.md`)
    - **Validate structure**: The phase file MUST contain `## Crew`, `## Interaction Protocol`, and `## Prompts` sections. Each prompt subsection MUST have a fenced code block.
    - **If the file exists but is malformed**: STOP. Tell the user: "Phase file `leg-execution.md` is missing required sections. Either fix it manually or re-run `/init-project` to reset to defaults." Do NOT improvise missing prompts — halt and get the file fixed.
@@ -85,6 +85,7 @@ Repeat for each leg in the flight.
    - Provide the "Implement" prompt from the leg-execution phase file's Prompts section
    - The Developer updates leg status to `in-flight`, implements to acceptance criteria
    - When done, the Developer updates leg status to `landed` and updates flight log — do NOT let it commit or signal `[HANDOFF:review-needed]`
+   - In your spawn prompt, instruct the Developer that whenever it changes the leg's status, it must also perform any transition-time handling the project's `.flightops/ARTIFACTS.md` defines for that transition (default: none). State this directly in the prompt — don't assume the crew file carries it.
 
 ### 2c: Leg Transition
 
@@ -127,7 +128,7 @@ A flight (or a specific leg) may declare its acceptance criteria via a **behavio
 
 - A leg authored during Phase 2a may reference a behavior-test slug instead of (or in addition to) inline verification steps — e.g., "Acceptance: `/behavior-test discord-engagement` passes."
 - When the Flight Director reaches such a leg, run the test by invoking `/behavior-test {slug}` directly (not by spawning a Developer agent — the run skill orchestrates its own crew).
-- The behavior-test's run log lands at `tests/behavior/{slug}/runs/{ts}.md` (committed); evidence lives at an ephemeral path outside the project tree and is never committed (see the behavior-test skill's Evidence Handling). The leg's flight-log entry references the run log.
+- The behavior-test's run log lands at the project's configured behavior-test run-log location (per ARTIFACTS.md), committed; evidence lives at an ephemeral path outside the project tree and is never committed (see the behavior-test skill's Evidence Handling). The leg's flight-log entry references the run log.
 - A failing behavior test is an unmet acceptance criterion: **the leg does not land while the test fails.** Investigate, fix in a new commit (no amend), re-run. If the operator instead accepts the failure as a known issue, the leg may land with that disposition recorded in the flight-log entry alongside the run-log path — the flight debrief carries it forward.
 
 **Authoring behavior-test specs**: specs are written inline during planning conversations (flight design, leg design), not via a dedicated skill. See `.claude/skills/behavior-test/AUTHORING.md` for the authoring guide (interview shape, spec format, common pitfalls). Format is canonical in the target project's `.flightops/ARTIFACTS.md`.
@@ -160,18 +161,7 @@ Log orchestration decisions in the flight log under `### Flight Director Notes` 
 
 ## Git Workflow
 
-All agents work in the target project root on a feature branch created at flight start.
-
-**Branch naming**: `flight/{number}-{slug}`
-
-**Flight start**: `git checkout -b flight/{number}-{slug}`
-
-**Commit message format:**
-```
-flight/{number}: {description}
-
-Mission: {mission-number}
-```
+All agents work in the target project root on a feature branch created at flight start. Branch naming and commit message format follow the project's **Git Conventions** in `.flightops/ARTIFACTS.md` — create the flight branch per that scheme at flight start.
 
 **PR lifecycle:**
 

@@ -25,7 +25,7 @@ Create a technical flight spec from a mission.
    - Do not proceed without the artifact configuration
 
 3. **Read the artifact configuration**
-   - Read `{target-project}/.flightops/ARTIFACTS.md` for artifact locations and formats
+   - Read `{target-project}/.flightops/ARTIFACTS.md` for how this project handles each artifact — its storage location, format, and any actions the project defines at create and transition time (e.g., transitioning a ticket, posting a notification)
 
 4. **Read the parent mission**
    - Understand the outcome being pursued
@@ -145,9 +145,9 @@ Ask technical questions to resolve the approach:
 
 ### Phase 5: Spec Creation
 
-Create the flight artifact using the format defined in `.flightops/ARTIFACTS.md`.
+Persist the flight artifact following the conventions `.flightops/ARTIFACTS.md` defines for it.
 
-Also create the flight log artifact (empty, ready for execution notes).
+Also create the flight log artifact (empty, ready for execution notes), likewise per its ARTIFACTS.md conventions.
 
 **Verification approach — consider behavior tests.** If the flight's acceptance criteria need real-environment observation that unit/integration tests can't cover (UI flows, multi-component interactions, AI agent behavior), author one or more **behavior test** specs inline as part of this phase — draft them now, before legs are locked, so the apparatus choice and key observable shape the leg breakdown rather than being retrofitted. At minimum a draft fixes the key observable and a rough step count; the apparatus choice is a Design Decision (see Phase 4). A behavior test is a Zephyr-style Action | Expected Result table run via `/behavior-test {slug}` with two live agents (Executor + Validator) using the Witnessed pattern. Write the spec to the configured behavior-test directory (per ARTIFACTS.md; default `tests/behavior/{slug}.md`); reference the slug in the flight's Verification section. See `.claude/skills/behavior-test/AUTHORING.md` for the authoring guide (when to use, interview shape, spec format, common pitfalls). Don't author them speculatively — only when the verification cost is justified by the value of real-environment observation.
 
@@ -228,7 +228,7 @@ Break flights into legs based on technical boundaries:
 
 ## Output
 
-Create the following artifacts using locations and formats from `.flightops/ARTIFACTS.md`:
+Persist the following artifacts per the conventions `.flightops/ARTIFACTS.md` defines for each:
 
 1. **Flight spec** — The flight plan
 2. **Flight log** — Empty, ready for execution notes

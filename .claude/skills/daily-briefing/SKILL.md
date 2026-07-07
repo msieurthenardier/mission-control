@@ -46,8 +46,8 @@ For each selected project, gather data by spawning **parallel Explore agents** (
    - Read `{project-path}/.flightops/ARTIFACTS.md` for directory structure and naming conventions
 
 3. **Discover all artifacts**
-   - For filesystem-based projects, scan `{project-path}/missions/` for mission directories
-   - For each mission, scan for flights; for each flight, scan for legs
+   - Scan for missions at the location `.flightops/ARTIFACTS.md` defines, then walk its nested structure — don't assume a fixed `missions/` layout
+   - For each mission, discover its flights; for each flight, its legs — following that same structure
    - Read all discovered artifacts and capture:
      - **Status fields** from each mission, flight, and leg
      - **Titles and objectives**
@@ -196,7 +196,7 @@ Spawn project scanning agents in parallel for efficiency. Don't scan projects se
 
 ### Graceful Degradation
 - Projects without `.flightops/` get noted but don't block the report
-- Projects with no missions directory get reported as "no Flight Control artifacts"
+- Projects with no missions found at the configured location get reported as "no Flight Control artifacts"
 - Missing or malformed artifacts get flagged, not crashed on
 
 ### Honest Assessment

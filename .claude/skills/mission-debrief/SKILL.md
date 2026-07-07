@@ -25,7 +25,7 @@ Perform comprehensive post-mission retrospective and methodology assessment.
    - Do not proceed without the artifact configuration
 
 3. **Read the artifact configuration**
-   - Read `{target-project}/.flightops/ARTIFACTS.md` for artifact locations and formats
+   - Read `{target-project}/.flightops/ARTIFACTS.md` for how this project handles each artifact — its storage location, format, and any actions the project defines at create and transition time (e.g., transitioning a ticket, posting a notification)
 
 4. **Load mission documentation**
    - Read the mission for original outcome, success criteria, and constraints
@@ -143,11 +143,11 @@ For each flight:
 
 ### Phase 7: Generate Debrief
 
-Create the mission debrief artifact using the format defined in `.flightops/ARTIFACTS.md`.
+Persist the mission debrief artifact following the conventions `.flightops/ARTIFACTS.md` defines for it.
 
 ### Phase 8: Mission Status Transition
 
-If the mission is not already marked as `completed` or `aborted`, update the mission artifact's status to `completed`.
+If the mission is not already marked as `completed` or `aborted`, update the mission artifact's status to `completed`, and perform any transition-time handling the project's `.flightops/ARTIFACTS.md` defines for that transition (default: none).
 
 ## Guidelines
 
@@ -177,7 +177,7 @@ Weave interview insights throughout the debrief, not as a separate section. Crew
 
 ## Output
 
-Create the debrief artifact using the location and format defined in `.flightops/ARTIFACTS.md`.
+Deliverable: the debrief artifact, persisted per the conventions `.flightops/ARTIFACTS.md` defines for it.
 
 After creating the debrief, summarize:
 1. Overall mission outcome assessment
