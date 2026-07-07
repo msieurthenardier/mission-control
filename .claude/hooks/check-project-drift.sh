@@ -38,4 +38,24 @@ done < "$PROJECTS_MD"
 
 [[ -n "$report" ]] || exit 0
 
-printf 'Flight Control projects with pending methodology migrations:\n%sRecommend /preflight-check (all) or /init-project (one project) to apply. Recommend only — do not apply migrations yourself.\n' "$report"
+summary="Flight Control projects with pending methodology migrations:
+${report}Recommend /preflight-check (all) or /init-project (one project) to apply. Recommend only — do not apply migrations yourself."
+
+# Emit as SessionStart JSON: systemMessage makes it visible to the operator;
+# additionalContext injects it into the model's context. Fall back to plain
+# stdout if python3 is unavailable.
+if command -v python3 >/dev/null 2>&1; then
+  python3 - "$summary" <<'PY'
+import json, sys
+msg = sys.argv[1]
+print(json.dumps({
+    "systemMessage": msg,
+    "hookSpecificOutput": {
+        "hookEventName": "SessionStart",
+        "additionalContext": msg,
+    },
+}))
+PY
+else
+  printf '%s\n' "$summary"
+fi
