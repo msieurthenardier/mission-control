@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/check-project-drift.sh\"",
+            "timeout": 30,
+            "statusMessage": "Checking Flight Control projects for methodology drift"
+          }
+        ]
+      }
+    ]
+  }
+}

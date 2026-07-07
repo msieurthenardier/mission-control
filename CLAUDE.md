@@ -30,15 +30,15 @@ If `projects.md` does not exist in this repository, suggest running `/init-missi
 
 ### Per-Project Drift Check
 
-The first time you engage a specific project in a session — after resolving it from `projects.md`, before running a project skill or answering questions about its Flight Control state — check whether its methodology has drifted:
+A `SessionStart` hook (`.claude/hooks/check-project-drift.sh`, wired in `.claude/settings.json`) scans every registered project at session start and injects a notice listing any with pending methodology migrations. When that notice is present and the user engages one of the listed projects, tell them it's behind the current methodology and **recommend running `/init-project`** to apply the migrations — then continue with what they asked. Recommend only; never apply migrations yourself (`/init-project` owns that, with confirmation).
+
+To check a single project on demand, run the detector directly:
 
 ```bash
 bash .claude/skills/init-project/check-drift.sh \
   .claude/skills/init-project \
   "{target-project}/.flightops"
 ```
-
-If the output contains any `migration-pending:{id}` lines (or an `outdated` status), tell the user the project is behind the current methodology and **recommend running `/init-project`** to apply the migrations — then continue with what they asked. Recommend only; never apply migrations yourself (`/init-project` owns that, with confirmation). Run this at most once per project per session.
 
 ## Project Overview
 
