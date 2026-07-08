@@ -130,7 +130,7 @@ Evaluate whether the mission-control skills could be improved:
 
 ### Phase 5: Generate Debrief
 
-Persist the flight debrief artifact following the conventions `.flightops/ARTIFACTS.md` defines for it.
+Persist the flight debrief artifact following the conventions `.flightops/ARTIFACTS.md` defines for it, then perform any create-time handling it defines for that artifact (e.g., opening a ticket, posting a notification; default: none).
 
 ### Phase 6: Flight Status Transition
 

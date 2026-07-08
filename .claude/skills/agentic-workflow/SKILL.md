@@ -34,7 +34,7 @@ Example: `/agentic-workflow flight 03 for epipen mission 04`
 7. **Count total legs** from the flight spec — track progress throughout
 8. **Determine starting point** — which leg is next based on flight log and leg statuses
 
-**Mark flight as in-flight**: After loading the flight artifact, if the flight status is `ready`, update it to `in-flight` before proceeding. If already `in-flight`, leave it as-is.
+**Mark flight as in-flight**: After loading the flight artifact, if the flight status is `ready`, update it to `in-flight` before proceeding, performing any transition-time handling `.flightops/ARTIFACTS.md` defines for that transition (default: none). If already `in-flight`, leave it as-is.
 
 If resuming a flight already in progress, verify state consistency:
 - Flight log entries must match leg statuses
@@ -114,7 +114,7 @@ After all autonomous legs are implemented (all uncommitted):
 1. **Verify all legs** show `completed` status
 2. **Verify flight log** has entries for all legs
 3. **Verify documentation** — check that CLAUDE.md, README, and other project docs reflect any new commands, endpoints, configuration, or APIs introduced during the flight. If not, spawn a Developer agent to update them.
-4. **Update flight status** to `landed`
+4. **Update flight status** to `landed`, performing any transition-time handling `.flightops/ARTIFACTS.md` defines for that transition (default: none)
 5. **Check off flight** in mission artifact
 6. **Signal `[COMPLETE:flight]`**
 

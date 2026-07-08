@@ -85,7 +85,7 @@ Ask about outcomes, not tasks. Focus on:
 
 ### Phase 4: Draft
 
-Persist the mission artifact following the conventions `.flightops/ARTIFACTS.md` defines for it.
+Persist the mission artifact following the conventions `.flightops/ARTIFACTS.md` defines for it, then perform any create-time handling it defines for that artifact (e.g., opening a ticket, posting a notification; default: none).
 
 ### Phase 4b: Technical Viability Check
 

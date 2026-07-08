@@ -145,7 +145,7 @@ Ask technical questions to resolve the approach:
 
 ### Phase 5: Spec Creation
 
-Persist the flight artifact following the conventions `.flightops/ARTIFACTS.md` defines for it.
+Persist the flight artifact following the conventions `.flightops/ARTIFACTS.md` defines for it, then perform any create-time handling it defines for that artifact (e.g., opening a ticket, posting a notification; default: none).
 
 Also create the flight log artifact (empty, ready for execution notes), likewise per its ARTIFACTS.md conventions.
 

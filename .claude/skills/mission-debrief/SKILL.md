@@ -143,7 +143,7 @@ For each flight:
 
 ### Phase 7: Generate Debrief
 
-Persist the mission debrief artifact following the conventions `.flightops/ARTIFACTS.md` defines for it.
+Persist the mission debrief artifact following the conventions `.flightops/ARTIFACTS.md` defines for it, then perform any create-time handling it defines for that artifact (e.g., opening a ticket, posting a notification; default: none).
 
 ### Phase 8: Mission Status Transition
 

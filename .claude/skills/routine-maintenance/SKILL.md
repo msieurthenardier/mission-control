@@ -271,7 +271,7 @@ The goal is a mission that can land in a single focused session. All findings ar
 
 ### Phase 7: Generate Maintenance Report
 
-Persist the maintenance report following the conventions `.flightops/ARTIFACTS.md` defines for it. If a report already exists for the same date, disambiguate per the project's naming (e.g., append a numeric suffix).
+Persist the maintenance report following the conventions `.flightops/ARTIFACTS.md` defines for it, then perform any create-time handling it defines for that artifact (e.g., opening a ticket, posting a notification; default: none). If a report already exists for the same date, disambiguate per the project's naming (e.g., append a numeric suffix).
 
 **Report contents:**
 - Title (date-based) and date

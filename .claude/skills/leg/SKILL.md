@@ -109,7 +109,7 @@ Deep dive into the specific implementation:
 
 ### Phase 3: Guidance Generation
 
-Persist the leg artifact following the conventions `.flightops/ARTIFACTS.md` defines for it.
+Persist the leg artifact following the conventions `.flightops/ARTIFACTS.md` defines for it, then perform any create-time handling it defines for that artifact (e.g., opening a ticket, posting a notification; default: none).
 
 ### Phase 3b: Citation Verification
 
