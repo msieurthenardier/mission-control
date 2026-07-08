@@ -127,8 +127,12 @@ if $LEGACY_PHASES; then
 fi
 
 if [[ -f "$ARTIFACTS" ]]; then
-  # 003 - legacy divergent lifecycle states
-  if grep -Eq 'queued|diverted|blocked|review.*completed' "$ARTIFACTS" 2>/dev/null; then
+  # 003 - legacy divergent lifecycle states.
+  # Match legacy-only status tokens (queued/diverted) anywhere, plus the legacy
+  # leg states (review/blocked) ONLY when adjacent to an enum pipe or a
+  # state-tracking arrow — so prose that merely contains the words "review",
+  # "blocked", or "completed" (e.g. a Jira-workflow section) doesn't false-fire.
+  if grep -Eq '\b(queued|diverted)\b|(\||→)[[:space:]]*(review|blocked)\b|\b(review|blocked)[[:space:]]*(\||→)' "$ARTIFACTS" 2>/dev/null; then
     echo "migration-pending:003"
   fi
 
