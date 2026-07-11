@@ -76,6 +76,8 @@ Repeat for each leg in the flight.
 2. **Skip the autonomous implementation cycle** (no Developer/Reviewer agents)
 3. **Guide the human through verification steps one at a time** — present a single step, wait for the human to perform it and report results, then proceed to the next step
 4. **Fix issues inline** — if the human reports a failure, diagnose and fix it (spawning a Developer agent if code changes are needed), then re-verify that step before moving on
+   - **Fix-vs-feature gate**: an operator request arising mid-HAT that adds new behavior (a FEATURE) is promoted to a scoped design review before implementation; only look-and-feel FIXES ride the inline protocol. The fix-vs-feature line is the Flight Director's call, made out loud.
+   - **Multi-surface scope trigger**: even when classified as a look-and-feel fix, if the change spans more than one page/surface (e.g. it touches another internal page, the chrome, or main-process wiring beyond the surface under test), spawn a lightweight Developer design-review pass before the implementing spawn. Two missions of data show multi-surface "cosmetic" fixes routinely carry riders (unguarded inputs, cross-file wiring) that a review catches cheaply.
 5. **Commit when all steps pass** — update artifacts and commit
 
 **Standard (autonomous) legs**: Spawn a Developer agent — but do NOT review or commit after each leg.
