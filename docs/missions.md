@@ -15,9 +15,9 @@ A mission represents a meaningful outcome—something a stakeholder would recogn
 | Aspect | Mission | Flight | Leg |
 |--------|---------|--------|-----|
 | Audience | Humans, stakeholders | Developers, AI | AI agents |
-| Scope | Outcome | Technical spec | Single task |
+| Scope | Outcome | Technical spec | Feature slice |
 | Style | Narrative | Structured | Explicit |
-| Duration | Days to weeks | Hours to days | Minutes to hours |
+| Duration | Days to weeks | Hours to days | Hours to a day |
 
 ## Writing Effective Missions
 

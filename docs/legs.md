@@ -4,7 +4,7 @@ Legs are the AI-optimized layer of Flight Control. They provide structured, expl
 
 ## What is a Leg?
 
-A leg is a single, atomic unit of implementation work. Legs are:
+A leg is a coherent, atomic slice of implementation work — as much scope as an implementing agent can carry in one uninterrupted pass. Legs are:
 
 - **Explicit**: No ambiguity about what "done" means
 - **Bounded**: Clear start and end points
@@ -15,8 +15,8 @@ A leg is a single, atomic unit of implementation work. Legs are:
 
 | Aspect | Mission | Flight | Leg |
 |--------|---------|--------|-----|
-| Scope | Outcome | Feature | Task |
-| Duration | Days-weeks | Hours-days | Minutes-hours |
+| Scope | Outcome | Feature | Feature slice |
+| Duration | Days-weeks | Hours-days | Hours to a day |
 | Modifications | Allowed | Allowed | Create new instead |
 | Audience | Humans | Developers/AI | AI agents |
 
@@ -309,21 +309,23 @@ See [parent flight](../flight.md) for:
 
 ### Too Large
 
-If a leg takes more than a few hours, it's probably too big. Signs:
-- Multiple independent pieces of functionality
-- Would benefit from intermediate checkpoints
-- Hard to write clear acceptance criteria
+Leg boundaries exist for decisions and risk, not effort. Sheer volume — many files, many tests, a full feature — is not a reason to split; an implementing agent carries a full feature slice in one pass. A leg is genuinely too large only when:
 
-Split into smaller legs.
+- A human decision mid-leg could change direction for the remaining work
+- The outcome of one part materially changes the design of another part (both halves' acceptance criteria can't be written today)
+- A risky, hard-to-reverse step (schema migration, shared-interface break) is bundled with routine work that doesn't depend on it
+- Acceptance criteria can't be written as a single coherent set
+
+Split at those boundaries — and only those.
 
 ### Too Small
 
-If a leg is trivial, it adds overhead without value. Signs:
-- Single line change
-- No meaningful acceptance criteria
+If a leg is trivial, it adds design and review overhead without value. Signs:
+- Could fold into an adjacent leg without muddying that leg's acceptance criteria
+- No meaningful acceptance criteria of its own
 - Part of a larger atomic operation
 
-Combine with related work.
+Combine with related work. Standalone tests-only or docs-only legs are almost always too small — tests and doc updates belong inside the leg that builds the feature.
 
 ### Ambiguous Acceptance Criteria
 
@@ -355,17 +357,15 @@ Legs provide:
 - Explicit acceptance criteria
 - Focused scope
 
-A flight might generate many legs:
+A flight typically yields one to four legs:
 
 ```
 Flight: User Registration Flow
-├── Leg: create-user-model
-├── Leg: registration-endpoint
-├── Leg: email-validation
-├── Leg: password-hashing
-├── Leg: registration-tests
-└── Leg: registration-docs
+├── Leg: user-registration        (model + migration + endpoint + validation + hashing + tests + docs)
+└── Leg: hat-registration-flow    (optional guided human acceptance test)
 ```
+
+Do not split by task type — model, endpoint, validation, and tests belong in one leg. Split only at decision and risk boundaries (see [Too Large](#too-large)).
 
 ## Immutability Principle
 

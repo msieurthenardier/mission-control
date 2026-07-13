@@ -185,20 +185,20 @@ Read `{target-project}/.flightops/agent-crews/flight-design.md` for crew definit
 
 A well-sized flight:
 - Takes 1-3 days of focused work
-- Breaks into 3-8 legs typically
+- Breaks into 1-4 legs typically — each a coherent feature slice; often 1-2 plus an optional HAT leg
 - Has a clear, verifiable objective
 - Addresses specific mission criteria
 
-**Too small**: Single leg's worth of work
+**Too small**: No flight-level design decisions to resolve — a single obvious change
 **Too large**: More than a week of work, vague checkpoints
 
 ### Leg Identification
 
-Break flights into legs based on technical boundaries:
-- Each leg should be atomic (independently completable)
-- Legs should have clear inputs and outputs
+Break flights into legs based on decision and risk boundaries, not effort:
+- Each leg is a coherent feature slice — atomic (independently completable), with clear inputs and outputs, carrying its own tests and doc updates
+- Default to few, large legs; add a boundary only where a mid-flight human decision or a risky, hard-to-reverse step (schema migration, interface break) needs its own checkpoint
+- Do NOT split by task type — model, endpoint, validation, and tests belong in one leg; an implementing agent carries the full slice in one pass
 - Consider dependencies between legs
-- Group related changes together
 
 **For scaffolding flights**: Include a final `verify-integration` leg
 

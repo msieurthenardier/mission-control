@@ -5,7 +5,7 @@ description: Active orchestrator for multi-agent flight execution. Drives leg de
 
 # Agentic Workflow
 
-Orchestrate multi-agent flight execution. You drive the full leg cycle — designing legs, spawning Developer and Reviewer agents, and managing git workflow — for a target project's flight. Leg design is reviewed per leg, but code review and commit are deferred until after the last autonomous leg completes. This eliminates per-leg review/commit overhead while keeping the same leg design and implementation structure.
+Orchestrate multi-agent flight execution. You drive the full leg cycle — designing legs, spawning Developer and Reviewer agents, and managing git workflow — for a target project's flight. Leg design review is risk-tiered (high-risk legs get a per-leg design review; low-risk legs go straight to implementation), and code review and commit are deferred until after the last autonomous leg completes. This eliminates per-leg review/commit overhead while keeping the same leg design and implementation structure.
 
 ## Prerequisites
 
@@ -51,15 +51,19 @@ Repeat for each leg in the flight.
 1. **Design the leg** using the `/leg` skill (if the Skill tool is unavailable, read `.claude/skills/leg/SKILL.md` and follow the workflow directly)
    - Read the flight spec, flight log, and relevant source code
    - Create the leg artifact with acceptance criteria
-2. **Spawn a Developer agent for design review** (Task tool, `subagent_type: "general-purpose"`)
+2. **Risk-tier the leg — out loud.** Record the call and its rationale in the flight log's Flight Director Notes.
+   - **High-risk** — any of: schema or migration changes; shared-interface changes with existing consumers; state-machine or lifecycle changes; cache/freshness behavior; security-sensitive surface; or the leg reverses/contradicts something in the flight spec or a prior leg's outcome → run the design review (steps 3-4)
+   - **Low-risk** — additive, single-surface work within established codebase patterns → skip steps 3-4 and proceed; the flight-end Reviewer (Phase 2d) still covers the resulting code
+   - When in doubt, tier high — the review is cheap relative to a wrong leg
+3. **Spawn a Developer agent for design review** (high-risk legs only) (Task tool, `subagent_type: "general-purpose"`)
    - Working directory: `{target-project}`
    - Provide the "Review Leg Design" prompt from the leg-execution phase file's Prompts section
    - The Developer reads the leg artifact and cross-references against actual codebase state
    - The Developer provides a structured assessment: approve, approve with changes, or needs rework
-3. **Incorporate feedback** — update the leg artifact to address any issues raised
-   - High-severity issues: must fix before proceeding
-   - Medium-severity issues: fix unless there's a clear reason not to
-   - Low-severity issues and suggestions: apply at discretion
+   - **Incorporate feedback** — update the leg artifact to address any issues raised
+     - High-severity issues: must fix before proceeding
+     - Medium-severity issues: fix unless there's a clear reason not to
+     - Low-severity issues and suggestions: apply at discretion
 4. **Re-review if substantive changes were made** — spawn another Developer for a second pass
    - Skip if only minor/cosmetic fixes were applied
    - If the second review raises new high-severity issues, fix and re-review once more

@@ -141,14 +141,12 @@ Each open question gets answered and documented:
 
 ### Defining Legs
 
-With decisions made, break the flight into legs:
+With decisions made, break the flight into legs. Split at decision and risk boundaries, not by task type — each leg is a full feature slice carrying its own tests:
 
 ```markdown
 ### Legs
-- [ ] `create-user-model` - Database model for users
-- [ ] `registration-endpoint` - API endpoint for registration
-- [ ] `email-verification` - Verification email and confirmation flow
-- [ ] `registration-tests` - Test coverage for registration
+- [ ] `user-registration` - User model, migration, registration endpoint, validation, hashing, tests
+- [ ] `email-verification` - Verification email and confirmation flow (external service boundary)
 ```
 
 ### Pre-Flight Checklist
@@ -185,19 +183,19 @@ Each leg follows its own progression:
 planning ──► ready ──► in-flight ──► landed ──► completed
 ```
 
-**Example: `create-user-model` leg**
+**Example: `user-registration` leg**
 
 ```markdown
-# Leg: create-user-model
+# Leg: user-registration
 
 ## Objective
-Create the User model with authentication fields.
+Create the User model and registration endpoint with validation and password hashing.
 
 ## Acceptance Criteria
-- [ ] User model in schema
-- [ ] Fields: id, email, password_hash, verified, timestamps
+- [ ] User model in schema with fields: id, email, password_hash, verified, timestamps
 - [ ] Migration applied
-- [ ] Types generated
+- [ ] POST /register validates input, hashes passwords (bcrypt), returns 201 with user id
+- [ ] Registration tests pass
 ```
 
 **Execution flow:**
@@ -210,14 +208,14 @@ Create the User model with authentication fields.
 
 ### Parallel vs. Sequential Legs
 
-Some legs can run in parallel:
+Legs with no dependency between them can run in parallel:
 
 ```
-create-user-model ────► registration-endpoint ────► registration-tests
-                  └──► email-verification ────────┘
+user-registration ────► email-verification
+                  └───► account-settings-page
 ```
 
-The model must exist first, but the endpoint and email flows can be built simultaneously, then tests cover everything.
+Email verification builds on the registration slice; a settings page only needs the model — so those two can proceed simultaneously once registration lands.
 
 ### Handling Aborted Legs
 
@@ -245,10 +243,8 @@ When every leg reaches `completed`:
 
 ```markdown
 ### Legs
-- [x] `create-user-model` - completed
-- [x] `registration-endpoint` - completed
+- [x] `user-registration` - completed
 - [x] `email-verification` - completed
-- [x] `registration-tests` - completed
 ```
 
 ### Post-Flight Checklist

@@ -46,7 +46,7 @@ Flight Control is an AI-first software development lifecycle methodology using a
 
 - **Missions** (human-optimized) — Define outcomes in human terms, days-to-weeks scope
 - **Flights** (balanced) — Technical specifications with pre/in/post-flight checklists, hours-to-days scope
-- **Legs** (AI-optimized) — Structured implementation steps with explicit acceptance criteria, minutes-to-hours scope
+- **Legs** (AI-optimized) — Coherent feature slices with explicit acceptance criteria, hours-to-a-day scope; boundaries sit at decision and risk points, not effort
 
 Alongside the planning hierarchy, Flight Control includes **behavior tests** — Zephyr-style multi-step acceptance tests run with two live AI agents (an Executor that performs each step's actions and an independent Validator that judges each step's expected results) using the **Witnessed** pattern. Behavior tests verify real-environment behavior (UI flows, multi-component interactions, AI agent behavior) that doesn't fit unit/integration tests. Specs are authored inline during planning conversations and run via the `/behavior-test` skill. See `.claude/skills/behavior-test/AUTHORING.md` for the authoring guide.
 

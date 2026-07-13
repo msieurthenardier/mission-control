@@ -214,13 +214,18 @@ Provide examples when:
 ### Leg Sizing
 
 A well-sized leg:
-- Takes minutes to a few hours
+- Is a coherent feature slice — as much scope as an implementing agent can carry in one uninterrupted pass (typically hours, up to a day)
 - Is atomic (can be completed independently)
 - Has clear, verifiable acceptance criteria
-- Produces a working increment
+- Produces a working increment, including its tests and doc updates
 
-**Too small**: Single-line change with no meaningful criteria
-**Too large**: Would benefit from intermediate checkpoints
+Leg boundaries exist for decisions and risk, not effort. Split a leg only when:
+- A human decision mid-leg could change direction for the remaining work
+- One part's outcome materially changes another part's design (both halves' acceptance criteria can't be written today)
+- A risky, hard-to-reverse step (schema migration, shared-interface break) is bundled with routine work that doesn't depend on it
+
+**Too small**: Could fold into an adjacent leg without muddying that leg's criteria — standalone tests-only or docs-only legs are almost always this
+**Too large**: Hits one of the split conditions above — sheer volume (many files, a full feature) is not by itself too large
 
 ### Documenting Workarounds
 

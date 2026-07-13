@@ -244,10 +244,8 @@ Reference the implementation legs:
 
 ```markdown
 ### Legs
-- [x] `create-user-model` - completed
-- [x] `registration-endpoint` - completed
-- [ ] `login-endpoint` - in-flight
-- [ ] `auth-middleware` - planning
+- [x] `user-registration` - completed
+- [ ] `login-and-auth-middleware` - in-flight
 - [ ] `password-reset` - planning
 ```
 
