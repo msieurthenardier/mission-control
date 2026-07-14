@@ -55,7 +55,7 @@ Evaluate:
 2. Architectural implications — does this require significant structural changes?
 3. Risk factors — what technical risks could block success?
 4. Constraints accuracy — are stated constraints complete and correct?
-5. Sizing — is the scope realistic for a mission (days-to-weeks)?
+5. Sizing — is the scope coherent for a mission: one recognizable outcome, with flight boundaries only at genuine decision or risk seams?
 
 Provide structured output:
 

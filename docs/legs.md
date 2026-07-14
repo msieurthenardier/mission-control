@@ -16,7 +16,7 @@ A leg is a coherent, atomic slice of implementation work — as much scope as an
 | Aspect | Mission | Flight | Leg |
 |--------|---------|--------|-----|
 | Scope | Outcome | Feature | Feature slice |
-| Duration | Days-weeks | Hours-days | Hours to a day |
+| Sized by | Outcome coherence | Decision & risk scope | One agent pass |
 | Modifications | Allowed | Allowed | Create new instead |
 | Audience | Humans | Developers/AI | AI agents |
 

@@ -109,21 +109,29 @@ Present the draft and iterate:
 1. Walk through each section with the user
 2. Validate success criteria are measurable
 3. Screen each criterion for technology names, tool names, config file paths, or specific libraries — reframe any that describe implementation rather than capability
-4. Confirm flight breakdown makes sense
+4. Confirm flight breakdown makes sense — the fewest flights whose boundaries sit at genuine decision or risk seams
 5. Refine until the user explicitly approves
 
 ## Guidelines
 
 ### Mission Sizing
 
-A well-sized mission:
-- Takes days to weeks to complete
-- Spawns 5-7 flights typically
-- Represents a meaningful outcome stakeholders recognize
-- Has clear success criteria
+Size missions by outcome coherence and risk, not effort or duration:
+- Represents one meaningful outcome stakeholders recognize
+- Has clear, verifiable success criteria
+- Spawns 1-3 flights typically — default to fewer, larger flights
+- Complexity and risk set the flight count, not volume of work: each flight boundary must earn its place at a genuine decision or risk seam (see Flight Identification)
 
-**Too small**: Can be completed in a single flight
-**Too large**: Success criteria are vague or numerous (>10)
+**Too small**: A task, not an outcome — nothing a stakeholder would recognize as independently valuable. A single-flight mission is legitimate when the work shares one risk profile.
+**Too large**: Bundles multiple independent outcomes, or success criteria are vague or numerous (>10)
+
+### Flight Identification
+
+Break missions into flights at decision and risk boundaries, not effort:
+- Default to few, large flights — an implementing crew can carry a broad technical surface in one flight
+- Add a flight boundary only where the mission crosses a seam that needs its own planning conversation: an independent cluster of design decisions, a risky hard-to-reverse step (schema migration, interface break, production cutover), or a point where the human needs to see results before committing to a direction
+- Do NOT split by layer or task type — schema, backend, UI, and tests for one capability belong in one flight
+- Volume alone never justifies a boundary; consolidate related capabilities into one flight when they share a risk profile and their design decisions are entangled
 
 ### Outcome vs. Activity
 

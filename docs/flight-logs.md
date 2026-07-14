@@ -30,7 +30,7 @@ Flight logs provide:
 When creating new legs, the flight log reveals:
 - What actually worked vs. what was planned
 - Decisions that affect subsequent implementation
-- Discovered complexity that should inform estimates
+- Discovered complexity or risk that should inform leg sizing
 - Patterns or anti-patterns emerging from execution
 
 ### For Post-Flight Debrief
@@ -217,7 +217,7 @@ When execution reveals something unexpected:
 **Observed**: Found existing rate limiter in `src/middleware/rateLimit.ts`
 **Expected**: Needed to implement from scratch per flight spec
 **Impact**: Leg `implement-rate-limiting` can be simplified to configuration
-**Action**: Updated leg scope, reduced from 4 hours to 30 minutes
+**Action**: Updated leg scope, reduced from full implementation to configuring the existing limiter
 ```
 
 ### Blocker Pattern

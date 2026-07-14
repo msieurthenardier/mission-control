@@ -214,7 +214,7 @@ Provide examples when:
 ### Leg Sizing
 
 A well-sized leg:
-- Is a coherent feature slice — as much scope as an implementing agent can carry in one uninterrupted pass (typically hours, up to a day)
+- Is a coherent feature slice — as much scope as an implementing agent can carry in one uninterrupted pass
 - Is atomic (can be completed independently)
 - Has clear, verifiable acceptance criteria
 - Produces a working increment, including its tests and doc updates

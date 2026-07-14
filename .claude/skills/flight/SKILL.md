@@ -41,7 +41,7 @@ Create a technical flight spec from a mission.
    - Read recent flight debriefs in the project (within and adjacent to this mission)
    - Look for test metrics observations: known slow suites, recurring flakes, persistent failures, growing skip lists — anything narrated by prior debriefs
    - Look for unresolved technical concerns or recommendations that touch this flight's likely scope
-   - Carry forward into the technical approach and risk picture: e.g. "this area has slow integration tests, account for that in time estimates"; "known flake in suite X, plan to fix or quarantine if touching that area"; "prior debrief flagged Y — verify whether still relevant"
+   - Carry forward into the technical approach and risk picture: e.g. "this area has slow integration tests, account for that in the verification approach"; "known flake in suite X, plan to fix or quarantine if touching that area"; "prior debrief flagged Y — verify whether still relevant"
 
 ### Phase 1b: Upstream Reconnaissance
 
@@ -183,14 +183,14 @@ Read `{target-project}/.flightops/agent-crews/flight-design.md` for crew definit
 
 ### Flight Sizing
 
-A well-sized flight:
-- Takes 1-3 days of focused work
+Size flights by decision and risk scope, not effort or duration:
+- Resolves one coherent cluster of design decisions — open questions that can be settled in a single planning conversation
 - Breaks into 1-4 legs typically — each a coherent feature slice; often 1-2 plus an optional HAT leg
 - Has a clear, verifiable objective
 - Addresses specific mission criteria
 
 **Too small**: No flight-level design decisions to resolve — a single obvious change
-**Too large**: More than a week of work, vague checkpoints
+**Too large**: Spans multiple independent design-decision clusters or risk domains that each warrant their own planning conversation and review gate — sheer volume of implementation work is not by itself too large
 
 ### Leg Identification
 

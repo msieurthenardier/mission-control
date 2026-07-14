@@ -151,7 +151,7 @@ The gate check before execution:
 - [ ] Design decisions documented with rationale
 - [ ] Prerequisites verified
 - [ ] Legs defined with acceptance criteria
-- [ ] Estimated scope is reasonable
+- [ ] Scope is one coherent decision and risk cluster
 ```
 
 When all items are checked, the flight moves from `planning` to `ready`.

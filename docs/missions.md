@@ -17,7 +17,7 @@ A mission represents a meaningful outcome—something a stakeholder would recogn
 | Audience | Humans, stakeholders | Developers, AI | AI agents |
 | Scope | Outcome | Technical spec | Feature slice |
 | Style | Narrative | Structured | Explicit |
-| Duration | Days to weeks | Hours to days | Hours to a day |
+| Sized by | Outcome coherence | Decision & risk scope | One agent pass |
 
 ## Writing Effective Missions
 
@@ -163,7 +163,7 @@ Link progress to outcomes, not activities.
 
 ### Too Granular
 
-If a mission can be completed in a single flight, it's probably too small. Consider:
+The test for "too small" is outcome, not flight count — a single-flight mission is fine when the work shares one risk profile, but a mission that is really just a task is too small. Consider:
 - Is this a meaningful outcome or just a task?
 - Would a stakeholder recognize this as valuable?
 - Does it warrant its own success criteria?
