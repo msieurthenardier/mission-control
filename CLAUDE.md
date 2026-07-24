@@ -54,22 +54,7 @@ This repository contains the methodology documentation and Claude Code skills fo
 
 ## Claude Code Skills
 
-Twelve skills automate the planning, execution, debrief, oversight, and acceptance-test workflows:
-
-| Skill | Purpose |
-|-------|---------|
-| `/init-mission-control` | Onboard to Mission Control (set up `projects.md` registry) |
-| `/init-project` | Initialize a project for Flight Control (creates `.flightops/` directory) |
-| `/mission` | Create outcome-driven missions through research and interview |
-| `/flight` | Create technical flight specs from missions |
-| `/leg` | Generate implementation guidance for LLM execution |
-| `/agentic-workflow` | Drive multi-agent flight execution (design per leg, batch implement, single review and commit) |
-| `/flight-debrief` | Post-flight analysis for continuous improvement |
-| `/mission-debrief` | Post-mission retrospective for outcomes assessment |
-| `/routine-maintenance` | Post-mission codebase health assessment and maintenance recommendation |
-| `/preflight-check` | Verify all projects have current methodology files and crew definitions |
-| `/daily-briefing` | Cross-project status report with health assessment and methodology insights |
-| `/behavior-test` | Run a behavior test — spawn two live agents (Executor + Validator) using the Witnessed pattern (every action judged by an independent agent), drive them through the spec's Zephyr-style Action \| Expected Result table with mid-test communication, write a run log with evidence. For real-environment verification (UI / API / shell / filesystem) that doesn't fit unit tests. Specs are authored inline during planning conversations — see `.claude/skills/behavior-test/AUTHORING.md` for the authoring guide. |
+Twelve skills automate the planning, execution, debrief, oversight, and acceptance-test workflows. They live in `.claude/skills/` — each SKILL.md carries its name and description, which Claude Code auto-loads into every session's skill listing.
 
 Run `/init-project` before using the other skills on a new project to create the flight operations reference directory and configure the artifact system.
 
