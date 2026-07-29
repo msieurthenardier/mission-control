@@ -54,13 +54,13 @@ This repository contains the methodology documentation and Claude Code skills fo
 
 ## Claude Code Skills
 
-Twelve skills automate the planning, execution, debrief, oversight, and acceptance-test workflows. They live in `.claude/skills/` — each SKILL.md carries its name and description, which Claude Code auto-loads into every session's skill listing.
+Eleven skills automate the planning, execution, debrief, oversight, and acceptance-test workflows. They live in `.claude/skills/` — each SKILL.md carries its name and description, which Claude Code auto-loads into every session's skill listing.
 
 Run `/init-project` before using the other skills on a new project to create the flight operations reference directory and configure the artifact system.
 
 **Artifact Systems:** Each project defines how artifacts are stored in `.flightops/ARTIFACTS.md`. Skills read this configuration and adapt their output accordingly.
 
-**IMPORTANT: Planning skills produce documentation only.** `/init-project`, `/mission`, `/flight`, `/leg`, `/flight-debrief`, `/mission-debrief`, and `/routine-maintenance` must:
+**IMPORTANT: Planning skills produce documentation only.** `/init-project`, `/mission`, `/flight`, `/flight-debrief`, `/mission-debrief`, and `/routine-maintenance` must:
 - **NEVER implement code changes** — only create/update artifacts
 - **NEVER modify source files** in the target project (no `.rs`, `.ts`, `.tsx`, `.json`, etc.)
 

@@ -64,7 +64,7 @@ Trigger points during planning conversations:
 | During | Author one when… |
 |---|---|
 | `/flight` planning | The flight's verification approach needs real-environment observation that a unit test can't provide. |
-| `/leg` planning | A leg's acceptance criterion can only be verified by acting on the running system. |
+| Leg design (during `/agentic-workflow`) | A leg's acceptance criterion can only be verified by acting on the running system. |
 | `/mission` planning | The mission's success criteria include behaviors that span multiple components and surfaces. |
 | `/routine-maintenance` | A finding is worth a regression gate — make the test now so future flights can re-run it. |
 | `/flight-debrief` / `/mission-debrief` | A debrief surfaces "we should have caught this with a test" — author it as a follow-up action. |

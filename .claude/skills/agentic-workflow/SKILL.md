@@ -48,9 +48,18 @@ Repeat for each leg in the flight.
 
 ### 2a: Leg Design
 
-1. **Design the leg** using the `/leg` skill (if the Skill tool is unavailable, read `.claude/skills/leg/SKILL.md` and follow the workflow directly)
-   - Read the flight spec, flight log, and relevant source code
-   - Create the leg artifact with acceptance criteria
+1. **Design the leg** — the Flight Director does this directly (artifact only, never code):
+   - **Gather ground truth.** Re-read the flight log for actual outcomes, deviations, anomalies, environment details, and decisions from prior legs. Identify this leg's scope, its dependencies on prior legs, and environment constraints (container vs host, user context, required env vars).
+   - **Read the code the leg will touch.** Note existing patterns and conventions, the state that exists before the leg and must exist after, and edge cases the implementing agent must handle.
+   - **Run the risk checks** (each of these has bitten a past flight):
+     - *Schema changes*: migration creation AND execution belong in the same leg — a schema defined but never migrated is a gap.
+     - *State-machine reachability*: for every state or lifecycle value the leg introduces or relies on, verify no lower layer forecloses it — FK `ON DELETE` behaviors, constraints, caches, fallback handlers that silently mask the state. Tests that pin behavior the new design breaks must be inverted or renamed in this leg (rename over delete-and-readd, so git blame documents the intent shift).
+     - *Cache freshness*: for every cache the leg reads or populates, declare its source of truth, exactly one rebuild trigger, and the maximum staleness acceptable to the user — then confirm every user action that mutates the source invalidates the cache. A cache that "works fine" is not the same as one that reflects current config.
+     - *Interface changes*: grep for consumers of any changed symbol; if tests or out-of-scope source call it, decide explicitly whether updating them is part of this leg.
+   - **Write the leg artifact** and persist it per `.flightops/ARTIFACTS.md`, including any create-time handling the project defines. It needs: an objective stating exactly what the leg accomplishes; acceptance criteria that are binary, observable, and complete (a criterion only verifiable against the running system references a behavior-test slug instead — see Behavior Tests below); and verification steps saying exactly how to confirm each criterion.
+   - **Cite code durably and verify citations.** Prefer `file:symbol` or `file:line — "snippet"` over bare line numbers. Before marking the leg `ready`, check every citation against current code: repair drifted line numbers, flag vanished content for human review (the gap may be fixed — or the leg obsolete), and append a short Citation Audit note to the artifact.
+   - **Size for decisions and risk, not effort.** A leg is a coherent feature slice carrying its own tests and doc updates. Split only where a mid-leg human decision or a hard-to-reverse step needs its own checkpoint — never by task type (standalone tests-only or docs-only legs are a smell).
+   - **Legs are immutable once `in-flight`.** If requirements change mid-implementation, mark the leg `aborted` (changes rolled back) and create a new one.
 2. **Risk-tier the leg — out loud.** Record the call and its rationale in the flight log's Flight Director Notes.
    - **High-risk** — any of: schema or migration changes; shared-interface changes with existing consumers; state-machine or lifecycle changes; cache/freshness behavior; security-sensitive surface; or the leg reverses/contradicts something in the flight spec or a prior leg's outcome → run the design review (steps 3-4)
    - **Low-risk** — additive, single-surface work within established codebase patterns → skip steps 3-4 and proceed; the flight-end Reviewer (Phase 2d) still covers the resulting code

@@ -151,7 +151,7 @@ Record immediately:
 
 ## Using Flight Logs When Creating Legs
 
-When generating new legs with `/leg`, the flight log must be consulted to understand:
+When designing new legs (during `/agentic-workflow`), the flight log must be consulted to understand:
 
 1. **What's actually complete**: The log shows real completion status, not just planned progress
 2. **Decisions made**: Mid-flight decisions may change how subsequent legs should be implemented

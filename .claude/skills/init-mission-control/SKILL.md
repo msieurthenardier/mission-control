@@ -71,8 +71,7 @@ After the registry is set up, briefly orient the user:
 > 1. **`/init-project`** — Run this in each project to set up `.flightops/` with methodology references and configure the project crew
 > 2. **`/mission`** — Define what you want to achieve (outcomes, not tasks)
 > 3. **`/flight`** — Break a mission into technical specs
-> 4. **`/leg`** — Generate implementation steps for each flight leg
-> 5. **`/agentic-workflow`** — Execute legs with automated Developer + Reviewer agents
+> 4. **`/agentic-workflow`** — Execute the flight with automated Developer + Reviewer agents (designs each leg, then implements it)
 
 > "Start with `/init-project` on the project you just registered."
 

@@ -118,7 +118,6 @@ Flight Control includes Claude Code skills for interactive planning:
 | `/init-project` | Initialize a project for Flight Control |
 | `/mission` | Create outcome-driven missions through research and interview |
 | `/flight` | Create technical flight specs from missions |
-| `/leg` | Generate implementation guidance for LLM execution |
 | `/flight-debrief` | Post-flight analysis for continuous improvement |
 | `/agentic-workflow` | Drive multi-agent flight execution |
 | `/mission-debrief` | Post-mission retrospective for outcomes assessment |
