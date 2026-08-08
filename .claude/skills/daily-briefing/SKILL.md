@@ -53,20 +53,25 @@ For each selected project, gather data by spawning **parallel Explore agents** (
      - **Titles and objectives**
      - **Checklist completion** (count checked vs unchecked items)
 
-4. **Read debriefs**
+4. **Scan the squawk log**
+   - Find squawks at the location `.flightops/ARTIFACTS.md` defines for them (skip if the project has no squawk conventions — it predates migration 006)
+   - Capture, for each squawk not in a terminal state: id, title, type, severity, status, and reported date
+
+5. **Read debriefs**
    - Read any flight debriefs and mission debriefs found
    - Extract key learnings, recommendations, and action items
 
-5. **Check git activity**
+6. **Check git activity**
    - Run `git log --oneline --since="7 days ago" -20` in the project directory
    - Capture recent commit activity as a proxy for momentum
 
-6. **Return structured findings**
+7. **Return structured findings**
    The agent should return a structured summary including:
    - Project initialization status
    - List of all missions with status
    - List of all flights with status
    - List of all legs with status
+   - Open, in-progress, and deferred squawks with severity and age
    - Debrief summaries (key learnings and recommendations)
    - Recent git activity summary
    - Any anomalies (e.g., in-flight legs with no recent commits)
@@ -86,7 +91,11 @@ Flag artifacts that appear stale or abandoned:
 - **Missions** with status `active` or `planning` but no flight activity in 14+ days
 - **Flights** with status `in-flight` or `planning` but no leg progress in 7+ days
 - **Legs** with status `in-flight` or `planning` but no recent commits in 7+ days
+- **Squawks** with severity `grounding` open 7+ days, or severity `routine` open 30+ days
+- **Squawks** stuck in `in-progress` — work that started and never finished
 - **Open questions** that remain unresolved across any active artifacts
+
+A squawk log that only grows is a signal in its own right: small fixes are being captured but never completed. Say so plainly when the deferred pile is outpacing the completed one.
 
 #### Completion Assessment
 - Missions nearing completion (most success criteria checked)
@@ -138,11 +147,16 @@ Create the daily briefing file at `daily-briefings/YYYY-MM-DD.md`. Ensure the `d
 | Missions | {n} | {n} | {n} | {n} |
 | Flights | {n} | {n} | {n} | {n} |
 | Legs | {n} | {n} | {n} | {n} |
+| Squawks | {open + in-progress} | {completed} | {stale} | {n} |
 
 #### In Progress
 - **Mission**: {title} — {status summary}
   - **Flight**: {title} — {status}, {X/Y legs complete}
     - {Current/next leg and its status}
+
+#### Open Squawks
+- `{id}` {title} — {type}, {severity}, {status}, open {N} days
+*(omit this section entirely when there are none)*
 
 #### Staleness Alerts
 - {Description of stale artifact and how long it's been inactive}

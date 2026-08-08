@@ -1,6 +1,6 @@
 ---
 name: routine-maintenance
-description: Between-mission codebase health assessment. Run after `/mission-debrief`, never after an individual flight, to verify the codebase is flight-ready or scaffold a maintenance mission. Per-flight findings instead roll into the next flight or accumulate into an end-of-mission maintenance flight — not into this skill.
+description: Between-mission codebase health assessment. Run after `/mission-debrief`, never after an individual flight, to verify the codebase is flight-ready or scaffold a maintenance mission. Per-flight findings instead roll into the next flight, get logged as squawks via `/squawk`, or accumulate into an end-of-mission maintenance flight — not into this skill.
 ---
 
 # Routine Maintenance
@@ -31,13 +31,18 @@ Perform an exhaustive, aviation-style codebase inspection after a mission comple
    - Deferred findings are those documented in prior reports but not addressed by a maintenance mission
    - This ensures recurring issues are tracked across cycles rather than re-discovered as "new"
 
-5. **Load mission and debrief documentation**
+5. **Load the squawk log**
+   - Read squawks at the location `.flightops/ARTIFACTS.md` defines for them, focusing on those still open, in-progress, or deferred
+   - Open and deferred squawks are known, already-triaged debt — findings matching them should be reported as such rather than presented as new discoveries
+   - A long tail of stale deferrals is itself a finding: it means small fixes are being logged but never completed
+
+6. **Load mission and debrief documentation**
    - Read the most recently completed mission for outcome, success criteria, and known issues
    - Read its mission debrief for lessons learned and action items
    - Read its flight debriefs for per-flight technical debt and recommendations
    - This provides known-debt context so the inspection can distinguish new issues from acknowledged ones
 
-6. **Identify project stack**
+7. **Identify project stack**
    - Read `README.md`, `CLAUDE.md`, and package files (`package.json`, `Cargo.toml`, `go.mod`, etc.)
    - Determine language, framework, test runner, linter, formatter, type checker, and dependency audit tool
 
@@ -269,6 +274,14 @@ If the assessment is Maintenance Required, help the user choose a manageable sco
 
 The goal is a mission that can land in a single focused session. All findings are captured in the report regardless — deferred items aren't lost, they'll surface again in the next maintenance cycle. This keeps maintenance approachable even when the backlog is large.
 
+#### Squawk-Sized Findings
+
+Before scaffolding anything, separate out the findings that don't need a mission at all. A finding is squawk-sized when it is one coherent item, needs no design decisions, has a bounded blast radius, and is verifiable by an existing test or one new one — a stale dependency, a wrong log level, a broken doc link, a missing null check.
+
+> "{N} of these findings are squawk-sized — single fixes with no design work. Log them as squawks instead of putting them in a mission? They can be completed as a batch in one pass."
+
+On confirmation, log each via the `/squawk` skill and note its id beside the finding in the report. This applies whether or not a maintenance mission is scaffolded: an assessment of **Flight Ready** with a handful of Advisory one-liners should produce squawks, not an empty recommendation. Reserve the maintenance mission for findings that genuinely need design or coordinated change.
+
 ### Phase 7: Generate Maintenance Report
 
 Persist the maintenance report following the conventions `.flightops/ARTIFACTS.md` defines for it, then perform any create-time handling it defines for that artifact (e.g., opening a ticket, posting a notification; default: none). If a report already exists for the same date, disambiguate per the project's naming (e.g., append a numeric suffix).
@@ -347,7 +360,7 @@ Cross-reference Inspector findings against known debt from debriefs. Findings th
 
 ### Proportional Response
 
-Not every codebase needs a maintenance mission. If the inspection finds only Advisory items, the report should clearly state "Flight Ready" and not push for unnecessary work.
+Not every codebase needs a maintenance mission. If the inspection finds only Advisory items, the report should clearly state "Flight Ready" and not push for unnecessary work. Where those Advisory items are concrete one-liners, squawks are the proportional response — a mission is not the only alternative to doing nothing.
 
 ### Honest Assessment
 

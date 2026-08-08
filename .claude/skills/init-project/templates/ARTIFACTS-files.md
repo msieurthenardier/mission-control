@@ -20,6 +20,8 @@ This project stores Flight Control artifacts as markdown files in the repository
 │                   └── {NN}-{leg-slug}.md
 ├── maintenance/
 │   └── {YYYY-MM-DD}.md
+├── squawks/
+│   └── {id}-{squawk-slug}.md
 └── tests/
     └── behavior/
         ├── {slug}.md                       ← behavior-test spec (committed)
@@ -37,6 +39,7 @@ This project stores Flight Control artifacts as markdown files in the repository
 
 - **Slugs**: Lowercase, kebab-case, derived from title (e.g., "User Authentication" → `user-authentication`)
 - **Sequence numbers**: Missions, flights, and legs use two-digit prefixes (`01`, `02`, etc.) for ordering
+- **Squawk ids**: Monotonically increasing integers, project-wide, zero-padded to a minimum of four digits and widening past that as needed (`0001`, `0002`, … `9999`, `10000`, …). Unbounded by design — a long-lived project will pass any fixed width. Never reused, even after a squawk is completed or escalated.
 
 ---
 
@@ -46,6 +49,8 @@ How flight work is named in version control. Skills read these — adjust them t
 
 - **Flight branch**: `flight/{number}-{slug}` — created at flight start (`git checkout -b flight/{number}-{slug}`)
 - **Commit subject**: `flight/{number}: {description}`, with a `Mission: {mission-number}` trailer
+- **Squawk branch**: `squawk/{id}-{slug}` for a single squawk; `squawk/turnaround-{YYYY-MM-DD}` when completing a batch of two or more
+- **Squawk commit subject**: `squawk/{id}: {description}` for a single squawk; `squawk: turnaround {YYYY-MM-DD}` for a batch, with a `Squawks: {id}, {id}` trailer listing every id completed
 
 ---
 
@@ -259,6 +264,58 @@ How to confirm each criterion is met:
 
 ## Post-Completion
 Completion steps — status transitions, flight-log update, checking off in the parent flight, and commit — are Flight Control protocol, driven by the execution workflow. Not repeated here.
+```
+
+---
+
+### Squawk
+
+| Property | Value |
+|----------|-------|
+| Location | `squawks/{id}-{slug}.md` |
+| Created | When a small defect or routine servicing item is logged |
+| Updated | At completion, defer, or escalate time |
+| Managed by | `/squawk` |
+
+A squawk stands **beside** the mission → flight → leg hierarchy, not inside it: no parent, no debrief. It covers work too small to warrant a mission — a single defect or a single routine update, with no design decisions, a bounded blast radius, and a clear way to verify. Anything failing those conditions is escalated to a flight or mission rather than grown in place.
+
+**Format:**
+
+```markdown
+# Squawk {id}: {Title}
+
+**Status**: open | in-progress | completed | deferred | escalated
+**Type**: defect | servicing
+**Severity**: grounding | routine
+**Reported**: {YYYY-MM-DD}
+**Completed**: {YYYY-MM-DD | —}
+
+## Report
+What was observed. For a defect: the symptom, where it shows up, how to reproduce.
+For servicing: what needs updating and why now.
+
+## Evidence
+Durable citations — `file:symbol`, a failing command and its output, a version delta.
+A few lines, not an investigation.
+
+## Corrective Action
+*(written at completion)*
+What was changed, and why that fix rather than another.
+
+## Verification
+How the fix was confirmed — the command run, the test added, the observation made.
+
+## Sign-Off
+*(written at completion)*
+**Reviewer**: {reviewer agent or human}
+**Verdict**: confirmed
+**Commit**: {sha or ref}
+
+## Disposition
+*(only for deferred or escalated squawks)*
+**Deferred**: {reason} — revisit when {trigger}
+**Escalated**: {which qualification criterion it failed and what was found} →
+[{Flight or Mission Title}]({path})
 ```
 
 ---

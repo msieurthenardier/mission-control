@@ -44,6 +44,8 @@ If resuming a flight already in progress, verify state consistency:
 
 Repeat for each leg in the flight.
 
+**Out-of-scope defects found mid-flight**: when you or a Developer finds something broken that this flight isn't chartered to fix, do not fold it into the leg in hand — that is how flights lose their shape. Log it as a squawk via the `/squawk` skill and defer it, noting the id in the flight log. Two exceptions: a `grounding` defect sitting directly in this flight's path is completed before the flight continues; and anything that fails the squawk qualification gate (needs design, changes a shared interface or schema) is raised to the operator as a possible new flight instead.
+
 **Mid-execution scope changes**: if the work in this flight stops serving its original purpose (operator pivots, prior assumptions invalidated), don't rewrite the mission/flight artifacts in place. Preserve the original framing as commentary, record the pivot decision in the flight-log Flight Director Notes with rationale, and treat the new framing as the live spec going forward. If the pivot supersedes content in an upstream artifact (maintenance report, prior debrief), annotate at the artifact header rather than rewriting the body — inspection records are snapshots, not living plans.
 
 ### 2a: Leg Design
@@ -167,7 +169,9 @@ Signals are part of the Flight Control methodology and are NOT configurable per-
 | `[HANDOFF:review-needed]` | Developer | Code/artifact ready for review |
 | `[HANDOFF:confirmed]` | Reviewer | Review passed |
 | `[BLOCKED:reason]` | Any crew agent | Cannot proceed, needs resolution |
+| `[BLOCKED:exceeds-squawk-scope]` | Developer | A squawk fix needs design work — revert and escalate (see `/squawk`) |
 | `[COMPLETE:leg]` | Developer | Leg finished and committed |
+| `[COMPLETE:squawk]` | Flight Director | Squawk(s) implemented, reviewed, and committed (see `/squawk`) |
 | `[COMPLETE:flight]` | Flight Director | Flight landed |
 
 ## Flight Director Decision Log

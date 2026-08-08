@@ -149,4 +149,9 @@ if [[ -f "$ARTIFACTS" ]]; then
   if ! grep -q "## Git Conventions" "$ARTIFACTS" 2>/dev/null; then
     echo "migration-pending:005"
   fi
+
+  # 006 - Squawk artifact section not present
+  if ! grep -q "^### Squawk" "$ARTIFACTS" 2>/dev/null; then
+    echo "migration-pending:006"
+  fi
 fi
