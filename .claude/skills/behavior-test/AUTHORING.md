@@ -232,6 +232,7 @@ One paragraph: what this test verifies and why this paradigm fits.
 Behavior-test specs evolve with the system. When a test fails after a deliberate behavior change:
 
 - **System changed; spec didn't** — update the spec. Bump `Last Run` after the next successful run.
+  - A re-authored row is a new premise with an old pass history. Before the spec's next run, trace each changed Expected Result to the code path that now produces it — the same audit a new spec gets before its first run (see "Unaudited apparatus premises") — and record the trace outside the Executor-facing cells (the spec's notes or the flight log), never as a code reference inside the row.
 - **System changed; spec was always wrong** — update the spec and note in the next run log why the prior expectation was wrong.
 - **System didn't change; spec found a real regression** — leave the spec; fix the system.
 
