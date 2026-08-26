@@ -152,7 +152,7 @@ For each checkpoint N (in step order):
 
 After the last step (or halt):
 
-1. SendMessage to both agents: `[CLOSING]`. Each returns its freeform closing summary.
+1. Send the Executor `[CLOSING]` the moment the final verdict is in — before writing the run log or any other wrap-up — then the Validator. Each returns its freeform closing summary. An idle live agent's transcript can be lost; the Executor's closing summary is the one artifact that loss drops.
 2. Write the run log file at `{behavior-test-dir}/<slug>/runs/<ts>.md`.
 3. Surface a concise summary to the operator.
 4. Agents terminate naturally after their `[CLOSING]` response.
