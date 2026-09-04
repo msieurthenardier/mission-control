@@ -132,7 +132,17 @@ Evaluate whether the mission-control skills could be improved:
 
 Persist the flight debrief artifact following the conventions `.flightops/ARTIFACTS.md` defines for it, then perform any create-time handling it defines for that artifact (e.g., opening a ticket, posting a notification; default: none).
 
-### Phase 6: Flight Status Transition
+### Phase 6: Convert Small Action Items to Squawks
+
+Review the debrief's follow-up actions. Any that is a single concrete defect or routine servicing item — one item, no design decisions, bounded blast radius, verifiable — should become a squawk rather than a bullet that quietly dies in the debrief.
+
+Offer the candidates to the user:
+
+> "These follow-ups look like squawks rather than debrief notes: {list}. Log them? They'll be tracked with ids and surface in `/squawk list` and the daily briefing."
+
+On confirmation, log each via the `/squawk` skill (type `defect` or `servicing`, severity usually `routine`), and record the squawk id next to the item in the debrief so the trail stays connected. Leave anything that needs design work as a debrief recommendation — those belong to the next flight or mission.
+
+### Phase 7: Flight Status Transition
 
 Ask the user if the flight should be marked as `completed`. If confirmed, update the flight artifact's status from `landed` to `completed`, and perform any transition-time handling the project's `.flightops/ARTIFACTS.md` defines for that transition (default: none).
 

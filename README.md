@@ -26,6 +26,8 @@ Mission (human-optimized)
 - **Flights** translate outcomes into technical specifications with planning checklists
 - **Legs** provide structured, specific instructions optimized for AI consumption
 
+Beside the hierarchy sits the **squawk** — a standalone artifact for work too small to plan. In aviation, a squawk is a defect logged in the aircraft's logbook and cleared by a mechanic, signed off by someone other than the reporter. Here it covers a single bug fix or routine servicing update: no mission, no flight, no leg, no debrief. See [Squawks](docs/squawks.md).
+
 ## Why Aviation?
 
 Aviation succeeds through layered planning and clear handoffs. Pilots follow flight plans but improvise when conditions demand it—weather, emergencies, ATC instructions. Structured planning enables effective improvisation by providing a baseline to deviate from and return to. Similarly, Flight Control separates strategic intent (missions) from tactical execution (legs), with flights serving as the translation layer.
@@ -66,7 +68,8 @@ Aviation succeeds through layered planning and clear handoffs. Pilots follow fli
 3. **[Flights](docs/flights.md)** — Creating technical specifications with pre/post checklists
 4. **[Flight Logs](docs/flight-logs.md)** — Recording execution progress and decisions
 5. **[Legs](docs/legs.md)** — Structuring AI-optimized implementation steps
-6. **[Workflow](docs/workflow.md)** — End-to-end flow from mission to completion
+6. **[Squawks](docs/squawks.md)** — Small standalone fixes that don't warrant a mission
+7. **[Workflow](docs/workflow.md)** — End-to-end flow from mission to completion
 
 ## Core Concepts
 
@@ -87,6 +90,7 @@ Each level tracks progress through defined states:
 - **Missions**: `planning` → `active` → `completed` (or `aborted`)
 - **Flights**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
 - **Legs**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
+- **Squawks**: `open` → `in-progress` → `completed` (or `deferred`, `escalated`) — a squawk has no planning phase, so it does not share the unified lifecycle
 
 ### Scaling
 
@@ -104,6 +108,8 @@ Mission
     ├── Flight Briefing
     ├── Flight Debrief
     └── Leg
+
+Squawk        (standalone — no parent, no debrief)
 ```
 
 By default, artifacts are stored as version-controlled markdown files in your project's repository. Each project's `.flightops/ARTIFACTS.md` describes where and how artifacts live — skills read this file to determine locations and formats. You can adapt it to other backends (Jira, Linear, GitHub Issues, hybrid setups) by editing this file directly; only the markdown-files template ships out of the box.
@@ -122,6 +128,7 @@ Flight Control includes Claude Code skills for interactive planning:
 | `/agentic-workflow` | Drive multi-agent flight execution |
 | `/mission-debrief` | Post-mission retrospective for outcomes assessment |
 | `/daily-briefing` | Cross-project status report with health assessment |
+| `/squawk` | Log and complete small standalone fixes — one defect or one routine update, no mission required |
 | `/behavior-test` | Run a behavior test — live two-agent execution (Executor + Validator) against real UI / API / shell / filesystem, Zephyr-style Action \| Expected Result spec. Specs are authored inline during planning conversations (see `.claude/skills/behavior-test/AUTHORING.md`). |
 
 ## Recommended Workflow

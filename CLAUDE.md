@@ -48,13 +48,15 @@ Flight Control is an AI-first software development lifecycle methodology using a
 - **Flights** (balanced) — Technical specifications with pre/in/post-flight checklists; one coherent cluster of design decisions and risks
 - **Legs** (AI-optimized) — Coherent feature slices with explicit acceptance criteria; boundaries sit at decision and risk points, not effort
 
+Beside the hierarchy sits the **squawk** — a standalone artifact for a single bug fix or routine servicing update, with no parent mission, flight, leg, or debrief. Squawks are logged and completed via `/squawk`, and are qualified by a strict gate (one item, no design decisions, bounded blast radius, verifiable). Work that fails the gate is escalated to a flight or mission rather than expanded in place. See `docs/squawks.md`.
+
 Alongside the planning hierarchy, Flight Control includes **behavior tests** — Zephyr-style multi-step acceptance tests run with two live AI agents (an Executor that performs each step's actions and an independent Validator that judges each step's expected results) using the **Witnessed** pattern. Behavior tests verify real-environment behavior (UI flows, multi-component interactions, AI agent behavior) that doesn't fit unit/integration tests. Specs are authored inline during planning conversations and run via the `/behavior-test` skill. See `.claude/skills/behavior-test/AUTHORING.md` for the authoring guide.
 
 This repository contains the methodology documentation and Claude Code skills for interactive planning.
 
 ## Claude Code Skills
 
-Eleven skills automate the planning, execution, debrief, oversight, and acceptance-test workflows. They live in `.claude/skills/` — each SKILL.md carries its name and description, which Claude Code auto-loads into every session's skill listing.
+Twelve skills automate the planning, execution, debrief, oversight, and acceptance-test workflows. They live in `.claude/skills/` — each SKILL.md carries its name and description, which Claude Code auto-loads into every session's skill listing.
 
 Run `/init-project` before using the other skills on a new project to create the flight operations reference directory and configure the artifact system.
 
@@ -64,11 +66,15 @@ Run `/init-project` before using the other skills on a new project to create the
 - **NEVER implement code changes** — only create/update artifacts
 - **NEVER modify source files** in the target project (no `.rs`, `.ts`, `.tsx`, `.json`, etc.)
 
-`/agentic-workflow` orchestrates implementation by spawning separate agents that execute code changes in the target project. The orchestrator itself never modifies source files directly.
+`/agentic-workflow` and `/squawk` orchestrate implementation by spawning separate agents that execute code changes in the target project. The orchestrator itself never modifies source files directly — this holds for `/squawk` no matter how small the fix looks.
 
 > **Phase gates require confirmation.** Missions must be fully agreed before designing
 > flights. Flights must be fully agreed before designing legs. Never skip ahead — get
 > explicit user confirmation at each transition.
+>
+> Squawks sit outside these gates by design — they have no mission or flight to gate on.
+> Their equivalent control is the qualification gate in `/squawk`: work that needs design
+> decisions is escalated to a flight or mission, not completed as a squawk.
 
 ## Projects Registry
 
@@ -89,6 +95,7 @@ The registry provides:
 - **Missions**: `planning` → `active` → `completed` (or `aborted`)
 - **Flights**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
 - **Legs**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
+- **Squawks**: `open` → `in-progress` → `completed` (or `deferred`, `escalated`) — intentionally outside the unified lifecycle; a squawk has no planning phase
 
 ## Skill–Project Boundary
 

@@ -67,7 +67,9 @@ Emit at the end of your response, on its own line:
 | `[HANDOFF:review-needed]` | Artifact changes ready for validation |
 | `[HANDOFF:confirmed]` | Review complete, no issues |
 | `[BLOCKED:reason]` | Cannot proceed |
+| `[BLOCKED:exceeds-squawk-scope]` | A squawk fix turned out to need design work — stop, revert, escalate |
 | `[COMPLETE:leg]` | Leg done AND checklist complete |
+| `[COMPLETE:squawk]` | Squawk(s) implemented, reviewed, and committed |
 
 ---
 
@@ -93,6 +95,29 @@ Emit at the end of your response, on its own line:
 9. Propagate changes (project docs, flight artifacts if scope changed)
 10. **Complete the Leg Completion Checklist above**
 11. Signal `[COMPLETE:leg]`
+
+---
+
+## Squawks — Small Fixes Outside the Hierarchy
+
+Not every fix deserves a mission. A **squawk** is a standalone artifact for work too small to plan: one defect, or one routine servicing update. It has no parent mission, no flight, no leg, and no debrief. Logged and completed via `/squawk` on the mission-control side; stored per `ARTIFACTS.md` (default `squawks/{id}-{slug}.md`).
+
+**It's a squawk only if all four hold:**
+
+1. One coherent item — a single defect or a single routine update
+2. No design decisions — the approach is obvious, or found in one read pass
+3. Bounded blast radius — no shared-interface, schema/migration, lifecycle, or security-sensitive changes
+4. Verifiable by an existing test, or one new one
+
+Fail any one, and it's a flight or a mission. **This gate is the whole point** — a squawk that starts growing is marked `escalated` and handed to `/flight` or `/mission`, never quietly expanded. If you are implementing a squawk and the fix spreads beyond the reported surface, stop, revert, and emit `[BLOCKED:exceeds-squawk-scope]`.
+
+**Types**: `defect` (something is broken) | `servicing` (dependency bump, config, lint rule, doc fix).
+**Severity**: `grounding` (complete before further work in that area) | `routine` (carry to the next turnaround).
+**Lifecycle**: `open → in-progress → completed`, or `deferred` / `escalated`. Deliberately *not* the flight/leg lifecycle — a squawk has no planning phase.
+
+**Found a defect mid-flight that's outside the current flight's scope?** Log it as a squawk and defer it. Do not fold it into the leg you're on — that's how flights lose their shape. The squawk log is the holding pen those findings never had.
+
+Every completed squawk gets an independent Reviewer, however trivial the change. The review is tightly scoped to the diff and batched across squawks so it stays cheap — but it always happens.
 
 ---
 

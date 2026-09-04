@@ -132,6 +132,41 @@ Branch and commit naming used to be hardcoded in the `/agentic-workflow` skill. 
 
 ---
 
+### 006 — Install Squawk artifact and conventions
+
+Flight Control's smallest planning unit used to be a mission, so small defects and routine servicing items either ran off-methodology or got inflated into a maintenance mission. The **squawk** — a standalone artifact beside the mission → flight → leg hierarchy, driven by the `/squawk` skill — fills that gap. Projects initialized before this change have nowhere to store one.
+
+No crew file is needed: squawks reuse the existing `leg-execution.md` crew (Developer + Reviewer).
+
+**Detected by** `check-drift.sh` → `migration-pending:006`. Apply after 001–005.
+
+**Actions:**
+
+1. Append a `Squawk` artifact section to the project's `ARTIFACTS.md`, alongside the other core artifacts (mission, flight, leg). It defines the location `squawks/{id}-{slug}.md`, the status set `open | in-progress | completed | deferred | escalated`, and the report/evidence/corrective-action/verification/sign-off/disposition format.
+
+2. Add a squawk id convention to the naming conventions section:
+
+   ```markdown
+   - **Squawk ids**: Monotonically increasing integers, project-wide, zero-padded to a minimum of four digits and widening past that as needed (`0001`, `0002`, … `9999`, `10000`, …). Unbounded by design — a long-lived project will pass any fixed width. Never reused, even after a squawk is completed or escalated.
+   ```
+
+3. Add squawk branch and commit naming to the existing `Git Conventions` section (added by migration 005):
+
+   ```markdown
+   - **Squawk branch**: `squawk/{id}-{slug}` for a single squawk; `squawk/turnaround-{YYYY-MM-DD}` when completing a batch of two or more
+   - **Squawk commit subject**: `squawk/{id}: {description}` for a single squawk; `squawk: turnaround {YYYY-MM-DD}` for a batch, with a `Squawks: {id}, {id}` trailer listing every id completed
+   ```
+
+4. Add `squawks/{id}-{squawk-slug}.md` to the Directory Structure tree.
+
+   - Reference: the canonical sections live in `.claude/skills/init-project/templates/ARTIFACTS-files.md`.
+   - If the operator has heavily modified ARTIFACTS.md (e.g. a non-filesystem artifact backend), surface the proposed insertions and ask before writing. Defer to the operator on placement and on how squawk ids map onto their backend.
+
+**User message:**
+> Adding a `Squawk` artifact section to ARTIFACTS.md, plus squawk id and branch/commit conventions. Squawks are standalone small fixes — one defect or one routine update, no mission required — logged and completed via `/squawk`. They reuse your existing `leg-execution` crew, so no new crew file. Existing artifacts unaffected.
+
+---
+
 ## Adding Future Migrations
 
 To add a new migration:
