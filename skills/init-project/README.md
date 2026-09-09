@@ -6,7 +6,7 @@ This directory contains reference materials for the [Flight Control](https://git
 
 - **FLIGHT_OPERATIONS.md** — Quick reference for implementing missions, flights, and legs
 - **ARTIFACTS.md** — Project-specific configuration for how artifacts are stored
-- **agent-crews/** — Project crew definitions for each phase (who Mission Control works with)
+- **agent-crews/** — Project crew definitions for each phase (who the Flight Director works with)
 
 ## For AI Agents
 

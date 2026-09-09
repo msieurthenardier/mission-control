@@ -11,6 +11,24 @@
 
 ---
 
+## The Hierarchy
+
+| Level | Audience | What it is | Sizing |
+|-------|----------|------------|--------|
+| **Mission** | Humans | One meaningful outcome, stated in human terms | Typically 1-3 flights |
+| **Flight** | Humans + AI | A technical spec with pre/in/post-flight checklists | One coherent cluster of design decisions and risks |
+| **Leg** | AI agents | A coherent feature slice with explicit, binary acceptance criteria | Boundaries sit at decision and risk points, not effort |
+
+**Lifecycle states:**
+- **Missions**: `planning` → `active` → `completed` (or `aborted`)
+- **Flights**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
+- **Legs**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
+- **Squawks**: `open` → `in-progress` → `completed` (or `deferred` / `escalated`) — outside the hierarchy, see below
+
+**Phase gates require confirmation.** A mission must be fully agreed with the human before any flight is designed; a flight must be fully agreed before any leg is designed. Never skip ahead — get explicit confirmation at each transition. Squawks sit outside these gates by design; their equivalent control is the qualification gate in the Squawks section.
+
+---
+
 ## Project Crew & Phases
 
 Each phase of the Flight Control workflow has a crew definition in `.flightops/agent-crews/`:
@@ -29,7 +47,7 @@ Crew files define: roles, models, interaction protocols, prompts, and signals. C
 
 ## Multi-Agent Workflow
 
-Legs must be implemented by a **separate Developer instance** and reviewed by a **separate Reviewer instance** (or whatever crew is defined in `leg-execution.md`). Mission Control designs legs and orchestrates — it does NOT implement code directly.
+Legs must be implemented by a **separate Developer instance** and reviewed by a **separate Reviewer instance** (or whatever crew is defined in `leg-execution.md`). The Flight Director designs legs and orchestrates — it does NOT implement code directly. This holds for squawks too, no matter how small the fix looks: the orchestrator spawns a Developer even for a one-line change.
 
 The Reviewer has no knowledge of the Developer's reasoning — only the resulting changes. This separation provides objective code review. Use the `/mission-control:agentic-workflow` skill to drive this cycle.
 
