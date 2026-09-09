@@ -1,6 +1,6 @@
 {
   "name": "mission-control",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Flight Control: an AI-first software development lifecycle methodology using aviation metaphors. Skills for planning missions, flights, and legs, executing them with multi-agent crews, and debriefing afterwards.",
   "author": {
     "name": "msieurthenardier",
