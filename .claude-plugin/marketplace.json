@@ -1,0 +1,17 @@
+{
+  "name": "flight-control",
+  "owner": {
+    "name": "msieurthenardier",
+    "url": "https://github.com/msieurthenardier"
+  },
+  "metadata": {
+    "description": "Flight Control methodology plugins for Claude Code"
+  },
+  "plugins": [
+    {
+      "name": "mission-control",
+      "source": "./",
+      "description": "Flight Control: plan work as missions, flights, and legs; execute with multi-agent crews; debrief and maintain."
+    }
+  ]
+}

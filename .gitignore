@@ -1,6 +1,4 @@
 # Local configuration
-projects.md
-daily-briefings/
 .claude/settings.local.json
 .mcp.json
 

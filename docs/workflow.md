@@ -273,7 +273,7 @@ Manual test completed:
 
 ### Flight Debrief
 
-**Run `/flight-debrief` to capture learnings.** This is a required step, not optional.
+**Run `/mission-control:flight-debrief` to capture learnings.** This is a required step, not optional.
 
 The debrief skill will:
 - Analyze what went well and what could improve
@@ -332,7 +332,7 @@ When all success criteria are met:
 
 ### Mission Debrief
 
-**Run `/mission-debrief` to perform a retrospective.** This is a required step, not optional.
+**Run `/mission-control:mission-debrief` to perform a retrospective.** This is a required step, not optional.
 
 The debrief skill will:
 - Assess whether the mission achieved its stated outcomes
@@ -465,5 +465,5 @@ Once work begins, create new rather than modify. This preserves history and prev
 | Leg implementation done | active | in-flight | landed | — |
 | Leg reviewed | active | in-flight | completed | — |
 | Flight done | active | landed | — | — |
-| Flight debriefed | active | completed | — | `/flight-debrief` |
-| All flights done | completed | — | — | `/mission-debrief` |
+| Flight debriefed | active | completed | — | `/mission-control:flight-debrief` |
+| All flights done | completed | — | — | `/mission-control:mission-debrief` |

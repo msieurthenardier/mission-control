@@ -1,0 +1,13 @@
+{
+  "name": "mission-control",
+  "version": "1.0.0",
+  "description": "Flight Control: an AI-first software development lifecycle methodology using aviation metaphors. Skills for planning missions, flights, and legs, executing them with multi-agent crews, and debriefing afterwards.",
+  "author": {
+    "name": "msieurthenardier",
+    "url": "https://github.com/msieurthenardier"
+  },
+  "homepage": "https://github.com/msieurthenardier/mission-control",
+  "repository": "https://github.com/msieurthenardier/mission-control",
+  "license": "MIT",
+  "keywords": ["methodology", "planning", "multi-agent", "sdlc", "flight-control"]
+}
