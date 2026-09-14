@@ -74,6 +74,8 @@ All steps run in Claude Code from your project's root directory.
 
 When the plugin updates, projects initialized against an older version drift. A SessionStart hook prints a one-line notice in any project that is behind; run `/mission-control:preflight-check` for the full report and `/mission-control:init-project` to apply migrations and re-sync methodology files.
 
+If you used Flight Control before it was a plugin — a cloned `mission-control` checkout with a `projects.md` registry — see [Migrating to the plugin](docs/migrating-to-the-plugin.md).
+
 ## Documentation
 
 1. **[Overview](docs/overview.md)** — Philosophy and principles behind Flight Control
@@ -83,6 +85,7 @@ When the plugin updates, projects initialized against an older version drift. A 
 5. **[Legs](docs/legs.md)** — Structuring AI-optimized implementation steps
 6. **[Squawks](docs/squawks.md)** — Small standalone fixes that don't warrant a mission
 7. **[Workflow](docs/workflow.md)** — End-to-end flow from mission to completion
+8. **[Migrating to the plugin](docs/migrating-to-the-plugin.md)** — Moving from the pre-plugin checkout and `projects.md` registry
 
 ## Core Concepts
 
