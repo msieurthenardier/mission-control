@@ -25,7 +25,7 @@ Something is a squawk only if **all four** hold:
 
 Fail any one and it is a flight or a mission, not a squawk.
 
-**The gate matters more than the criteria.** A squawk that turns out to need design work is marked `escalated` and handed to `/flight` or `/mission`, with its partial changes reverted. It is never expanded in place. Without that rule the lightweight path becomes a bypass for real work, and the methodology's value — that consequential decisions get planned and reviewed — leaks away one "quick fix" at a time.
+**The gate matters more than the criteria.** A squawk that turns out to need design work is marked `escalated` and handed to `/mission-control:flight` or `/mission-control:mission`, with its partial changes reverted. It is never expanded in place. Without that rule the lightweight path becomes a bypass for real work, and the methodology's value — that consequential decisions get planned and reviewed — leaks away one "quick fix" at a time.
 
 ## Anatomy
 
@@ -54,11 +54,11 @@ Anything the Reviewer notices beyond the diff becomes a new squawk. It does not 
 | Source | How |
 |--------|-----|
 | **Direct observation** | Someone notices something broken and logs it |
-| **Mid-flight discovery** | `/agentic-workflow` logs out-of-scope defects and defers them, keeping the flight's shape intact |
+| **Mid-flight discovery** | `/mission-control:agentic-workflow` logs out-of-scope defects and defers them, keeping the flight's shape intact |
 | **Flight debrief** | Small concrete action items become squawks with ids instead of bullets that die in the debrief |
 | **Routine maintenance** | Squawk-sized findings are logged rather than scaffolded into a mission; open squawks feed back in as known debt |
 
-`/daily-briefing` reports open counts and flags stale squawks — `grounding` open past 7 days, `routine` past 30, or anything stuck `in-progress`. A log that only grows means small fixes are being captured but never completed, which is a finding in itself.
+`/mission-control:squawk list` reports open counts and flags stale squawks — `grounding` open past 7 days, `routine` past 30, or anything stuck `in-progress`. A log that only grows means small fixes are being captured but never completed, which is a finding in itself.
 
 ## What Squawks Are Not
 

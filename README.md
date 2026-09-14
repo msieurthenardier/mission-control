@@ -4,13 +4,13 @@ An AI-first software development lifecycle methodology using aviation metaphors 
 
 ## What is Mission Control?
 
-This repository is a **centralized command center** for managing multiple projects in parallel. Each project may have its own stack, systems, and constraints, but mission-control provides a consistent workflow and orchestration layer across all of them.
+Mission Control is the Claude Code **plugin** that ships Flight Control. Install it once and every project you open gets the same planning, execution, and debrief workflow, whatever its stack.
 
-- **Project registry** — Track active projects with paths, remotes, and configurations
 - **Shared methodology** — Apply structured planning regardless of project differences
-- **Claude Code skills** — Interactive tools for mission, flight, and leg creation
+- **Claude Code skills** — Interactive tools for mission, flight, leg, and squawk work, invoked as `/mission-control:<skill>`
+- **Multi-agent execution** — A Flight Director session orchestrates separate Developer, Reviewer, and Architect agents
 
-Artifacts (missions, flights, legs) are created in target projects, not here. Mission-control holds the methodology, skills, and coordination—your projects hold the work.
+Skills run from the project's own root. Artifacts (missions, flights, legs, squawks) live in the project, configured by its `.flightops/` directory. The plugin holds the methodology and skills; your project holds the work.
 
 ## The Aviation Model
 
@@ -34,7 +34,7 @@ Aviation succeeds through layered planning and clear handoffs. Pilots follow fli
 
 ## Agentic Workflow
 
-**LLM orchestrators**: Run `/agentic-workflow` to drive multi-agent flight execution with Claude Code. The skill designs and implements each leg in turn, then runs a single code review and commit across the whole flight, using separate Claude instances for the Flight Director, Developer, and Reviewer roles.
+**LLM orchestrators**: Run `/mission-control:agentic-workflow` to drive multi-agent flight execution with Claude Code. The skill designs and implements each leg in turn, then runs a single code review and commit across the whole flight, using separate Claude instances for the Flight Director, Developer, and Reviewer roles.
 
 ## Getting Started
 
@@ -43,23 +43,36 @@ Aviation succeeds through layered planning and clear handoffs. Pilots follow fli
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) installed
 - A project on disk with a git remote, initialized with Claude Code (`claude /init`)
 
+### Install the plugin
+
+From any Claude Code session:
+
+```
+/plugin marketplace add msieurthenardier/mission-control
+/plugin install mission-control@flight-control
+```
+
+To develop the plugin from a local clone instead, start Claude Code with `claude --plugin-dir /path/to/mission-control`.
+
 ### Walkthrough
 
-1. **Clone mission-control** — Clone this repo and open it in Claude Code.
+All steps run in Claude Code from your project's root directory.
 
-2. **Set up the projects registry** — Run `/init-mission-control` (or manually copy `projects.md.template` → `projects.md` and fill in your project details). This creates the central registry that all skills read from.
+1. **Initialize your project** — Run `/mission-control:init-project`. This creates `.flightops/` with artifact configuration, methodology reference, and crew definitions, and adds a Flight Operations section to your `CLAUDE.md`.
 
-3. **Initialize your project** — Run `/init-project` and select your project. This creates `.flightops/` in your target project with artifact configuration, methodology reference, and crew definitions.
+2. **Review agent crew files** — Check the files in `.flightops/agent-crews/`. These define the crew composition (roles, models, prompts) for each phase. Customize them to your needs.
 
-4. **Review agent crew files** — Check the files in `{target-project}/.flightops/agent-crews/`. These define the crew composition (roles, models, prompts) for each phase. Customize them to your needs.
+3. **Create a mission** — Run `/mission-control:mission`. This interviews you about desired outcomes and creates a mission artifact.
 
-5. **Create a mission** — Run `/mission`. This interviews you about desired outcomes and creates a mission artifact in your target project.
+4. **Design a flight** — Run `/mission-control:flight` to break the mission into a technical specification with pre/in/post-flight checklists.
 
-6. **Design a flight** — Run `/flight` to break the mission into a technical specification with pre/in/post-flight checklists.
+5. **Execute** — Run `/mission-control:agentic-workflow` to drive multi-agent implementation. This designs and implements each leg in turn, then reviews and commits the whole flight in one pass at the end.
 
-7. **Execute** — Run `/agentic-workflow` to drive multi-agent implementation. This designs and implements each leg in turn, then reviews and commits the whole flight in one pass at the end.
+6. **Debrief** — Run `/mission-control:flight-debrief` and `/mission-control:mission-debrief` after completion to capture lessons learned.
 
-8. **Debrief** — Run `/flight-debrief` and `/mission-debrief` after completion to capture lessons learned.
+### Staying current
+
+When the plugin updates, projects initialized against an older version drift. A SessionStart hook prints a one-line notice in any project that is behind; run `/mission-control:preflight-check` for the full report and `/mission-control:init-project` to apply migrations and re-sync methodology files.
 
 ## Documentation
 
@@ -116,49 +129,64 @@ By default, artifacts are stored as version-controlled markdown files in your pr
 
 ## Claude Code Skills
 
-Flight Control includes Claude Code skills for interactive planning:
+All skills are namespaced under the plugin and run from the project root:
 
 | Skill | Purpose |
 |-------|---------|
-| `/init-mission-control` | Set up the projects registry |
-| `/init-project` | Initialize a project for Flight Control |
-| `/mission` | Create outcome-driven missions through research and interview |
-| `/flight` | Create technical flight specs from missions |
-| `/flight-debrief` | Post-flight analysis for continuous improvement |
-| `/agentic-workflow` | Drive multi-agent flight execution |
-| `/mission-debrief` | Post-mission retrospective for outcomes assessment |
-| `/daily-briefing` | Cross-project status report with health assessment |
-| `/squawk` | Log and complete small standalone fixes — one defect or one routine update, no mission required |
-| `/behavior-test` | Run a behavior test — live two-agent execution (Executor + Validator) against real UI / API / shell / filesystem, Zephyr-style Action \| Expected Result spec. Specs are authored inline during planning conversations (see `.claude/skills/behavior-test/AUTHORING.md`). |
+| `/mission-control:init-project` | Initialize the current project for Flight Control; apply methodology migrations |
+| `/mission-control:preflight-check` | Full drift diagnosis of the current project against the installed plugin |
+| `/mission-control:mission` | Create outcome-driven missions through research and interview |
+| `/mission-control:flight` | Create technical flight specs from missions |
+| `/mission-control:agentic-workflow` | Drive multi-agent flight execution |
+| `/mission-control:squawk` | Log and complete small standalone fixes — one defect or one routine update, no mission required |
+| `/mission-control:behavior-test` | Run a behavior test — live two-agent execution (Executor + Validator) against real UI / API / shell / filesystem, Zephyr-style Action \| Expected Result spec. Specs are authored inline during planning conversations (see `skills/behavior-test/AUTHORING.md`). |
+| `/mission-control:flight-debrief` | Post-flight analysis for continuous improvement |
+| `/mission-control:mission-debrief` | Post-mission retrospective for outcomes assessment |
+| `/mission-control:routine-maintenance` | Between-mission codebase health assessment |
+
+## Plugin Layout
+
+```
+.claude-plugin/
+├── plugin.json          # Plugin manifest
+└── marketplace.json     # Lets /plugin install resolve this repo directly
+skills/<name>/SKILL.md   # One directory per skill; init-project also carries the
+                         # synced methodology files, templates, crew defaults,
+                         # migrations registry, and drift detector
+hooks/
+├── hooks.json           # SessionStart drift notice
+└── check-project-drift.sh
+docs/                    # Methodology documentation
+```
 
 ## Recommended Workflow
 
-All work runs from a single **Mission Control** session. Mission Control handles planning directly and spawns agents into the target project's context for implementation, review, and commits. Each spawned agent gets a clean context with only the information it needs, while Mission Control maintains continuity across the entire flight.
+All work runs from a single **Flight Director** session in the project root. The Flight Director handles planning directly and spawns agents for implementation, review, and commits. Each spawned agent gets a clean context with only the information it needs, while the Flight Director maintains continuity across the entire flight.
 
 ### Context Strategy
 
-- **Mission Control**: Long-running session spanning an entire flight — accumulates knowledge across legs, orchestrates all work
-- **Spawned agents**: Fresh context per task — designed with precise instructions and the relevant artifacts, execute in the target project directory
+- **Flight Director**: Long-running session spanning an entire flight — accumulates knowledge across legs, orchestrates all work
+- **Spawned agents**: Fresh context per task — designed with precise instructions and the relevant artifacts, inherit the project root as their working directory
 
-Claude Code's version control in mission-control acts as the orchestrator for development of the remote project. No second interactive session is needed.
+No second interactive session is needed.
 
 ### The Cycle
 
 ```mermaid
 sequenceDiagram
-    participant MC as Mission Control
+    participant MC as Flight Director
     participant A as Spawned Agents
 
     Note over MC,A: ─── Mission Planning ───
-    MC->>MC: /mission — research, interview, define outcomes
+    MC->>MC: /mission-control:mission — research, interview, define outcomes
     MC->>MC: Review and confirm mission
 
     Note over MC,A: ─── Flight Planning ───
-    MC->>MC: /flight — create technical spec, checklists
+    MC->>MC: /mission-control:flight — create technical spec, checklists
     MC->>MC: Review and confirm flight
 
     Note over MC,A: ─── Execution ───
-    MC->>MC: /agentic-workflow
+    MC->>MC: /mission-control:agentic-workflow
 
     loop For each leg
         Note over MC: Design phase
@@ -169,17 +197,17 @@ sequenceDiagram
         MC->>MC: Review leg design
 
         Note over MC: Implement phase
-        MC->>A: Spawn implementer agent<br/>(target project context)
+        MC->>A: Spawn implementer agent
         A->>A: Implement leg, update logs
         A-->>MC: Implementation complete
 
         Note over MC: Review phase
-        MC->>A: Spawn reviewer agent<br/>(target project context)
+        MC->>A: Spawn reviewer agent
         A->>A: Review changes, verify criteria
         A-->>MC: Review complete
 
         Note over MC: Commit phase
-        MC->>A: Spawn commit agent<br/>(target project context)
+        MC->>A: Spawn commit agent
         A->>A: Stage and commit changes
         A-->>MC: Committed
 
@@ -189,13 +217,13 @@ sequenceDiagram
     Note over MC,A: Flight lands
 
     Note over MC,A: ─── Debrief ───
-    MC->>MC: /flight-debrief
-    MC->>MC: /mission-debrief
+    MC->>MC: /mission-control:flight-debrief
+    MC->>MC: /mission-control:mission-debrief
 ```
 
 ### Why This Matters
 
-A single orchestrating session eliminates context drift between planning and execution. Mission Control sees every leg's outcome and carries that knowledge forward into the next design. Spawned agents get clean, focused contexts — they don't need flight-wide memory because Mission Control provides exactly the context they need. Artifacts stay synchronized because one session owns the full lifecycle.
+A single orchestrating session eliminates context drift between planning and execution. The Flight Director sees every leg's outcome and carries that knowledge forward into the next design. Spawned agents get clean, focused contexts — they don't need flight-wide memory because the Flight Director provides exactly the context they need. Artifacts stay synchronized because one session owns the full lifecycle.
 
 ## License
 

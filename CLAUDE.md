@@ -2,93 +2,62 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Invocation Context
+## What This Repository Is
 
-You may be invoked by:
-- **A human** — Interactive session, ask questions freely
-- **An LLM orchestrator** — Run `/agentic-workflow` to drive multi-agent flight execution
+This is the source of the **mission-control** Claude Code plugin, which ships the **Flight Control** methodology: an AI-first software development lifecycle using aviation metaphors. Sessions here are about developing the plugin itself — its skills, hooks, synced methodology files, and docs. Using Flight Control on a project happens in that project, with the plugin installed.
 
-When orchestrated, you are the **Flight Director** — responsible for driving execution, coordinating agents, and making go/no-go decisions. Emit signals like `[HANDOFF:review-needed]` and `[COMPLETE:leg]` at appropriate points. The orchestrator monitors your output for these markers.
-
-**When a human says a leg is ready to implement**, invoke `/agentic-workflow`. Do not read the leg spec, do not plan execution steps, do not execute commands directly. You become the orchestrator by loading the skill.
-
-### Loading Skills in Non-Interactive Contexts
-
-**The Skill tool is ONLY available in interactive human sessions.** If you are a spawned agent, running via `claude -p`, or inside a container/SDK — you do NOT have the Skill tool. Do not attempt to call it.
-
-To execute a skill, read its SKILL.md file directly and follow the workflow:
-
-```
-Read .claude/skills/{skill-name}/SKILL.md and execute the workflow described there.
-```
-
-**All Flight Control skills** (listed in the table below) **live in this repository** (mission-control), under `.claude/skills/`. The Flight Director runs from the mission-control directory, so relative `.claude/skills/` paths in skill docs resolve here. Target projects may have their own unrelated skills in their own `.claude/skills/` directories — those are separate.
-
-## First-Contact Check
-
-If `projects.md` does not exist in this repository, suggest running `/init-mission-control` to set up the projects registry before proceeding with any other skills.
-
-### Per-Project Drift Check
-
-A `SessionStart` hook (`.claude/hooks/check-project-drift.sh`, wired in `.claude/settings.json`) scans every registered project at session start and injects a notice listing any with pending methodology migrations. When that notice is present and the user engages one of the listed projects, tell them it's behind the current methodology and **recommend running `/init-project`** to apply the migrations — then continue with what they asked. Recommend only; never apply migrations yourself (`/init-project` owns that, with confirmation).
-
-To check a single project on demand, run the detector directly:
-
-```bash
-bash .claude/skills/init-project/check-drift.sh \
-  .claude/skills/init-project \
-  "{target-project}/.flightops"
-```
-
-## Project Overview
-
-Flight Control is an AI-first software development lifecycle methodology using aviation metaphors. It organizes work into three hierarchical levels:
+Flight Control organizes work into three hierarchical levels:
 
 - **Missions** (human-optimized) — Define outcomes in human terms; one meaningful outcome, typically 1-3 flights
 - **Flights** (balanced) — Technical specifications with pre/in/post-flight checklists; one coherent cluster of design decisions and risks
 - **Legs** (AI-optimized) — Coherent feature slices with explicit acceptance criteria; boundaries sit at decision and risk points, not effort
 
-Beside the hierarchy sits the **squawk** — a standalone artifact for a single bug fix or routine servicing update, with no parent mission, flight, leg, or debrief. Squawks are logged and completed via `/squawk`, and are qualified by a strict gate (one item, no design decisions, bounded blast radius, verifiable). Work that fails the gate is escalated to a flight or mission rather than expanded in place. See `docs/squawks.md`.
+Beside the hierarchy sits the **squawk** — a standalone artifact for a single bug fix or routine servicing update, with no parent mission, flight, leg, or debrief. Squawks are qualified by a strict gate (one item, no design decisions, bounded blast radius, verifiable); work that fails the gate is escalated to a flight or mission. See `docs/squawks.md`.
 
-Alongside the planning hierarchy, Flight Control includes **behavior tests** — Zephyr-style multi-step acceptance tests run with two live AI agents (an Executor that performs each step's actions and an independent Validator that judges each step's expected results) using the **Witnessed** pattern. Behavior tests verify real-environment behavior (UI flows, multi-component interactions, AI agent behavior) that doesn't fit unit/integration tests. Specs are authored inline during planning conversations and run via the `/behavior-test` skill. See `.claude/skills/behavior-test/AUTHORING.md` for the authoring guide.
+Alongside the planning hierarchy, Flight Control includes **behavior tests** — Zephyr-style multi-step acceptance tests run with two live AI agents (an Executor and an independent Validator) using the **Witnessed** pattern. See `skills/behavior-test/AUTHORING.md` for the authoring guide.
 
-This repository contains the methodology documentation and Claude Code skills for interactive planning.
+## Plugin Layout
 
-## Claude Code Skills
+```
+.claude-plugin/plugin.json      # Manifest; skills and hooks are auto-discovered
+.claude-plugin/marketplace.json # Single-plugin marketplace so /plugin install resolves this repo
+skills/<name>/SKILL.md          # Ten skills, invoked as /mission-control:<name>
+skills/init-project/            # Also carries the synced methodology files (FLIGHT_OPERATIONS.md,
+                                # README.md), templates/, defaults/agent-crews/, migrations.md,
+                                # and check-drift.sh
+hooks/hooks.json                # SessionStart hook wiring (uses ${CLAUDE_PLUGIN_ROOT})
+hooks/check-project-drift.sh    # One-line drift notice for the current project
+docs/                           # Methodology documentation
+```
 
-Twelve skills automate the planning, execution, debrief, oversight, and acceptance-test workflows. They live in `.claude/skills/` — each SKILL.md carries its name and description, which Claude Code auto-loads into every session's skill listing.
+To run the plugin from this checkout while developing it: `claude --plugin-dir .` from another directory, or install it through the marketplace file. Skills in `skills/` are not auto-loaded by a plain session in this repo.
 
-Run `/init-project` before using the other skills on a new project to create the flight operations reference directory and configure the artifact system.
+## How the Skills Run
 
-**Artifact Systems:** Each project defines how artifacts are stored in `.flightops/ARTIFACTS.md`. Skills read this configuration and adapt their output accordingly.
+- **Skills run from the project root.** The project is the current working directory. There is no registry of projects; every skill reads `.flightops/` relative to the cwd. Do not reintroduce absolute paths to projects or a central list of them.
+- **`${SKILL_DIR}`** in a SKILL.md means the directory that SKILL.md was loaded from inside the installed plugin. Plugin-internal references (crew defaults, templates, the drift detector, a sibling skill's files) use it. Spawned agents never receive plugin paths; everything they need is copied into the project's `.flightops/` by `init-project`.
+- **Cross-skill references** use the namespaced form `/mission-control:<skill>`, including in the synced methodology files and crew defaults that land in projects.
+- **Planning skills produce documentation only.** `init-project`, `preflight-check`, `mission`, `flight`, `flight-debrief`, `mission-debrief`, and `routine-maintenance` create and update artifacts; they never modify source files. `agentic-workflow` and `squawk` orchestrate implementation by spawning separate agents; the orchestrator itself never edits source, however small the fix looks.
+- **Phase gates require confirmation.** Missions must be fully agreed before designing flights; flights before legs. Squawks sit outside these gates and use the qualification gate in `squawk` instead.
 
-**IMPORTANT: Planning skills produce documentation only.** `/init-project`, `/mission`, `/flight`, `/flight-debrief`, `/mission-debrief`, and `/routine-maintenance` must:
-- **NEVER implement code changes** — only create/update artifacts
-- **NEVER modify source files** in the target project (no `.rs`, `.ts`, `.tsx`, `.json`, etc.)
+## Methodology Drift
 
-`/agentic-workflow` and `/squawk` orchestrate implementation by spawning separate agents that execute code changes in the target project. The orchestrator itself never modifies source files directly — this holds for `/squawk` no matter how small the fix looks.
+Projects carry copies of the synced methodology files, crew defaults, and an `ARTIFACTS.md` that evolves through numbered migrations. When you change any of those in this repo, every initialized project drifts:
 
-> **Phase gates require confirmation.** Missions must be fully agreed before designing
-> flights. Flights must be fully agreed before designing legs. Never skip ahead — get
-> explicit user confirmation at each transition.
->
-> Squawks sit outside these gates by design — they have no mission or flight to gate on.
-> Their equivalent control is the qualification gate in `/squawk`: work that needs design
-> decisions is escalated to a flight or mission, not completed as a squawk.
+- Editing `skills/init-project/FLIGHT_OPERATIONS.md` or `README.md` makes projects report `outdated`. That is expected; `init-project` re-syncs them.
+- Adding a crew default makes projects report `crew-missing`.
+- A change that needs edits to project-owned files (`ARTIFACTS.md`, `CLAUDE.md`, crew files) needs a new migration: add detection to `skills/init-project/check-drift.sh` (the single source of detection) and an entry in `skills/init-project/migrations.md`. See "Adding Future Migrations" there.
 
-## Projects Registry
+The SessionStart hook surfaces drift in one line and recommends `/mission-control:preflight-check` or `/mission-control:init-project`. Hooks and skills recommend only; `init-project` owns applying migrations, with confirmation.
 
-The `projects.md` file in this repository catalogs all active projects on this device. When using skills:
+## Skill–Project Boundary
 
-1. **Read `projects.md` first** to find the target project's path, remote, and description
-2. **Read `.flightops/ARTIFACTS.md`** in the target project to determine artifact locations
-3. **Create all artifacts in the target project** — not in mission-control
+Project owners can customize `.flightops/ARTIFACTS.md` and `.flightops/agent-crews/*.md` freely. Skills must not couple to project-owned shape:
 
-The registry provides:
-- Project slug and description
-- Filesystem path (e.g., `~/projects/my-app`)
-- Git remote
-- Optional stack and status information
+- **Do not read project-owned artifacts by section heading.** Frame extraction by intent — what the agent is looking for — and let it locate the content within whatever structure the project uses.
+- **Do not write into project-owned artifacts at named anchors.** Describe the destination semantically. When appending a new section, suggest a heading without prescribing it as a contract.
+- **Do not rely on crew prompt files to carry skill-required instructions.** The Flight Director issues per-spawn instructions directly from the SKILL.md. Crew files are project-modifiable scaffolding; SKILL.md is the protocol.
+- **Defer to ARTIFACTS.md for the whole persistence procedure.** Storage location, format, and any project-defined actions at create and transition time. Protocol — state values, lifecycle, taxonomy, invariants — lives in the skills, never in ARTIFACTS.md.
 
 ## Lifecycle States
 
@@ -97,31 +66,13 @@ The registry provides:
 - **Legs**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
 - **Squawks**: `open` → `in-progress` → `completed` (or `deferred`, `escalated`) — intentionally outside the unified lifecycle; a squawk has no planning phase
 
-## Skill–Project Boundary
-
-Mission Control skills run in projects whose owners can customize `.flightops/ARTIFACTS.md` and `.flightops/agent-crews/*.md` freely. Skills must not couple to project-owned shape:
-
-- **Do not read project-owned artifacts by section heading.** When a skill needs to extract information from a prior debrief, maintenance report, or other project-owned artifact, frame the instruction by intent — what the agent is looking for — and let the agent locate it within whatever structure the project uses. Reading by literal heading name (e.g. `## Action Items`, `## Test Suite Timing`) breaks silently the moment a project owner renames or removes that section.
-- **Do not write into project-owned artifacts at named anchors.** When a skill inserts content into a project artifact, describe the destination semantically ("in the section the project uses for X") rather than by literal heading. If the skill is appending a new section, suggest a heading without prescribing it as a contract.
-- **Do not rely on crew prompt files to carry skill-required instructions.** The Flight Director must issue per-spawn instructions directly from the SKILL.md, even when the crew file also contains an overlapping prompt. Crew files are project-modifiable scaffolding; SKILL.md is the protocol.
-- **Defer to ARTIFACTS.md for the whole persistence procedure, not two named fields.** A skill reads ARTIFACTS.md for how the project handles each artifact — storage location, format, and any actions the project defines at create and transition time (opening a ticket, posting a notification). Don't extract a capped "location and format"; that silently drops project-defined side-effects, and don't hardcode artifact paths. Protocol — state values, lifecycle, taxonomy, invariants — lives in the skills, never in ARTIFACTS.md.
-
 ## Project Information Stays in Project Artifacts
 
-**Never store project-specific information in Claude Code memories** — not in mission-control's memory directory, not in any project's memory directory. Project-specific issues, bugs, technical debt, design gaps, known issues, and lessons learned belong exclusively in the project's own Flight Control artifacts:
-
-- **Flight logs** — runtime decisions, deviations, anomalies
-- **Flight debriefs** — post-flight analysis, recommendations, action items
-- **Mission known issues** — cross-flight concerns discovered during execution
-- **Design decision sections** — in flight and mission artifacts
-
-Mission-control is a neutral methodology tool. Its memory (if used at all) is reserved for methodology preferences, user collaboration preferences, and cross-cutting tooling notes — never for project-specific content.
+Never store project-specific information in Claude Code memories. Issues, technical debt, design gaps, and lessons learned belong in the project's own Flight Control artifacts: flight logs, debriefs, mission known issues, and design decision sections. This rule ships to projects in `FLIGHT_OPERATIONS.md`. Memory here, if used at all, is reserved for methodology preferences and cross-cutting tooling notes.
 
 ## Never Leak Operator Identity
 
-Never write the operator's machine username or absolute home paths (`/home/<user>/...`, `/Users/<user>/...`, `C:\Users\<user>\...`) into any generated content — artifacts, code, tests, commit messages, PR descriptions, log excerpts pasted into docs.
-
-Use repo-relative paths (`src/foo/bar.ts`), `~/projects/<slug>/...`, or `<username>` placeholders instead. If you spot a leaked path in existing content, flag it and offer to scrub.
+Never write the operator's machine username or absolute home paths (`/home/<user>/...`, `/Users/<user>/...`, `C:\Users\<user>\...`) into any generated content — artifacts, code, tests, commit messages, PR descriptions, log excerpts pasted into docs. Use repo-relative paths, `~/projects/<slug>/...`, or `<username>` placeholders instead. If you spot a leaked path in existing content, flag it and offer to scrub.
 
 ## Public Repository
 
@@ -130,4 +81,4 @@ This is a public repository. Keep all committed content anonymized:
 - **No personal paths** — Use generic examples like `~/projects/my-app`, not actual home directories
 - **No usernames** — Use placeholders like `username` in examples
 - **No project-specific details** — Keep examples generic
-- `projects.md` is gitignored for this reason — it contains local paths and is not committed
+- `.mcp.json` and `.claude/settings.local.json` are gitignored local configuration and are never committed
