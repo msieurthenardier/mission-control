@@ -193,29 +193,28 @@ sequenceDiagram
 
     loop For each leg
         Note over MC: Design phase
-        MC->>A: Spawn designer agent
-        A->>A: Design leg spec
-        A-->>MC: Leg designed
-
-        MC->>MC: Review leg design
+        MC->>MC: Design leg spec, risk-tier it
+        opt High-risk leg
+            MC->>A: Spawn Developer for design review
+            A->>A: Review leg design against codebase
+            A-->>MC: Assessment
+        end
 
         Note over MC: Implement phase
-        MC->>A: Spawn implementer agent
-        A->>A: Implement leg, update logs
-        A-->>MC: Implementation complete
-
-        Note over MC: Review phase
-        MC->>A: Spawn reviewer agent
-        A->>A: Review changes, verify criteria
-        A-->>MC: Review complete
-
-        Note over MC: Commit phase
-        MC->>A: Spawn commit agent
-        A->>A: Stage and commit changes
-        A-->>MC: Committed
-
-        MC->>MC: Update flight checklist
+        MC->>A: Spawn Developer
+        A->>A: Implement leg, update flight log (no commit)
+        A-->>MC: Leg landed
     end
+
+    Note over MC,A: ─── Flight review and commit (once per flight) ───
+    MC->>A: Spawn Reviewer
+    A->>A: Review all uncommitted changes, verify every leg's criteria
+    A-->>MC: Review complete
+    MC->>A: Spawn Developer to commit
+    A->>A: Commit the whole flight, open draft PR
+    A-->>MC: Committed
+
+    MC->>MC: Update flight checklist
 
     Note over MC,A: Flight lands
 

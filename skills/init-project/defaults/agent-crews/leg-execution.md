@@ -48,19 +48,22 @@ The Flight Director (Mission Control) orchestrates this phase using the
 
 ### Implementation
 1. Flight Director spawns **Developer** to implement
-2. Developer implements to acceptance criteria, updates flight log
-3. Developer signals [HANDOFF:review-needed] — does NOT commit
+2. Developer implements to acceptance criteria, marks the leg `landed`, updates flight log
+3. Developer reports completion — does NOT commit. Legs are not reviewed or
+   committed individually; the Flight Director moves straight on to the next leg.
 
-### Code Review
-1. Flight Director spawns **Reviewer** to evaluate all uncommitted changes
-2. If **Accessibility Reviewer** is enabled and leg involves UI changes,
+### Code Review (once per flight)
+1. After the last autonomous leg lands, Flight Director spawns **Reviewer** to
+   evaluate all uncommitted changes from every leg
+2. If **Accessibility Reviewer** is enabled and any leg involves UI changes,
    spawn in parallel with Reviewer
 3. If issues: Flight Director spawns new **Developer** to fix
 4. Loop until all reviewers signal [HANDOFF:confirmed] — max 3 cycles
 
-### Commit
-1. Flight Director spawns **Developer** to commit
-2. Developer commits code + artifacts, signals [COMPLETE:leg]
+### Commit (once per flight)
+1. Flight Director spawns **Developer** to commit the whole flight
+2. Developer marks every leg `completed`, commits code + artifacts in one commit,
+   opens the draft PR, signals [COMPLETE:leg]
 
 ## Template Variables
 
@@ -70,7 +73,7 @@ The Flight Director substitutes these variables in prompts at runtime:
 |----------|-------------|-------------|
 | `{project-slug}` | Project identifier — the repository directory name, or the name from the git remote | All prompts |
 | `{flight-number}` | Current flight number | All prompts |
-| `{leg-number}` | Current leg number | Leg-scoped prompts |
+| `{leg-number}` | Current leg number | review-leg-design, implement |
 | `{leg-artifact-path}` | Path to the leg artifact file | review-leg-design |
 | `{reviewer-issues}` | Full text of reviewer feedback (dynamic) | fix-review-issues |
 
@@ -125,26 +128,27 @@ Read leg artifact. Update leg status to in-flight. Implement to acceptance crite
 Run tests with a timeout flag appropriate to this project's test runner — fail fast,
 do not wait indefinitely for hanging tests. If a test hangs, isolate and fix it.
 Update flight log with outcomes. Propagate changes to artifacts (flight, mission, leg),
-CLAUDE.md, README, and other project documentation as needed. Do NOT commit yet —
-signal [HANDOFF:review-needed] when implementation is complete.
+CLAUDE.md, README, and other project documentation as needed. When done, update leg
+status to landed and report what you implemented and how you verified it. Do NOT
+commit — the whole flight is reviewed and committed once, after its last leg lands.
 ```
 
 ### Reviewer: Review
 
 ```
 role: reviewer
-phase: leg-review
+phase: flight-review
 project: {project-slug}
 flight: {flight-number}
-leg: {leg-number}
 action: review
 
-Review all changes since the last commit. Evaluate against:
-1. Leg acceptance criteria — are all criteria met?
+Review all changes since the last commit — they span every leg implemented in this
+flight. Evaluate against:
+1. Acceptance criteria — are all criteria of every landed leg met?
 2. Code quality — style, clarity, maintainability
 3. Correctness — edge cases, error handling, security
 4. Tests — coverage, meaningful assertions, no regressions
-5. Artifacts — flight log updated, leg status correct
+5. Artifacts — flight log updated for every leg, leg statuses correct
 
 Signal [HANDOFF:confirmed] if all changes are satisfactory.
 If issues found, list them with severity (blocking/non-blocking) and specific
@@ -155,10 +159,9 @@ file:line references.
 
 ```
 role: accessibility-reviewer
-phase: leg-review
+phase: flight-review
 project: {project-slug}
 flight: {flight-number}
-leg: {leg-number}
 action: review-accessibility
 
 Review all UI changes since the last commit for accessibility compliance.
@@ -180,10 +183,9 @@ reference, and specific file:line references.
 
 ```
 role: developer
-phase: leg-implementation
+phase: flight-review
 project: {project-slug}
 flight: {flight-number}
-leg: {leg-number}
 action: fix-review-issues
 
 Address the following review feedback:
@@ -197,19 +199,19 @@ note as accepted. Signal [HANDOFF:review-needed] when fixes are complete.
 
 ```
 role: developer
-phase: leg-implementation
+phase: flight-commit
 project: {project-slug}
 flight: {flight-number}
-leg: {leg-number}
 action: commit
 
-Review has passed. Before committing, complete ALL post-completion checklist items
-in the leg artifact:
-1. Check off all acceptance criteria in the leg artifact
-2. Update leg status to completed
-3. Check off this leg in flight.md
-4. If final leg: update flight.md status to landed, check off flight in mission.md
+Review has passed for the whole flight. Before committing, complete ALL of these
+for every leg implemented in this flight:
+1. Check off all acceptance criteria in each leg artifact
+2. Update each leg status to completed
+3. Check off each leg in flight.md
+4. Update flight.md status to landed, check off flight in mission.md
 
-Then commit all changes (code + artifacts) with appropriate message.
+Then commit all changes (code + artifacts) in a single commit, following the Git
+Conventions in .flightops/ARTIFACTS.md, and open a draft PR with every leg checked off.
 Signal [COMPLETE:leg].
 ```
