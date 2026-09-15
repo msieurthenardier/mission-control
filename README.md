@@ -173,56 +173,6 @@ All work runs from a single **Flight Director** session in the project root. The
 
 No second interactive session is needed.
 
-### The Cycle
-
-```mermaid
-sequenceDiagram
-    participant MC as Flight Director
-    participant A as Spawned Agents
-
-    Note over MC,A: ─── Mission Planning ───
-    MC->>MC: /mission-control:mission — research, interview, define outcomes
-    MC->>MC: Review and confirm mission
-
-    Note over MC,A: ─── Flight Planning ───
-    MC->>MC: /mission-control:flight — create technical spec, checklists
-    MC->>MC: Review and confirm flight
-
-    Note over MC,A: ─── Execution ───
-    MC->>MC: /mission-control:agentic-workflow
-
-    loop For each leg
-        Note over MC: Design phase
-        MC->>MC: Design leg spec, risk-tier it
-        opt High-risk leg
-            MC->>A: Spawn Developer for design review
-            A->>A: Review leg design against codebase
-            A-->>MC: Assessment
-        end
-
-        Note over MC: Implement phase
-        MC->>A: Spawn Developer
-        A->>A: Implement leg, update flight log (no commit)
-        A-->>MC: Leg landed
-    end
-
-    Note over MC,A: ─── Flight review and commit (once per flight) ───
-    MC->>A: Spawn Reviewer
-    A->>A: Review all uncommitted changes, verify every leg's criteria
-    A-->>MC: Review complete
-    MC->>A: Spawn Developer to commit
-    A->>A: Commit the whole flight, open draft PR
-    A-->>MC: Committed
-
-    MC->>MC: Update flight checklist
-
-    Note over MC,A: Flight lands
-
-    Note over MC,A: ─── Debrief ───
-    MC->>MC: /mission-control:flight-debrief
-    MC->>MC: /mission-control:mission-debrief
-```
-
 ### Why This Matters
 
 A single orchestrating session eliminates context drift between planning and execution. The Flight Director sees every leg's outcome and carries that knowledge forward into the next design. Spawned agents get clean, focused contexts — they don't need flight-wide memory because the Flight Director provides exactly the context they need. Artifacts stay synchronized because one session owns the full lifecycle.
