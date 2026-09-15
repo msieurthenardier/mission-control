@@ -166,3 +166,14 @@ if [[ -f "$PROJECT_CLAUDE_MD" ]] \
    && ! grep -q "mission-control:agentic-workflow" "$PROJECT_CLAUDE_MD" 2>/dev/null; then
   echo "migration-pending:007"
 fi
+
+# 008 - leg-execution crew file still speaks the per-leg review/commit protocol.
+# Signals are methodology, not project customization (the crew file says so
+# itself), so this is the one kind of crew-content drift that is a migration.
+# Fires when the file names the retired [COMPLETE:leg] signal, or never tells the
+# Developer to emit [LAND:leg]; silent once both hold.
+if [[ -n "$CREW_DIR" && -f "$CREW_DIR/leg-execution.md" ]] \
+   && { grep -q "COMPLETE:leg" "$CREW_DIR/leg-execution.md" 2>/dev/null \
+        || ! grep -q "LAND:leg" "$CREW_DIR/leg-execution.md" 2>/dev/null; }; then
+  echo "migration-pending:008"
+fi
