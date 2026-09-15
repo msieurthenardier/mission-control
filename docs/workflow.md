@@ -2,31 +2,6 @@
 
 This document describes how work flows through Flight Control from mission inception to completion.
 
-## The Complete Flow
-
-```mermaid
-flowchart TB
-    subgraph MISSION
-        direction TB
-        planning[planning] --> active[active] --> completed[completed]
-        planning -.-> aborted[aborted]
-
-        subgraph " "
-            direction LR
-            flightA[Flight A] --> legsA[legs]
-            flightB[Flight B] --> legsB[legs]
-            flightC[Flight C] --> legsC[legs]
-        end
-
-        active --> flightA
-        active --> flightB
-        active --> flightC
-        legsA --> completed
-        legsB --> completed
-        legsC --> completed
-    end
-```
-
 ## Phase 1: Mission Definition
 
 ### Starting Point
@@ -203,8 +178,9 @@ Create the User model and registration endpoint with validation and password has
 1. Leg design approved, moves to `ready`
 2. Developer begins, leg moves to `in-flight`
 3. Developer completes implementation, leg moves to `landed`, flight log updated
-4. Reviewer verifies acceptance criteria met
-5. Leg moves to `completed`
+4. The next leg is designed and implemented the same way
+5. After the last leg lands, a Reviewer verifies every leg's acceptance criteria against all uncommitted changes
+6. The whole flight is committed once and every leg moves to `completed`
 
 ### Parallel vs. Sequential Legs
 

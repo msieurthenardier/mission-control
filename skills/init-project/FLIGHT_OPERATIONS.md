@@ -53,18 +53,16 @@ The Reviewer has no knowledge of the Developer's reasoning — only the resultin
 
 ---
 
-## ⚠️ Leg Completion Checklist (MANDATORY)
+## ⚠️ Leg Landing Checklist (MANDATORY)
 
-**You MUST complete ALL of these before emitting `[COMPLETE:leg]`:**
+**You MUST complete ALL of these before signalling `[LAND:leg]`:**
 
 | Step | Action |
 |------|--------|
 | 1 | All acceptance criteria verified |
 | 2 | Tests passing |
 | 3 | **Update flight log** — Add leg progress entry (see below) |
-| 4 | **Mark leg completed** — Update leg status to `completed` |
-| 5 | **Update flight** — Check off the leg in flight artifact |
-| 6 | **Commit/save with all artifact updates** |
+| 4 | **Mark leg landed** — Update leg status to `landed` |
 
 **Flight log entry MUST include:**
 - Leg status, started date, completed date
@@ -86,7 +84,7 @@ Emit at the end of your response, on its own line:
 | `[HANDOFF:confirmed]` | Review complete, no issues |
 | `[BLOCKED:reason]` | Cannot proceed |
 | `[BLOCKED:exceeds-squawk-scope]` | A squawk fix turned out to need design work — stop, revert, escalate |
-| `[COMPLETE:leg]` | Leg done AND checklist complete |
+| `[LAND:leg]` | Leg landed — Leg Landing Checklist complete, nothing committed |
 | `[COMPLETE:squawk]` | Squawk(s) implemented, reviewed, and committed |
 
 ---
@@ -101,18 +99,16 @@ Emit at the end of your response, on its own line:
 5. Present summary and get approval before proceeding
 
 ### Implementation
-5. Implement to acceptance criteria
-6. Run tests with a timeout — use the test runner's timeout flag (e.g., `--timeout`,
+6. Implement to acceptance criteria
+7. Run tests with a timeout — use the test runner's timeout flag (e.g., `--timeout`,
    `--test-timeout`, `-timeout`) so hanging tests fail fast instead of stalling.
    If a test hangs, kill it, isolate the hanging test, and fix the root cause before
    continuing. Log hanging tests and their resolution in the flight log.
-7. Run code review, fix Critical/Major issues
-8. Re-review until clean
 
 ### Post-Implementation
-9. Propagate changes (project docs, flight artifacts if scope changed)
-10. **Complete the Leg Completion Checklist above**
-11. Signal `[COMPLETE:leg]`
+8. Propagate changes (project docs, flight artifacts if scope changed)
+9. **Complete the Leg Landing Checklist above**
+10. Signal `[LAND:leg]`
 
 ---
 
@@ -172,6 +168,8 @@ When reviewing a mission, flight, or leg:
 Implement → Test → Review → Fix → Re-review → Complete
 ```
 
+The gate runs **once per flight**, after the last autonomous leg lands, over all uncommitted changes from every leg (for squawks, once per turnaround).
+
 | Severity | Action |
 |----------|--------|
 | Critical | Must fix |
@@ -182,22 +180,24 @@ Deferred issues go in the flight log.
 
 ---
 
-## ⚠️ Flight Completion Checklist (MANDATORY)
+## ⚠️ Flight Review and Commit (MANDATORY)
 
-**When you complete the FINAL leg of a flight, also complete these steps:**
+**Once the FINAL leg of a flight has landed, the whole flight is reviewed and committed in one pass:**
 
 | Step | Action |
 |------|--------|
-| 1 | Complete all items in the Leg Completion Checklist above |
-| 2 | **Update flight log** — Add flight completion entry with summary |
-| 3 | **Update flight status** — Set `**Status**: landed` in flight.md |
-| 4 | **Update mission** — Check off this flight in mission.md |
-| 5 | **Verify all legs** — Confirm all legs show `completed` status |
+| 1 | **Review** — A Reviewer evaluates ALL uncommitted changes against every leg's acceptance criteria (Code Review Gate above); loop review → fix until `[HANDOFF:confirmed]` |
+| 2 | **Mark legs completed** — Check off acceptance criteria and set every leg's status to `completed` |
+| 3 | **Update flight** — Check off every leg in flight.md; add a flight completion entry to the flight log |
+| 4 | **Update flight status** — Set `**Status**: landed` in flight.md |
+| 5 | **Update mission** — Check off this flight in mission.md |
 | 6 | **Update project docs** — Ensure CLAUDE.md, README, and other docs reflect any new commands, endpoints, configuration, or APIs introduced during the flight |
-| 7 | Signal `[COMPLETE:leg]` (the orchestrator will trigger Phase 4) |
+| 7 | **Commit** — All code changes plus every updated artifact, following the Git Conventions in `ARTIFACTS.md` |
+| 8 | Report the commit ref |
 
 The orchestrator will then:
-- Mark the PR ready for human review
+- Verify all legs show `completed` and the flight log covers every leg
+- Open a draft PR with every leg checked off, signal `[COMPLETE:flight]`, and mark the PR ready for human review
 
 The flight debrief is a separate step run via `/mission-control:flight-debrief`, which transitions the flight from `landed` to `completed`.
 

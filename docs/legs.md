@@ -216,10 +216,10 @@ Leg design approved. Ready for implementation.
 AI agent actively working on implementation.
 
 **landed**
-Implementation complete. Flight log updated. Ready for review.
+Implementation complete. Flight log updated. Awaiting the flight-end review.
 
 **completed**
-Review passed. Acceptance criteria confirmed met.
+Flight-end review passed and the flight was committed. Acceptance criteria confirmed met.
 
 **aborted**
 Leg cancelled. Changes are rolled back. Document the reason in the flight log.
@@ -232,8 +232,8 @@ Leg cancelled. Changes are rolled back. Document the reason in the flight log.
 | ready | in-flight | Developer begins work |
 | in-flight | landed | Developer reports completion |
 | in-flight | aborted | Cannot proceed, changes rolled back |
-| landed | completed | Review passes |
-| landed | in-flight | Issues found, needs fixes |
+| landed | completed | Flight-end review passes and the flight is committed |
+| landed | in-flight | Flight-end review finds issues in this leg's changes |
 
 Note: Legs may only be modified while in `planning` state. Once `in-flight`, create new legs instead of modifying existing ones.
 
