@@ -2,31 +2,6 @@
 
 This document describes how work flows through Flight Control from mission inception to completion.
 
-## The Complete Flow
-
-```mermaid
-flowchart TB
-    subgraph MISSION
-        direction TB
-        planning[planning] --> active[active] --> completed[completed]
-        planning -.-> aborted[aborted]
-
-        subgraph " "
-            direction LR
-            flightA[Flight A] --> legsA[legs]
-            flightB[Flight B] --> legsB[legs]
-            flightC[Flight C] --> legsC[legs]
-        end
-
-        active --> flightA
-        active --> flightB
-        active --> flightC
-        legsA --> completed
-        legsB --> completed
-        legsC --> completed
-    end
-```
-
 ## Phase 1: Mission Definition
 
 ### Starting Point
