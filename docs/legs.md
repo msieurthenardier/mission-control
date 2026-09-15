@@ -216,7 +216,7 @@ Leg design approved. Ready for implementation.
 AI agent actively working on implementation.
 
 **landed**
-Implementation complete. Flight log updated. Changes stay uncommitted until the flight-end review.
+Implementation complete. Flight log updated. Awaiting the flight-end review.
 
 **completed**
 Flight-end review passed and the flight was committed. Acceptance criteria confirmed met.

@@ -63,7 +63,6 @@ The Reviewer has no knowledge of the Developer's reasoning — only the resultin
 | 2 | Tests passing |
 | 3 | **Update flight log** — Add leg progress entry (see below) |
 | 4 | **Mark leg landed** — Update leg status to `landed` |
-| 5 | **Leave everything uncommitted** — Legs are not reviewed or committed one at a time; the whole flight is reviewed and committed once, after the last leg lands (see Flight Review and Commit below) |
 
 **Flight log entry MUST include:**
 - Leg status, started date, completed date
@@ -109,8 +108,7 @@ Emit at the end of your response, on its own line:
 ### Post-Implementation
 8. Propagate changes (project docs, flight artifacts if scope changed)
 9. **Complete the Leg Landing Checklist above**
-10. Report the leg as landed. Do NOT commit and do NOT signal `[COMPLETE:leg]` — the
-    Flight Director runs code review and commit once, after the last leg of the flight.
+10. Report the leg as landed
 
 ---
 
@@ -170,7 +168,7 @@ When reviewing a mission, flight, or leg:
 Implement → Test → Review → Fix → Re-review → Complete
 ```
 
-The gate runs **once per flight**, after the last autonomous leg lands, over all uncommitted changes from every leg (for squawks, once per turnaround). Legs are never reviewed or committed individually.
+The gate runs **once per flight**, after the last autonomous leg lands, over all uncommitted changes from every leg (for squawks, once per turnaround).
 
 | Severity | Action |
 |----------|--------|
@@ -194,12 +192,12 @@ Deferred issues go in the flight log.
 | 4 | **Update flight status** — Set `**Status**: landed` in flight.md |
 | 5 | **Update mission** — Check off this flight in mission.md |
 | 6 | **Update project docs** — Ensure CLAUDE.md, README, and other docs reflect any new commands, endpoints, configuration, or APIs introduced during the flight |
-| 7 | **Commit once** — All code changes plus every updated artifact, following the Git Conventions in `ARTIFACTS.md`; open a draft PR with every leg checked off |
+| 7 | **Commit** — All code changes plus every updated artifact, following the Git Conventions in `ARTIFACTS.md` |
 | 8 | Signal `[COMPLETE:leg]` |
 
 The orchestrator will then:
 - Verify all legs show `completed` and the flight log covers every leg
-- Signal `[COMPLETE:flight]` and mark the PR ready for human review
+- Open a draft PR with every leg checked off, signal `[COMPLETE:flight]`, and mark the PR ready for human review
 
 The flight debrief is a separate step run via `/mission-control:flight-debrief`, which transitions the flight from `landed` to `completed`.
 

@@ -26,7 +26,7 @@ The Flight Director (Mission Control) orchestrates this phase using the
 - **Enabled**: false
 - **Role**: Reviews UI changes for accessibility compliance. Evaluates against
   WCAG 2.1 AA standards, screen reader compatibility, keyboard navigation,
-  color contrast, ARIA usage, and semantic HTML. Only spawn when the leg
+  color contrast, ARIA usage, and semantic HTML. Only spawn when the flight
   involves user-facing interface changes.
 - **Actions**: review-accessibility
 
@@ -49,8 +49,7 @@ The Flight Director (Mission Control) orchestrates this phase using the
 ### Implementation
 1. Flight Director spawns **Developer** to implement
 2. Developer implements to acceptance criteria, marks the leg `landed`, updates flight log
-3. Developer reports completion — does NOT commit. Legs are not reviewed or
-   committed individually; the Flight Director moves straight on to the next leg.
+3. Developer reports completion; the Flight Director proceeds to the next leg
 
 ### Code Review (once per flight)
 1. After the last autonomous leg lands, Flight Director spawns **Reviewer** to
@@ -62,8 +61,7 @@ The Flight Director (Mission Control) orchestrates this phase using the
 
 ### Commit (once per flight)
 1. Flight Director spawns **Developer** to commit the whole flight
-2. Developer marks every leg `completed`, commits code + artifacts in one commit,
-   opens the draft PR, signals [COMPLETE:leg]
+2. Developer commits code + artifacts in one commit, signals [COMPLETE:leg]
 
 ## Template Variables
 
@@ -129,8 +127,8 @@ Run tests with a timeout flag appropriate to this project's test runner — fail
 do not wait indefinitely for hanging tests. If a test hangs, isolate and fix it.
 Update flight log with outcomes. Propagate changes to artifacts (flight, mission, leg),
 CLAUDE.md, README, and other project documentation as needed. When done, update leg
-status to landed and report what you implemented and how you verified it. Do NOT
-commit — the whole flight is reviewed and committed once, after its last leg lands.
+status to landed and report what you implemented and how you verified it. Do not
+commit.
 ```
 
 ### Reviewer: Review
@@ -142,8 +140,8 @@ project: {project-slug}
 flight: {flight-number}
 action: review
 
-Review all changes since the last commit — they span every leg implemented in this
-flight. Evaluate against:
+Review all changes on the flight branch relative to its base — they span every leg
+implemented in this flight. Evaluate against:
 1. Acceptance criteria — are all criteria of every landed leg met?
 2. Code quality — style, clarity, maintainability
 3. Correctness — edge cases, error handling, security
@@ -164,7 +162,8 @@ project: {project-slug}
 flight: {flight-number}
 action: review-accessibility
 
-Review all UI changes since the last commit for accessibility compliance.
+Review all UI changes on the flight branch relative to its base for accessibility
+compliance.
 
 Evaluate against:
 1. WCAG 2.1 AA — do changes meet Level AA success criteria?
@@ -204,14 +203,8 @@ project: {project-slug}
 flight: {flight-number}
 action: commit
 
-Review has passed for the whole flight. Before committing, complete ALL of these
-for every leg implemented in this flight:
-1. Check off all acceptance criteria in each leg artifact
-2. Update each leg status to completed
-3. Check off each leg in flight.md
-4. Update flight.md status to landed, check off flight in mission.md
-
-Then commit all changes (code + artifacts) in a single commit, following the Git
-Conventions in .flightops/ARTIFACTS.md, and open a draft PR with every leg checked off.
+Review has passed for the whole flight. Commit all uncommitted changes (code +
+artifacts) in a single commit, following the Git Conventions in .flightops/ARTIFACTS.md.
+Include the artifact updates the Flight Director listed when spawning you.
 Signal [COMPLETE:leg].
 ```
