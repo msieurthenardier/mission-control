@@ -55,7 +55,7 @@ The Reviewer has no knowledge of the Developer's reasoning — only the resultin
 
 ## ⚠️ Leg Landing Checklist (MANDATORY)
 
-**You MUST complete ALL of these before reporting a leg as landed:**
+**You MUST complete ALL of these before signalling `[LAND:leg]`:**
 
 | Step | Action |
 |------|--------|
@@ -84,7 +84,7 @@ Emit at the end of your response, on its own line:
 | `[HANDOFF:confirmed]` | Review complete, no issues |
 | `[BLOCKED:reason]` | Cannot proceed |
 | `[BLOCKED:exceeds-squawk-scope]` | A squawk fix turned out to need design work — stop, revert, escalate |
-| `[COMPLETE:leg]` | Leg committed as part of the single flight-end commit |
+| `[LAND:leg]` | Leg landed — Leg Landing Checklist complete, nothing committed |
 | `[COMPLETE:squawk]` | Squawk(s) implemented, reviewed, and committed |
 
 ---
@@ -108,7 +108,7 @@ Emit at the end of your response, on its own line:
 ### Post-Implementation
 8. Propagate changes (project docs, flight artifacts if scope changed)
 9. **Complete the Leg Landing Checklist above**
-10. Report the leg as landed
+10. Signal `[LAND:leg]`
 
 ---
 
@@ -193,7 +193,7 @@ Deferred issues go in the flight log.
 | 5 | **Update mission** — Check off this flight in mission.md |
 | 6 | **Update project docs** — Ensure CLAUDE.md, README, and other docs reflect any new commands, endpoints, configuration, or APIs introduced during the flight |
 | 7 | **Commit** — All code changes plus every updated artifact, following the Git Conventions in `ARTIFACTS.md` |
-| 8 | Signal `[COMPLETE:leg]` |
+| 8 | Report the commit ref |
 
 The orchestrator will then:
 - Verify all legs show `completed` and the flight log covers every leg

@@ -100,12 +100,12 @@ Repeat for each leg in the flight.
    - Working directory: the project root (inherit the current working directory)
    - Provide the "Implement" prompt from the leg-execution phase file's Prompts section
    - The Developer updates leg status to `in-flight`, implements to acceptance criteria
-   - When done, the Developer updates leg status to `landed` and updates flight log — do NOT let it commit or signal `[HANDOFF:review-needed]`
+   - When done, the Developer updates leg status to `landed`, updates the flight log, and signals `[LAND:leg]` — it does not commit
    - In your spawn prompt, instruct the Developer that whenever it changes the leg's status, it must also perform any transition-time handling the project's `.flightops/ARTIFACTS.md` defines for that transition (default: none). State this directly in the prompt — don't assume the crew file carries it.
 
 ### 2c: Leg Transition
 
-After the Developer completes a leg:
+After the Developer signals `[LAND:leg]`:
 1. Increment `legs_completed`
 2. If more autonomous legs remain → return to 2a
 3. If this was the last autonomous leg → proceed to Phase 2d
@@ -169,7 +169,7 @@ Signals are part of the Flight Control methodology and are NOT configurable per-
 | `[HANDOFF:confirmed]` | Reviewer | Review passed |
 | `[BLOCKED:reason]` | Any crew agent | Cannot proceed, needs resolution |
 | `[BLOCKED:exceeds-squawk-scope]` | Developer | A squawk fix needs design work — revert and escalate (see `/mission-control:squawk`) |
-| `[COMPLETE:leg]` | Developer | Leg finished and committed |
+| `[LAND:leg]` | Developer | Leg implemented and `landed`; flight log updated, nothing committed |
 | `[COMPLETE:squawk]` | Flight Director | Squawk(s) implemented, reviewed, and committed (see `/mission-control:squawk`) |
 | `[COMPLETE:flight]` | Flight Director | Flight landed |
 

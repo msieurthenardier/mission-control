@@ -36,7 +36,7 @@ The Flight Director (Mission Control) orchestrates this phase using the
 - Reviewer has NO knowledge of Developer's reasoning — only resulting changes
 - Each agent instance gets fresh context (no carryover between legs)
 
-**Note:** Handoff signals (`[HANDOFF:review-needed]`, `[HANDOFF:confirmed]`, `[BLOCKED:reason]`, `[COMPLETE:leg]`) are defined by the Flight Control methodology in the agentic-workflow skill, not in this file. Do not modify signal names here — they must match what the Flight Director expects.
+**Note:** Handoff signals (`[HANDOFF:review-needed]`, `[HANDOFF:confirmed]`, `[BLOCKED:reason]`, `[LAND:leg]`) are defined by the Flight Control methodology in the agentic-workflow skill, not in this file. Do not modify signal names here — they must match what the Flight Director expects.
 
 ## Interaction Protocol
 
@@ -49,7 +49,7 @@ The Flight Director (Mission Control) orchestrates this phase using the
 ### Implementation
 1. Flight Director spawns **Developer** to implement
 2. Developer implements to acceptance criteria, marks the leg `landed`, updates flight log
-3. Developer reports completion; the Flight Director proceeds to the next leg
+3. Developer signals [LAND:leg]; the Flight Director proceeds to the next leg
 
 ### Code Review (once per flight)
 1. After the last autonomous leg lands, Flight Director spawns **Reviewer** to
@@ -61,7 +61,7 @@ The Flight Director (Mission Control) orchestrates this phase using the
 
 ### Commit (once per flight)
 1. Flight Director spawns **Developer** to commit the whole flight
-2. Developer commits code + artifacts in one commit, signals [COMPLETE:leg]
+2. Developer commits code + artifacts in one commit, reports the commit ref
 
 ## Template Variables
 
@@ -128,7 +128,7 @@ do not wait indefinitely for hanging tests. If a test hangs, isolate and fix it.
 Update flight log with outcomes. Propagate changes to artifacts (flight, mission, leg),
 CLAUDE.md, README, and other project documentation as needed. When done, update leg
 status to landed and report what you implemented and how you verified it. Do not
-commit.
+commit. Signal [LAND:leg].
 ```
 
 ### Reviewer: Review
@@ -206,5 +206,5 @@ action: commit
 Review has passed for the whole flight. Commit all uncommitted changes (code +
 artifacts) in a single commit, following the Git Conventions in .flightops/ARTIFACTS.md.
 Include the artifact updates the Flight Director listed when spawning you.
-Signal [COMPLETE:leg].
+Report the commit ref.
 ```
