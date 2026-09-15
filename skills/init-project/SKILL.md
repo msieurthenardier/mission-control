@@ -182,7 +182,7 @@ This skill creates/updates the following at the project root:
 | README.md | Yes | Methodology reference |
 | FLIGHT_OPERATIONS.md | Yes | Methodology reference |
 | ARTIFACTS.md | No | Created once from template, then project-specific |
-| agent-crews/*.md | Ask on re-run | Created from defaults; on re-run, user can choose to update to latest defaults |
+| agent-crews/*.md | Ask on re-run | Created from defaults; on re-run, user can choose to update to latest defaults. Protocol changes to a crew file (signals, review cadence) arrive as migrations, e.g. 008 |
 
 ## Guidelines
 

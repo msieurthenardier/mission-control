@@ -184,6 +184,34 @@ Flight Control used to run from a separate mission-control checkout that held a 
 
 ---
 
+### 008 — Move the leg-execution crew to the flight-end review and commit
+
+`/mission-control:agentic-workflow` used to review and commit after every leg: the Developer signalled `[HANDOFF:review-needed]`, a Reviewer checked that leg, and a commit agent signalled `[COMPLETE:leg]`. It now batches: legs land uncommitted, the Developer signals `[LAND:leg]`, and one review and one commit happen after the last autonomous leg. The skill loads its Developer and Reviewer prompts from the project's `.flightops/agent-crews/leg-execution.md`, so a project initialized before this change spawns agents that follow the old protocol while the Flight Director expects the new one — the Developer commits a leg it was told to leave uncommitted, and never emits the signal the Flight Director waits for.
+
+Signals and the review/commit cadence are methodology, not project customization (the crew file's own note says so), which is why this crew-content change is a migration rather than the usual informational drift.
+
+**Detected by** `check-drift.sh` → `migration-pending:008`. Apply after 001–007. Apply between flights: a flight already in progress under the old cadence should land first.
+
+**Actions:**
+
+1. Show the diff between the project's `leg-execution.md` and the current default at `${SKILL_DIR}/defaults/agent-crews/leg-execution.md` (init-project Step 6's review path). If the project's file is the old default unchanged, or the operator prefers it, overwrite with the current default and stop here.
+
+2. Otherwise apply these edits to the project's file, preserving any project customization around them:
+   - **Signals note**: `[COMPLETE:leg]` → `[LAND:leg]`.
+   - **Interaction Protocol — Implementation**: the Developer marks the leg `landed`, updates the flight log, and signals `[LAND:leg]`; the Flight Director proceeds to the next leg. Drop any "signals `[HANDOFF:review-needed]`" step.
+   - **Interaction Protocol — Code Review and Commit**: mark both once per flight. Review runs after the last autonomous leg lands over every leg's changes; the commit agent commits code + artifacts in one commit and reports the commit ref.
+   - **Template Variables**: `{leg-number}` is available in `review-leg-design` and `implement` only.
+   - **Implement prompt**: end with "update leg status to landed and report what you implemented and how you verified it. Do not commit. Signal [LAND:leg]." — replacing any "Do NOT commit yet — signal [HANDOFF:review-needed]" ending.
+   - **Review, Review Accessibility, Fix Review Issues prompts**: `phase: flight-review`; remove the `leg: {leg-number}` line; review "all changes on the flight branch relative to its base" rather than "since the last commit".
+   - **Commit prompt**: `phase: flight-commit`; remove the `leg:` line; reduce the body to the mechanical commit — commit all uncommitted changes (code + artifacts) in a single commit per the Git Conventions in `.flightops/ARTIFACTS.md`, including the artifact updates the Flight Director listed at spawn, then report the commit ref. Remove the per-leg checklist (acceptance criteria, leg status, flight.md, mission.md) and any `[COMPLETE:leg]` signal; those steps are protocol and now live in `FLIGHT_OPERATIONS.md`.
+
+3. Re-run `check-drift.sh`; `migration-pending:008` must no longer fire.
+
+**User message:**
+> Updating `.flightops/agent-crews/leg-execution.md` for the flight-end review and commit: legs now land uncommitted and signal `[LAND:leg]`; one review and one commit happen after the last leg. Your customizations are kept; only the protocol steps and prompts change. Existing artifacts unaffected.
+
+---
+
 ## Adding Future Migrations
 
 To add a new migration:
