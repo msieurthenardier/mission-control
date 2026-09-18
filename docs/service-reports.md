@@ -1,6 +1,6 @@
 # Service Reports
 
-A **service report** carries one Flight Control methodology difficulty back to the plugin as a GitHub issue. It is the only artifact that leaves the project.
+A **service report** carries one recurring Flight Control methodology trend back to the plugin as a GitHub issue. It is the only artifact that leaves the project.
 
 ## Why Service Reports Exist
 
@@ -10,23 +10,35 @@ Debriefs already ask whether the methodology itself got in the way — flight de
 
 A squawk is a defect in *this* aircraft, cleared by *this* operator. A **service difficulty report** runs the other way: the operator tells the manufacturer that the type design has a problem, because every other operator of that type will hit it too. The manufacturer aggregates reports across the fleet, finds the pattern, and issues a change.
 
-Two features of that model matter here. Operators report *difficulties*, not designs — what happened and what it cost, not what should be built instead. And reports are only useful in aggregate: one is an anecdote, forty with the same signature is a defect.
+Two features of that model matter here. Operators report *difficulties*, not designs — what happened and what it cost, not what should be built instead. And reports are only useful in aggregate: one is an anecdote, forty with the same signature is a defect. Manufacturers act on the pattern across the fleet, and so the operator's job is to notice a pattern in their own operation first, rather than forwarding every event as it happens.
 
-## Mission Level, Not Flight Level
+## Trends, Not Events
 
-Reports are raised after `/mission-control:mission-debrief`, never after a single flight.
+**Nothing invokes this skill.** No debrief hands off to it, no phase gate reaches it, nothing runs it on a schedule. The operator runs it when they choose — typically after several missions — and it sweeps the project's whole accumulated corpus of debriefs looking for observations that turned out to be patterns.
 
-A flight is too small a sample. Any one flight can go badly for reasons that have nothing to do with the methodology, and a skill that files an issue per flight per project produces a tracker nobody can read. A mission is several flights, which is the smallest sample that yields the thing maintainers actually need: **recurrence**. "Hit in 3 of 5 flights" is evidence. "Hit once" is an afternoon.
+That is the central design decision, and it follows from what the reports are for. A flight is far too small a sample: any one flight can go badly for reasons that have nothing to do with the methodology. A mission is better but still not enough, and reporting at mission cadence produces a steady drip of events — one project's bad stretch, filed as though it were a defect in the methodology. Multiply that by every project running the plugin and the tracker becomes unreadable, which is the same outcome as having no channel at all.
 
-So flight debriefs record, mission debriefs count and decide, and `/mission-control:service-report` files. Each level does the part it has the information for.
+What a maintainer can act on is a pattern: the same friction, in a working project, across missions, surviving plugin releases. So the threshold is **independent observations in at least three debriefs spanning at least two missions**. Below that, the observation stays in the corpus and the next sweep sees whether it kept happening.
+
+The division of labour:
+
+| Level | Job |
+|-------|-----|
+| **Flight debrief** | Record what the methodology did, what it cost, which skill and phase. Judge nothing |
+| **Mission debrief** | Count recurrence across the mission's flights, sort local fixes from local lessons from methodology observations. Report nothing |
+| **Service report sweep** | Read everything, cluster across missions, decide what is a trend, and file |
+
+Each level does only the part it has the information for. A debrief cannot know whether its observation is a pattern; only the sweep can see that, and only once there is enough corpus to look at.
+
+A sweep re-reads everything every time. That is deliberate — a cluster that sat below the threshold last year may have crossed it since, and the same old observations legitimately support a stronger report later. What stops a re-sweep re-filing is the record of what this project already sent, not a narrowed window.
 
 ## Qualification
 
-A finding is reportable only if **all five** hold:
+A trend is reportable only if **all five** hold:
 
 1. **Reproduces from the methodology alone** — an operator on a different stack, language, and domain would hit it
-2. **Has an observed cost** — rework, a re-run, a wrong artifact, a missed gate, a stall
-3. **Not already fixed upstream** — checked against the installed plugin version and closed issues
+2. **Has an observed cost** — rework, a re-run, a wrong artifact, a missed gate, accumulated across its occurrences
+3. **Not already fixed upstream** — checked against the plugin versions the trend spans and closed issues
 4. **Not project-owned surface** — `ARTIFACTS.md` and the crew files are customizable by design; friction there is a local edit
 5. **Statable with zero project information**
 
@@ -34,7 +46,9 @@ Criteria 3 and 4 reject more than expected. A large share of "the methodology is
 
 Criterion 2 is the anti-vanity gate. Subjective preference is the cheapest thing to generate and the least useful thing to receive; requiring an observed cost is what makes reports converge on real improvements rather than accumulate as taste.
 
-Criterion 5 has no workaround. A finding that cannot be stated without project information is not filed, however real it is.
+Criterion 5 has no workaround. A trend that cannot be stated without project information is not filed, however real it is.
+
+Before the gate comes the harder step: **clustering**. Debriefs written months apart describe the same friction in different words, by different agents, at different levels of detail, so clusters have to be built on what the methodology did rather than on matching language. Two rules keep them honest — never cluster on the skill name alone (two unrelated defects in one skill are two trends, and collapsing them is the commonest way a sweep produces something unactionable), and apply the root-cause test to every cluster: would one change to the methodology remove every observation in it? If not, split it.
 
 ## Never Leaking the Project
 
@@ -73,9 +87,12 @@ Opening a new issue is the last resort, not the default. Every report searches f
 | Outcome | Action |
 |---------|--------|
 | **New** | Draft an issue |
-| **Variant** — same root cause, different manifestation | React `+1`, then comment the occurrence on the existing issue |
+| **Recurred** — this project reported it before and the trend continued | React `+1`, then comment the updated count and span |
+| **Variant** — same root cause, different manifestation, someone else's issue | React `+1`, then comment the occurrence |
 | **Duplicate** — same root cause, nothing new to add | React `+1`. No comment |
 | **Already fixed** | Not an issue. Run `/mission-control:preflight-check` |
+
+The **Recurred** outcome is the one a periodic sweep produces that nothing else can. "Still happening, eight months and two releases later, now across five missions" is a different claim from the original report, and a much stronger one.
 
 A hundred operators filing separate issues for one defect buries it. The same hundred adding occurrences to one issue specifies it. The reaction goes on both joining branches, not just the silent one — otherwise the count measures "operators with nothing to add" rather than operators affected, which is the opposite of a ranking signal.
 
@@ -83,7 +100,7 @@ Choosing between them runs one test, out loud: **would a single change to the me
 
 An occurrence comment is short and structured, and its load-bearing line is **Differs**: each occurrence either matches the existing report exactly, or names the one dimension it varies on. That tightens an issue's scope as reports accumulate instead of scattering the same defect across near-duplicates — and it doubles as the split signal. When the `Differs` lines on an issue stop clustering, and start naming three or four unrelated dimensions, the issue is carrying more than one defect and wants splitting. Reports folded into the new issue are marked `superseded` locally on the next refresh.
 
-Issues and comments both end with a fixed trailer — plugin version, skill, phase, occurrences — in an identical format. That is deliberate and load-bearing: it is the only thing that makes a corpus of reports countable. Without it the maintainer has prose, and prose does not aggregate into "which skill, which phase, which version, how often."
+Issues and comments both end with a fixed trailer — plugin versions spanned, skill, phase, occurrence count, and date span — in an identical format. That is deliberate and load-bearing: it is the only thing that makes a corpus of reports countable. Without it the maintainer has prose, and prose does not aggregate into "which skill, which phase, which version, how often."
 
 ## Style
 
@@ -95,7 +112,9 @@ No quality adjectives — "confusing", "clunky", "awkward" — without the obser
 
 ## The Local Record
 
-Every report leaves an artifact in the project, including the ones that were withheld. It holds the finding, the gate outcome, what the prior-art search found, the redaction verdict, the operator's approval, and the submitted text verbatim — the audit trail of exactly what left the project. Unlike the issue body, the local artifact may reference local debrief paths.
+Every report leaves an artifact in the project, including the ones that were withheld. It holds the trend, its occurrence count and date span, the gate outcome, what the prior-art search found, the redaction verdict, the operator's approval, and the submitted text verbatim — the audit trail of exactly what left the project.
+
+It also holds the **evidence**: which debriefs, flights, and missions the observations were drawn from. Those are local references and never appear in anything sent upstream. They are what lets the next sweep recognise that a cluster it just rebuilt has already been reported, and what lets a maintainer's question be answered years later without re-reading the corpus.
 
 Status runs `draft → submitted | merged | withheld`, then `accepted`, `declined`, or `superseded` once upstream responds. `/mission-control:service-report list` refreshes anything carrying an issue number; records without one are never dereferenced. A `draft` — a report written while `gh` was unavailable and handed to the operator to paste — is reported separately and asked about, because an unanswered draft is a report that quietly never left.
 

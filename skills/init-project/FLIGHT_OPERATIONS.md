@@ -139,14 +139,14 @@ Every completed squawk gets an independent Reviewer, however trivial the change.
 
 A squawk records a defect in *this* codebase. A **service report** records a defect in the *methodology* every project shares, and sends it upstream to the mission-control plugin as a GitHub issue. Filed via `/mission-control:service-report`; stored per `ARTIFACTS.md` (default `service-reports/{id}-{slug}.md`).
 
-**Reported after a mission debrief, never after a single flight.** Flight debriefs record methodology observations; the mission debrief counts how often each recurred across the mission and decides which are real. Recurrence is the evidence.
+**Run it whenever you choose — typically after several missions.** Nothing invokes it automatically and no skill hands off to it. Flight and mission debriefs record methodology observations as they happen; this skill sweeps the whole accumulated corpus looking for the ones that turned out to be long-running patterns. A trend needs observations in at least three debriefs spanning at least two missions. Below that it is an event, and events are what flood a tracker.
 
-**It's reportable only if all five hold:**
+**A trend is reportable only if all five hold:**
 
 1. Reproduces from the methodology alone — an operator on a different stack would hit it
 2. Has an observed cost — rework, a re-run, a wrong artifact, a missed gate. Not "would be nicer if"
-3. Not already fixed upstream — check the plugin version first
-4. Not project-owned surface — friction in `ARTIFACTS.md` or a crew file is a local edit
+3. Not already fixed upstream — check the plugin versions the trend spans
+4. Not project-owned surface — friction in `ARTIFACTS.md` or a crew file is a local edit, and a trend confined to them is proof it's worth making
 5. Statable with **zero** project information
 
 **Two rules are absolute.** Nothing is sent until you approve it — the search query, the issue body, a comment, a reaction, all of it. And if a finding cannot be said without project information, it is not filed; there is no workaround. Drafts are checked twice: mechanically against a deny-list built from your git remote, project name, identity, and paths, and then by a Redaction Reviewer looking for sentences that only make sense if you already know the project.

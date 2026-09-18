@@ -328,7 +328,7 @@ How the fix was confirmed — the command run, the test added, the observation m
 | Property | Value |
 |----------|-------|
 | Location | `service-reports/{id}-{slug}.md` |
-| Created | When a methodology difficulty is reported upstream, or withheld |
+| Created | When a sweep reports a methodology trend upstream, or withholds one |
 | Updated | When upstream accepts, declines, or supersedes it |
 | Managed by | `/mission-control:service-report` |
 
@@ -339,9 +339,9 @@ missing, `/mission-control:service-report` stops and asks rather than assuming c
 `disabled` where posting to public repositories is not permitted. Per-report approval of the exact
 text still applies when it is `enabled` — this switch decides whether the channel exists at all.)*
 
-A service report carries one Flight Control **methodology** difficulty back to the plugin as a GitHub issue. It is not about this project: a squawk records a defect in this codebase, a service report records a defect in the methodology every project shares. Reported after a mission debrief, never after a single flight.
+A service report carries one recurring Flight Control **methodology** trend back to the plugin as a GitHub issue. It is not about this project: a squawk records a defect in this codebase, a service report records a defect in the methodology every project shares. Created only when the operator runs `/mission-control:service-report`, which sweeps the accumulated debriefs for patterns — typically after several missions, on no cadence.
 
-The artifact is the local audit trail of exactly what left the project. It may reference local debrief paths; the submitted body never does.
+The artifact is the local audit trail of exactly what left the project, and the evidence trail the next sweep reads to know this trend was already reported. It may reference local debriefs, flights, and missions; the submitted text never does.
 
 **Format:**
 
@@ -350,19 +350,26 @@ The artifact is the local audit trail of exactly what left the project. It may r
 
 **Status**: draft | submitted | merged | withheld | accepted | declined | superseded
 **Reported**: {YYYY-MM-DD}
-**Plugin version**: {version at time of report}
+**Occurrences**: {N} flights across {M} missions *(or "below threshold — operator override")*
+**Span**: {YYYY-MM} to {YYYY-MM}
+**Plugin versions**: {first seen}–{latest seen}
 **Upstream**: {issue URL, or —}
-**Source**: [{Mission Debrief}]({path}) *(local reference; never submitted)*
 
-## Finding
-The difficulty in methodology terms, and what it cost. A few lines.
+## Trend
+The pattern in methodology terms, and what it has cost across occurrences. A few lines.
+
+## Evidence
+*(local references; never submitted)*
+The debriefs, flights, and missions the observations came from.
 
 ## Gate
-Which of the five qualification criteria were checked, and the outcome.
+Which of the five qualification criteria were checked, and the outcome. Include the
+root-cause test that justified clustering these observations as one trend.
 
 ## Prior Art
-What the search found: existing issues, PRs, or local reports considered, and the
-classification — new | variant of #{N} | duplicate of #{N} | already fixed upstream.
+What the search found: existing issues, PRs, or this project's earlier reports, and the
+classification — new | recurred on #{N} | variant of #{N} | duplicate of #{N} | already
+fixed upstream.
 
 ## Redaction
 **Reviewer verdict**: clear
@@ -604,8 +611,9 @@ Chronological notes from work sessions.
 
 ## Methodology Feedback
 {Improvements to Flight Control process itself. Per finding: what happened, what it
-cost, how many flights it recurred in, and where it went — local fix, local lesson,
-or service report {id}/issue link.}
+cost, which skill and phase, how many flights it recurred in, and its destination —
+local fix, local lesson, or methodology observation. Observations are recorded here,
+not reported; a later /mission-control:service-report sweep reads them across missions.}
 
 ## Action Items
 - [ ] {Follow-up work}

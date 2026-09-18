@@ -150,31 +150,19 @@ The Methodology Feedback content is about Flight Control itself, not this projec
 |-------------|------|
 | **Local fix** | It is friction in this project's own `ARTIFACTS.md` or crew files, which are the project's to customize |
 | **Local lesson** | It is real but does not reproduce from the methodology alone, or it cost nothing observable |
-| **Upstream candidate** | It reproduces from the methodology alone *and* cost something observable — rework, a re-run, a wrong artifact, a missed gate |
+| **Methodology observation** | It reproduces from the methodology alone *and* cost something observable — rework, a re-run, a wrong artifact, a missed gate |
 
-Preference without a cost is a local lesson, not a candidate. Say so rather than passing it along.
+Preference without a cost is a local lesson, not a methodology observation. Say so rather than dressing it up.
 
-For each upstream candidate, pull the **recurrence count** from the flight debriefs already read in Phase 1 — "hit in 3 of 5 flights". This is the only point in the methodology where that number exists, and it is the evidence that makes a report actionable.
+For each methodology observation, record what the methodology did, what was expected, what it cost, the skill and phase, the plugin version in use, and the **recurrence count** across this mission's flights — pulled from the flight debriefs already read in Phase 1. This is the only point where that count exists.
 
-Record all three destinations in the debrief content, with the recurrence count against each candidate.
+**This phase records; it does not report.** Nothing here is sent anywhere. A single mission is too small a sample to tell a methodology defect from an awkward stretch, and reporting at mission cadence is what floods a tracker with events. The operator runs `/mission-control:service-report` when *they* choose — typically after several missions — and it sweeps every debrief in the project looking for observations that turned out to be patterns. What Phase 7 owes that sweep is a well-recorded observation, not a decision.
 
 ### Phase 8: Generate Debrief
 
 Persist the mission debrief artifact following the conventions `.flightops/ARTIFACTS.md` defines for it, then perform any create-time handling it defines for that artifact (e.g., opening a ticket, posting a notification; default: none).
 
-### Phase 9: Upstream Reporting Handoff
-
-If the project's `ARTIFACTS.md` does not have upstream reporting affirmatively enabled, skip this phase silently. The findings stay in the debrief.
-
-Otherwise, offer the Phase 7 candidates:
-
-> "These methodology findings look like plugin difficulties rather than project lessons: {list, with recurrence counts}. Report them upstream? `/mission-control:service-report` will search existing issues first, generalize each one so no project information leaves the repository, and send nothing without your approval of the exact text."
-
-On confirmation, hand off to `/mission-control:service-report`. **This skill does not file anything itself** — it nominates. The operator is present for that handoff, so the reporting skill's approval gate applies normally.
-
-Afterwards, amend the persisted debrief with each finding's outcome — service report id, issue link, or a declined offer. Record a declined offer too, so the next mission debrief does not re-raise it. This is a deliberate post-persist amendment: the issue link cannot exist before the report is filed.
-
-### Phase 10: Mission Status Transition
+### Phase 9: Mission Status Transition
 
 If the mission is not already marked as `completed` or `aborted`, update the mission artifact's status to `completed`, and perform any transition-time handling the project's `.flightops/ARTIFACTS.md` defines for that transition (default: none).
 
@@ -195,9 +183,9 @@ Every lesson should have a "so what?" — how should future missions be differen
 When a mission-level insight identifies a behavior that should be pinned as a regression gate (especially needing real-environment observation), recommend authoring a **behavior test** spec. See `${SKILL_DIR}/../behavior-test/AUTHORING.md`. The spec gets written during the next mission's planning; the test runs via `/mission-control:behavior-test {slug}`.
 
 ### Methodology Feedback
-This is the best time to identify improvements to Flight Control itself — and the only point where a finding can be weighed against a full mission of flights rather than one afternoon. Flight debriefs collect the observations; this debrief decides which of them are real.
+This is the best time to identify improvements to Flight Control itself, and the only point where a finding can be weighed against a full mission of flights rather than one afternoon.
 
-Distinguish three destinations: a change to this project's `ARTIFACTS.md` or crew files (project-owned, fix it locally), a lesson for how this team runs missions (stays in the debrief), and a difficulty in the methodology itself (Phase 8).
+Record observations well; do not adjudicate them. Distinguish three destinations — a change to this project's `ARTIFACTS.md` or crew files (project-owned, fix it locally), a lesson for how this team runs missions, and an observation about the methodology itself (Phase 7). Whether a methodology observation is a real defect is a question about patterns across missions, which no single debrief can answer.
 
 ### Interview Integration
 Weave interview insights throughout the debrief, not as a separate section. Crew perspectives should inform:

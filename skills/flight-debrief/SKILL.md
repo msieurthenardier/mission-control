@@ -113,9 +113,11 @@ Synthesize Developer input, Architect input, human input, and document analysis 
 
 Evaluate whether the Flight Control skills (the mission-control plugin) could be improved.
 
-**This phase records; it does not report.** One flight is too small a sample to tell a methodology defect from one awkward afternoon. Write the observations down — `/mission-control:mission-debrief` reads every flight debrief in the mission, counts how often each one recurred, and decides which are worth sending upstream via `/mission-control:service-report`. Recurrence is the evidence, and it only exists at mission level.
+**This phase records; it does not report, and it does not judge.** One flight cannot tell a methodology defect from one awkward afternoon. What it can do is leave a good record.
 
-So be concrete here even when the observation feels minor. For each one, note what the skill did, what was expected instead, and what it cost — rework, a re-run, a wrong artifact, a missed gate. An observation with no cost recorded is not actionable three debriefs later.
+That record is read twice: by `/mission-control:mission-debrief`, which counts recurrence across the mission, and much later by `/mission-control:service-report`, which the operator runs when they choose — typically after several missions — to sweep every debrief in the project for observations that turned out to be long-running patterns. A vague entry here is invisible to both.
+
+So be concrete even when the observation feels minor, and especially then. For each one, note what the skill did, what was expected instead, what it cost — rework, a re-run, a wrong artifact, a missed gate — and which skill and phase it happened in. Two years of debriefs are only as useful as the worst-written entry in them.
 
 #### Mission Skill
 - Did the mission provide adequate context?

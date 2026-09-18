@@ -214,7 +214,7 @@ Signals and the review/commit cadence are methodology, not project customization
 
 ### 009 — Install the Service Report artifact section
 
-`/mission-control:service-report` sends one methodology difficulty upstream to the mission-control repository as a GitHub issue, after a mission debrief. It needs somewhere to record what was sent, and a project-level switch for operators who cannot post to public repositories at all. Projects initialized before this change have neither, so the skill has no audit trail to write and no way to know the project has opted out.
+`/mission-control:service-report` sweeps a project's accumulated flight and mission debriefs for recurring methodology trends and sends them upstream to the mission-control repository as GitHub issues. It is operator-invoked on no cadence, typically after several missions. It needs somewhere to record what was sent and the evidence behind it — which the next sweep reads to avoid re-reporting — and a project-level switch for operators who cannot post to public repositories at all. Projects initialized before this change have neither, so the skill has no audit trail to write and no way to know the project has opted out.
 
 **Detected by** `check-drift.sh` → `migration-pending:009`. Apply after 001–008.
 
@@ -226,7 +226,7 @@ Signals and the review/commit cadence are methodology, not project customization
 
 3. Ask the operator whether upstream reporting should be `enabled` or `disabled` for this project, and write their answer into the new section. The template ships `unset` and the skill fails closed on it, so an unanswered switch opts the project out. Do not assume — ask. Per-report approval of the exact text applies regardless; this switch decides whether the channel exists at all.
 
-4. Update the **Mission Debrief** artifact's methodology-feedback guidance in `ARTIFACTS.md`. Projects initialized before this change ask only for `{Improvements to Flight Control process itself}`; the current template asks for what each finding cost, how many flights it recurred in, and where it went (local fix, local lesson, or service report id / issue link). `/mission-control:mission-debrief` Phase 7 depends on that shape.
+4. Update the **Mission Debrief** artifact's methodology-feedback guidance in `ARTIFACTS.md`. Projects initialized before this change ask only for `{Improvements to Flight Control process itself}`; the current template asks for what each finding cost, how many flights it recurred in, and where it went (local fix, local lesson, or methodology observation). `/mission-control:mission-debrief` Phase 7 depends on that shape, and a later service report sweep can only find trends in observations that were recorded this way.
 
    Write this idempotently — check whether the guidance already asks for cost and recurrence before replacing it. Detection for this migration keys on the `Service Report` heading only, so this action gets no second chance to fire.
 
@@ -235,7 +235,7 @@ If the operator has heavily modified `ARTIFACTS.md` (e.g. a non-filesystem artif
 No crew file ships with this migration. The Redaction Reviewer is spawned with instructions issued directly from the skill, deliberately — it is a disclosure control, and a project-modifiable file is the wrong place to keep one.
 
 **User message:**
-> Adding a `Service Report` artifact section to ARTIFACTS.md, plus a project-level upstream reporting switch. Service reports send one Flight Control **methodology** difficulty upstream as a GitHub issue after a mission debrief — never anything about this project, and never without you approving the exact text first. Set the switch to `disabled` if this project must not post to public repositories. Existing artifacts unaffected.
+> Adding a `Service Report` artifact section to ARTIFACTS.md, plus a project-level upstream reporting switch. Service reports send recurring Flight Control **methodology** trends upstream as GitHub issues, found by sweeping your accumulated debriefs whenever you choose to run `/mission-control:service-report` — never anything about this project, and never without you approving the exact text first. Set the switch to `disabled` if this project must not post to public repositories. Existing artifacts unaffected.
 
 ---
 

@@ -221,8 +221,8 @@ Insights to carry forward.
 
 ## Methodology Feedback
 Improvements to Flight Control itself, with recurrence counts drawn from the flight
-debriefs. Findings that reproduce from the methodology alone can be sent upstream via
-[service reports](service-reports.md).
+debriefs. Recorded, not adjudicated — a later [service report](service-reports.md) sweep
+reads these across missions to find which were long-running trends.
 ```
 
 The debrief captures organizational learning and informs future missions.
