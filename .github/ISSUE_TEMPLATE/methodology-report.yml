@@ -1,7 +1,6 @@
 name: Methodology report
 description: A Flight Control methodology difficulty observed while running the plugin on a project
-title: "{one line: the difficulty, not the fix}"
-labels: ["methodology"]
+title: "[methodology] "
 body:
   - type: markdown
     attributes:
@@ -9,14 +8,18 @@ body:
         Report the **difficulty**, not the redesign — what happened and what it cost. Fixes get
         designed against the whole fleet's reports, which no single operator can see.
 
-        Three things before you file:
+        Four things before you file:
 
-        1. **Search open and closed issues first.** Joining an existing one with your occurrence is
-           more useful than a new issue. If yours is the same defect with nothing new to add, react
-           👍 on it instead of filing.
+        1. **Search open and closed issues first.** Then apply the root-cause test: *would one change
+           to the methodology fix both your case and the existing issue?* If yes, add your occurrence
+           to that issue instead of filing (or just react 👍 if you have nothing to add). If no, file
+           here — superficial similarity is not the same defect, and two defects under one issue can't
+           be separated later.
         2. **No project information.** Nothing about your codebase, employer, customers, paths, or
            domain. If the difficulty cannot be described without them, it cannot be filed here.
         3. **Keep it under 200 words.** Plain language, one difficulty per issue.
+        4. **Fill in the last four fields even if they feel like bookkeeping.** They are what makes a
+           thousand reports countable rather than a pile.
 
         `/mission-control:service-report` produces this shape automatically from a mission debrief.
 
@@ -58,28 +61,40 @@ body:
       required: true
 
   - type: input
-    id: occurrences
+    id: plugin
     attributes:
-      label: Occurrences
-      description: How often it recurred. Mission-level counts are far more useful than a single flight.
-      placeholder: 3 of 5 flights in one mission
-    validations:
-      required: true
-
-  - type: input
-    id: version
-    attributes:
-      label: Plugin version
+      label: Plugin
+      description: Installed mission-control version.
       placeholder: 1.0.1
     validations:
       required: true
 
   - type: input
-    id: surface
+    id: skill
     attributes:
-      label: Skill / phase
-      description: Where it showed up, if it is localized to one.
-      placeholder: flight-debrief, phase 3
+      label: Skill
+      description: Which skill the difficulty showed up in.
+      placeholder: flight-debrief
+    validations:
+      required: true
+
+  - type: input
+    id: phase
+    attributes:
+      label: Phase
+      description: Which phase or step, if it is localized to one. Use — if not.
+      placeholder: phase 3
+    validations:
+      required: true
+
+  - type: input
+    id: occurrences
+    attributes:
+      label: Occurrences
+      description: How often it recurred. Mission-level counts are far more useful than a single flight; write "1 observation, unsampled" if this is a one-off.
+      placeholder: 3 of 5 flights in one mission
+    validations:
+      required: true
 
   - type: checkboxes
     id: gate
@@ -88,7 +103,7 @@ body:
       options:
         - label: This contains no information about my project, employer, or customers
           required: true
-        - label: I searched open and closed issues, and this is not already reported or fixed
+        - label: I searched open and closed issues, and no existing issue shares this root cause
           required: true
         - label: This reproduces from the methodology alone — an operator on a different stack would hit it
           required: true

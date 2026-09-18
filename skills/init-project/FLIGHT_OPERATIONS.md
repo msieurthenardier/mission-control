@@ -149,11 +149,11 @@ A squawk records a defect in *this* codebase. A **service report** records a def
 4. Not project-owned surface — friction in `ARTIFACTS.md` or a crew file is a local edit
 5. Statable with **zero** project information
 
-**Two rules are absolute.** Nothing is sent until you approve the exact text, verbatim. And if a finding cannot be said without project information, it is not filed — there is no workaround. An independent Redaction Reviewer with no project context checks every draft against one question: from this text alone, can you tell what this project is or does?
+**Two rules are absolute.** Nothing is sent until you approve it — the search query, the issue body, a comment, a reaction, all of it. And if a finding cannot be said without project information, it is not filed; there is no workaround. Drafts are checked twice: mechanically against a deny-list built from your git remote, project name, identity, and paths, and then by a Redaction Reviewer looking for sentences that only make sense if you already know the project.
 
 **Existing issues are searched first, and joining one is the normal outcome.** A hundred operators filing separate issues for one defect buries it; the same hundred adding occurrences to one issue specifies it. Report the difficulty, not the redesign — under 200 words, plain language, and a concrete generic example rather than an adjective.
 
-Set `**Upstream reporting**: disabled` in `ARTIFACTS.md` where posting to public repositories is not permitted.
+The switch in `ARTIFACTS.md` fails closed: if upstream reporting is not affirmatively enabled there, the skill stops and asks rather than assuming. Set it to `disabled` where posting to public repositories is not permitted.
 
 ---
 

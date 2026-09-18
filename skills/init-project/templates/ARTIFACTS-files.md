@@ -332,9 +332,12 @@ How the fix was confirmed — the command run, the test added, the observation m
 | Updated | When upstream accepts, declines, or supersedes it |
 | Managed by | `/mission-control:service-report` |
 
-**Upstream reporting**: enabled
+**Upstream reporting**: unset
 
-*(Set to `disabled` to opt this project out entirely. The skill refuses to send anything when it is disabled — use it where posting to public repositories is not permitted.)*
+*(Set to `enabled` or `disabled`. This gate fails closed: while it reads `unset`, or the line is
+missing, `/mission-control:service-report` stops and asks rather than assuming consent. Set it to
+`disabled` where posting to public repositories is not permitted. Per-report approval of the exact
+text still applies when it is `enabled` — this switch decides whether the channel exists at all.)*
 
 A service report carries one Flight Control **methodology** difficulty back to the plugin as a GitHub issue. It is not about this project: a squawk records a defect in this codebase, a service report records a defect in the methodology every project shares. Reported after a mission debrief, never after a single flight.
 

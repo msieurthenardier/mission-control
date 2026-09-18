@@ -44,7 +44,7 @@ claude plugin marketplace add msieurthenardier/mission-control
 claude plugin install mission-control@flight-control
 ```
 
-Start a new Claude Code session so the skills and the SessionStart hook load. To confirm the install, type `/mission-control:` at the prompt — the ten skills should autocomplete — or run `claude plugin list` from a shell and check that `mission-control@flight-control` is listed and enabled.
+Start a new Claude Code session so the skills and the SessionStart hook load. To confirm the install, type `/mission-control:` at the prompt — the eleven skills should autocomplete — or run `claude plugin list` from a shell and check that `mission-control@flight-control` is listed and enabled.
 
 ## Step 2 — Retire the Checkout
 

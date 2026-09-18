@@ -50,17 +50,21 @@ Specificity and proprietary detail are not the same thing:
 | Proprietary | "Leg 03 of the billing-sync flight" |
 | Neither | "The leg specs were unclear" |
 
-On top of that, an independent **Redaction Reviewer** reads the draft with no project context and no permission to read project files, and answers one question: from this text alone, can you tell what this project is, does, or is called? A failure sends the draft back for a rewrite, not a patch.
+Two checks then run on the draft, in order.
 
-That separation is the same one the rest of the methodology runs on — Developer and Reviewer, Executor and Validator — pointed at disclosure instead of correctness.
+The first is **mechanical and authoritative**: a deny-list assembled from the environment — the git remote's owner and repository, the project directory name, the operator's git identity and home path, top-level directory names, the package manifest's project name — matched case-insensitively against the draft. Any hit is a hard fail and the draft is rewritten, not patched. Generic tokens are filtered out first, because a deny-list that fires on every draft gets ignored.
+
+The second is a **Redaction Reviewer** agent, and it is worth being precise about what it can and cannot do. It is *not* context-free: a spawned agent inherits the project's `CLAUDE.md`, which usually names the project, its domain, and its stack. So it cannot answer "would an outsider recognise this project?" — it knows the referent, and will read a generalized phrase as obviously generic for exactly that reason. That is the informed-judge failure, and it is why the mechanical check runs first and carries the weight.
+
+What the reviewer *can* do is catch what a deny-list cannot: sentences that would be unintelligible to a reader who knows only the methodology. Those sentences are carrying project context implicitly, without ever naming it. That is the question it is asked.
 
 ## Approval
 
-Nothing is sent until the operator approves the exact text: repository, target, title, labels, and the full body verbatim, with a plain statement that this posts publicly under their GitHub account.
+Nothing is sent until the operator approves it: repository, target, and the full body verbatim, with a plain statement that this posts publicly under their GitHub account. Every outbound act is covered, not just the issue body — the **search query** is approved before it runs, because a query reaches GitHub and is attributable too, and a **reaction** gets the same question as a body despite having no text to show.
 
-There is no summary approval, no batch approval, and no unattended path. A session running non-interactively, or inside another skill's orchestration, stops at `draft`.
+Projects that must not post to public repositories set the switch to disabled — and that switch fails closed. If the skill cannot determine that upstream reporting is affirmatively enabled, it stops and asks rather than assuming consent from an absent line.
 
-Projects that must not post to public repositories at all set `**Upstream reporting**: disabled` in `ARTIFACTS.md`, and the skill refuses before drafting anything.
+There is no summary approval, no batch approval, and no unattended path. The test is whether a human can be asked and can answer before work continues — not which skill did the calling. A spawned agent or a scheduled run stops at `draft`; an operator who arrived through the mission debrief's handoff is present, and reporting proceeds normally.
 
 ## Joining Beats Filing
 
@@ -69,13 +73,17 @@ Opening a new issue is the last resort, not the default. Every report searches f
 | Outcome | Action |
 |---------|--------|
 | **New** | Draft an issue |
-| **Variant** — same root cause, different manifestation | Comment the occurrence on the existing issue |
-| **Duplicate** — nothing new to add | React `+1`. No comment |
+| **Variant** — same root cause, different manifestation | React `+1`, then comment the occurrence on the existing issue |
+| **Duplicate** — same root cause, nothing new to add | React `+1`. No comment |
 | **Already fixed** | Not an issue. Run `/mission-control:preflight-check` |
 
-A hundred operators filing separate issues for one defect buries it. The same hundred adding occurrences to one issue specifies it.
+A hundred operators filing separate issues for one defect buries it. The same hundred adding occurrences to one issue specifies it. The reaction goes on both joining branches, not just the silent one — otherwise the count measures "operators with nothing to add" rather than operators affected, which is the opposite of a ranking signal.
 
-An occurrence comment is short and structured, and its load-bearing line is **Differs**: each occurrence either matches the existing report exactly, or names the one dimension it varies on. That is what tightens an issue's scope as reports accumulate, instead of scattering the same defect across near-duplicates. Over hundreds of reports the maintainer gets a distribution — which skill, which phase, which plugin version, how often — rather than a pile.
+Choosing between them runs one test, out loud: **would a single change to the methodology fix both this occurrence and the existing issue?** Yes means variant or duplicate. No means new — and new gets filed, exception or not. Superficial similarity is not root-cause identity, and the failure mode of a join-biased design is a handful of magnet issues carrying eighty comments across four unrelated defects, unsplittable without reading all eighty. The operator who could have told them apart is long gone by then.
+
+An occurrence comment is short and structured, and its load-bearing line is **Differs**: each occurrence either matches the existing report exactly, or names the one dimension it varies on. That tightens an issue's scope as reports accumulate instead of scattering the same defect across near-duplicates — and it doubles as the split signal. When the `Differs` lines on an issue stop clustering, and start naming three or four unrelated dimensions, the issue is carrying more than one defect and wants splitting. Reports folded into the new issue are marked `superseded` locally on the next refresh.
+
+Issues and comments both end with a fixed trailer — plugin version, skill, phase, occurrences — in an identical format. That is deliberate and load-bearing: it is the only thing that makes a corpus of reports countable. Without it the maintainer has prose, and prose does not aggregate into "which skill, which phase, which version, how often."
 
 ## Style
 
@@ -89,7 +97,7 @@ No quality adjectives — "confusing", "clunky", "awkward" — without the obser
 
 Every report leaves an artifact in the project, including the ones that were withheld. It holds the finding, the gate outcome, what the prior-art search found, the redaction verdict, the operator's approval, and the submitted text verbatim — the audit trail of exactly what left the project. Unlike the issue body, the local artifact may reference local debrief paths.
 
-Status runs `draft → submitted | merged | withheld`, then `accepted`, `declined`, or `superseded` once upstream responds. `/mission-control:service-report list` refreshes those from upstream; anything upstream has since fixed is a cue to run `/mission-control:preflight-check`.
+Status runs `draft → submitted | merged | withheld`, then `accepted`, `declined`, or `superseded` once upstream responds. `/mission-control:service-report list` refreshes anything carrying an issue number; records without one are never dereferenced. A `draft` — a report written while `gh` was unavailable and handed to the operator to paste — is reported separately and asked about, because an unanswered draft is a report that quietly never left.
 
 ## See Also
 

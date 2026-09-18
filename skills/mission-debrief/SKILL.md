@@ -140,27 +140,41 @@ For each flight:
 - Does README need updates?
 - Are there new runbooks or guides needed?
 
-### Phase 7: Generate Debrief
+### Phase 7: Triage Methodology Findings
+
+Do this **before** persisting the debrief, so the artifact is complete when it is written and any create-time handling the project defines fires against finished content.
+
+The Methodology Feedback content is about Flight Control itself, not this project. Sort each finding into one of three destinations:
+
+| Destination | When |
+|-------------|------|
+| **Local fix** | It is friction in this project's own `ARTIFACTS.md` or crew files, which are the project's to customize |
+| **Local lesson** | It is real but does not reproduce from the methodology alone, or it cost nothing observable |
+| **Upstream candidate** | It reproduces from the methodology alone *and* cost something observable — rework, a re-run, a wrong artifact, a missed gate |
+
+Preference without a cost is a local lesson, not a candidate. Say so rather than passing it along.
+
+For each upstream candidate, pull the **recurrence count** from the flight debriefs already read in Phase 1 — "hit in 3 of 5 flights". This is the only point in the methodology where that number exists, and it is the evidence that makes a report actionable.
+
+Record all three destinations in the debrief content, with the recurrence count against each candidate.
+
+### Phase 8: Generate Debrief
 
 Persist the mission debrief artifact following the conventions `.flightops/ARTIFACTS.md` defines for it, then perform any create-time handling it defines for that artifact (e.g., opening a ticket, posting a notification; default: none).
 
-### Phase 8: Upstream Methodology Reporting
+### Phase 9: Upstream Reporting Handoff
 
-The Methodology Feedback section is about Flight Control itself, not this project. Some of it is worth sending to the plugin's maintainers; most of it is not.
+If the project's `ARTIFACTS.md` does not have upstream reporting affirmatively enabled, skip this phase silently. The findings stay in the debrief.
 
-Separate the two. A finding is a candidate for upstream reporting only if it reproduces from the methodology alone — an operator on a different stack and domain would hit it — and it cost something observable: rework, a re-run, a wrong artifact, a missed gate. Preference without a cost stays a local lesson.
+Otherwise, offer the Phase 7 candidates:
 
-For each candidate, pull the **recurrence count** from the flight debriefs already read in Phase 1 — "hit in 3 of 5 flights" is the evidence that makes a report actionable, and this is the only point in the methodology where it is available. Record it in the debrief next to the finding.
+> "These methodology findings look like plugin difficulties rather than project lessons: {list, with recurrence counts}. Report them upstream? `/mission-control:service-report` will search existing issues first, generalize each one so no project information leaves the repository, and send nothing without your approval of the exact text."
 
-Then offer:
+On confirmation, hand off to `/mission-control:service-report`. **This skill does not file anything itself** — it nominates. The operator is present for that handoff, so the reporting skill's approval gate applies normally.
 
-> "These methodology findings look like plugin difficulties rather than project lessons: {list, with recurrence counts}. Report them upstream? `/mission-control:service-report` will search existing issues first, generalize each one so no project information leaves the repository, and file nothing without your approval of the exact text."
+Afterwards, amend the persisted debrief with each finding's outcome — service report id, issue link, or a declined offer. Record a declined offer too, so the next mission debrief does not re-raise it. This is a deliberate post-persist amendment: the issue link cannot exist before the report is filed.
 
-On confirmation, hand off to `/mission-control:service-report`. **This skill does not file anything itself** — it nominates. Record the resulting report id or issue link next to the finding in the debrief so the trail stays connected; record a declined offer too, so the next mission debrief does not re-raise it.
-
-If the project's `ARTIFACTS.md` sets upstream reporting to `disabled`, skip this phase silently. The findings stay in the debrief.
-
-### Phase 9: Mission Status Transition
+### Phase 10: Mission Status Transition
 
 If the mission is not already marked as `completed` or `aborted`, update the mission artifact's status to `completed`, and perform any transition-time handling the project's `.flightops/ARTIFACTS.md` defines for that transition (default: none).
 

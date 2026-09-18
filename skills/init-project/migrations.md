@@ -224,11 +224,15 @@ Signals and the review/commit cadence are methodology, not project customization
 
 2. Add `service-reports/{id}-{report-slug}.md` to the Directory Structure tree, and a service report id line to Naming Conventions (same scheme as squawk ids, separate sequence).
 
-3. Ask the operator whether upstream reporting should be `enabled` or `disabled` for this project. Default to `enabled`; the skill never sends anything without per-report approval of the exact text, so the switch is for environments where posting to a public repository is not permitted at all. Do not assume — ask.
+3. Ask the operator whether upstream reporting should be `enabled` or `disabled` for this project, and write their answer into the new section. The template ships `unset` and the skill fails closed on it, so an unanswered switch opts the project out. Do not assume — ask. Per-report approval of the exact text applies regardless; this switch decides whether the channel exists at all.
+
+4. Update the **Mission Debrief** artifact's methodology-feedback guidance in `ARTIFACTS.md`. Projects initialized before this change ask only for `{Improvements to Flight Control process itself}`; the current template asks for what each finding cost, how many flights it recurred in, and where it went (local fix, local lesson, or service report id / issue link). `/mission-control:mission-debrief` Phase 7 depends on that shape.
+
+   Write this idempotently — check whether the guidance already asks for cost and recurrence before replacing it. Detection for this migration keys on the `Service Report` heading only, so this action gets no second chance to fire.
 
 If the operator has heavily modified `ARTIFACTS.md` (e.g. a non-filesystem artifact backend), surface the proposed insertion and ask before writing. Defer to the operator on placement.
 
-No crew file ships with this migration. The Redaction Reviewer is spawned with instructions issued directly from the skill, deliberately — its whole job is to judge text with no project context, and a project-modifiable crew file is the wrong place for that.
+No crew file ships with this migration. The Redaction Reviewer is spawned with instructions issued directly from the skill, deliberately — it is a disclosure control, and a project-modifiable file is the wrong place to keep one.
 
 **User message:**
 > Adding a `Service Report` artifact section to ARTIFACTS.md, plus a project-level upstream reporting switch. Service reports send one Flight Control **methodology** difficulty upstream as a GitHub issue after a mission debrief — never anything about this project, and never without you approving the exact text first. Set the switch to `disabled` if this project must not post to public repositories. Existing artifacts unaffected.
