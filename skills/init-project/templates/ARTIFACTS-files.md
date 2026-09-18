@@ -22,6 +22,8 @@ This project stores Flight Control artifacts as markdown files in the repository
 │   └── {YYYY-MM-DD}.md
 ├── squawks/
 │   └── {id}-{squawk-slug}.md
+├── service-reports/
+│   └── {id}-{report-slug}.md
 └── tests/
     └── behavior/
         ├── {slug}.md                       ← behavior-test spec (committed)
@@ -40,6 +42,7 @@ This project stores Flight Control artifacts as markdown files in the repository
 - **Slugs**: Lowercase, kebab-case, derived from title (e.g., "User Authentication" → `user-authentication`)
 - **Sequence numbers**: Missions, flights, and legs use two-digit prefixes (`01`, `02`, etc.) for ordering
 - **Squawk ids**: Monotonically increasing integers, project-wide, zero-padded to a minimum of four digits and widening past that as needed (`0001`, `0002`, … `9999`, `10000`, …). Unbounded by design — a long-lived project will pass any fixed width. Never reused, even after a squawk is completed or escalated.
+- **Service report ids**: Same scheme as squawk ids, on a separate sequence.
 
 ---
 
@@ -320,6 +323,60 @@ How the fix was confirmed — the command run, the test added, the observation m
 
 ---
 
+### Service Report
+
+| Property | Value |
+|----------|-------|
+| Location | `service-reports/{id}-{slug}.md` |
+| Created | When a methodology difficulty is reported upstream, or withheld |
+| Updated | When upstream accepts, declines, or supersedes it |
+| Managed by | `/mission-control:service-report` |
+
+**Upstream reporting**: enabled
+
+*(Set to `disabled` to opt this project out entirely. The skill refuses to send anything when it is disabled — use it where posting to public repositories is not permitted.)*
+
+A service report carries one Flight Control **methodology** difficulty back to the plugin as a GitHub issue. It is not about this project: a squawk records a defect in this codebase, a service report records a defect in the methodology every project shares. Reported after a mission debrief, never after a single flight.
+
+The artifact is the local audit trail of exactly what left the project. It may reference local debrief paths; the submitted body never does.
+
+**Format:**
+
+```markdown
+# Service Report {id}: {Title}
+
+**Status**: draft | submitted | merged | withheld | accepted | declined | superseded
+**Reported**: {YYYY-MM-DD}
+**Plugin version**: {version at time of report}
+**Upstream**: {issue URL, or —}
+**Source**: [{Mission Debrief}]({path}) *(local reference; never submitted)*
+
+## Finding
+The difficulty in methodology terms, and what it cost. A few lines.
+
+## Gate
+Which of the five qualification criteria were checked, and the outcome.
+
+## Prior Art
+What the search found: existing issues, PRs, or local reports considered, and the
+classification — new | variant of #{N} | duplicate of #{N} | already fixed upstream.
+
+## Redaction
+**Reviewer verdict**: clear
+**Approved by operator**: {YYYY-MM-DD}
+
+## Submitted
+*(the exact text sent upstream — title, then body, in a fenced block. Nothing else left the project.)*
+
+## Disposition
+*(once upstream responds)*
+**Accepted**: fixed in {version or PR}
+**Declined**: {reason given}
+**Superseded**: folded into #{N}
+```
+
+---
+
 ## Supporting Artifacts
 
 ### Flight Log
@@ -543,7 +600,9 @@ Chronological notes from work sessions.
 {Insights to carry forward}
 
 ## Methodology Feedback
-{Improvements to Flight Control process itself}
+{Improvements to Flight Control process itself. Per finding: what happened, what it
+cost, how many flights it recurred in, and where it went — local fix, local lesson,
+or service report {id}/issue link.}
 
 ## Action Items
 - [ ] {Follow-up work}

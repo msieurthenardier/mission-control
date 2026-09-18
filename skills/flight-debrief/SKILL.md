@@ -111,7 +111,11 @@ Synthesize Developer input, Architect input, human input, and document analysis 
 
 ### Phase 4: Skill Effectiveness Analysis
 
-Evaluate whether the Flight Control skills (the mission-control plugin) could be improved:
+Evaluate whether the Flight Control skills (the mission-control plugin) could be improved.
+
+**This phase records; it does not report.** One flight is too small a sample to tell a methodology defect from one awkward afternoon. Write the observations down — `/mission-control:mission-debrief` reads every flight debrief in the mission, counts how often each one recurred, and decides which are worth sending upstream via `/mission-control:service-report`. Recurrence is the evidence, and it only exists at mission level.
+
+So be concrete here even when the observation feels minor. For each one, note what the skill did, what was expected instead, and what it cost — rework, a re-run, a wrong artifact, a missed gate. An observation with no cost recorded is not actionable three debriefs later.
 
 #### Mission Skill
 - Did the mission provide adequate context?

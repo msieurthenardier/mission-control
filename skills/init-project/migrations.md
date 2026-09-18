@@ -212,11 +212,34 @@ Signals and the review/commit cadence are methodology, not project customization
 
 ---
 
+### 009 — Install the Service Report artifact section
+
+`/mission-control:service-report` sends one methodology difficulty upstream to the mission-control repository as a GitHub issue, after a mission debrief. It needs somewhere to record what was sent, and a project-level switch for operators who cannot post to public repositories at all. Projects initialized before this change have neither, so the skill has no audit trail to write and no way to know the project has opted out.
+
+**Detected by** `check-drift.sh` → `migration-pending:009`. Apply after 001–008.
+
+**Actions:**
+
+1. Append a `Service Report` artifact section to the project's `ARTIFACTS.md`, alongside the `Squawk` section. The canonical section lives in `${SKILL_DIR}/templates/ARTIFACTS-files.md` — location, the `**Upstream reporting**: enabled` switch, and the format block.
+
+2. Add `service-reports/{id}-{report-slug}.md` to the Directory Structure tree, and a service report id line to Naming Conventions (same scheme as squawk ids, separate sequence).
+
+3. Ask the operator whether upstream reporting should be `enabled` or `disabled` for this project. Default to `enabled`; the skill never sends anything without per-report approval of the exact text, so the switch is for environments where posting to a public repository is not permitted at all. Do not assume — ask.
+
+If the operator has heavily modified `ARTIFACTS.md` (e.g. a non-filesystem artifact backend), surface the proposed insertion and ask before writing. Defer to the operator on placement.
+
+No crew file ships with this migration. The Redaction Reviewer is spawned with instructions issued directly from the skill, deliberately — its whole job is to judge text with no project context, and a project-modifiable crew file is the wrong place for that.
+
+**User message:**
+> Adding a `Service Report` artifact section to ARTIFACTS.md, plus a project-level upstream reporting switch. Service reports send one Flight Control **methodology** difficulty upstream as a GitHub issue after a mission debrief — never anything about this project, and never without you approving the exact text first. Set the switch to `disabled` if this project must not post to public repositories. Existing artifacts unaffected.
+
+---
+
 ## Adding Future Migrations
 
 To add a new migration:
 
-1. Assign the next sequential ID (e.g., `008`)
+1. Assign the next sequential ID (e.g., `010`)
 2. Add its detection to `check-drift.sh` — emit `migration-pending:{id}` when the migration is needed, and nothing once it's been applied (idempotent)
 3. Document it here: rationale, the **Actions** to perform (prefer `mv` over copy-and-delete to preserve file contents and git history), and a short **User message**
 4. Note ordering if it depends on an earlier migration having run

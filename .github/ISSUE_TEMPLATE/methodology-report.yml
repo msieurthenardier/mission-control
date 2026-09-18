@@ -1,0 +1,96 @@
+name: Methodology report
+description: A Flight Control methodology difficulty observed while running the plugin on a project
+title: "{one line: the difficulty, not the fix}"
+labels: ["methodology"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report the **difficulty**, not the redesign — what happened and what it cost. Fixes get
+        designed against the whole fleet's reports, which no single operator can see.
+
+        Three things before you file:
+
+        1. **Search open and closed issues first.** Joining an existing one with your occurrence is
+           more useful than a new issue. If yours is the same defect with nothing new to add, react
+           👍 on it instead of filing.
+        2. **No project information.** Nothing about your codebase, employer, customers, paths, or
+           domain. If the difficulty cannot be described without them, it cannot be filed here.
+        3. **Keep it under 200 words.** Plain language, one difficulty per issue.
+
+        `/mission-control:service-report` produces this shape automatically from a mission debrief.
+
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened
+      description: One sentence. What the skill, artifact, or protocol did.
+      placeholder: The flight-debrief skill asked for test metrics before any test suite existed.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What was expected
+      description: One sentence.
+    validations:
+      required: true
+
+  - type: textarea
+    id: cost
+    attributes:
+      label: Cost
+      description: What it actually cost — rework, a re-run, a wrong artifact, a missed gate, a stall. Preference without a cost is not a report.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Repro
+      description: Two or three lines. Generic and minimal, in methodology terms — no project specifics.
+      placeholder: |
+        1. Run /mission-control:flight on a mission with no flights yet
+        2. Accept the default leg breakdown
+        3. The third leg's acceptance criteria reference an interface no leg defines
+    validations:
+      required: true
+
+  - type: input
+    id: occurrences
+    attributes:
+      label: Occurrences
+      description: How often it recurred. Mission-level counts are far more useful than a single flight.
+      placeholder: 3 of 5 flights in one mission
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Plugin version
+      placeholder: 1.0.1
+    validations:
+      required: true
+
+  - type: input
+    id: surface
+    attributes:
+      label: Skill / phase
+      description: Where it showed up, if it is localized to one.
+      placeholder: flight-debrief, phase 3
+
+  - type: checkboxes
+    id: gate
+    attributes:
+      label: Before filing
+      options:
+        - label: This contains no information about my project, employer, or customers
+          required: true
+        - label: I searched open and closed issues, and this is not already reported or fixed
+          required: true
+        - label: This reproduces from the methodology alone — an operator on a different stack would hit it
+          required: true
+        - label: This is not friction in my own `ARTIFACTS.md` or crew files, which are mine to customize
+          required: true

@@ -154,6 +154,11 @@ if [[ -f "$ARTIFACTS" ]]; then
   if ! grep -q "^### Squawk" "$ARTIFACTS" 2>/dev/null; then
     echo "migration-pending:006"
   fi
+
+  # 009 - Service Report artifact section not present
+  if ! grep -q "^### Service Report" "$ARTIFACTS" 2>/dev/null; then
+    echo "migration-pending:009"
+  fi
 fi
 
 # 007 - pre-plugin Flight Operations section in the project's CLAUDE.md.

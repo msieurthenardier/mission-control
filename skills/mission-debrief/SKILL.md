@@ -144,7 +144,23 @@ For each flight:
 
 Persist the mission debrief artifact following the conventions `.flightops/ARTIFACTS.md` defines for it, then perform any create-time handling it defines for that artifact (e.g., opening a ticket, posting a notification; default: none).
 
-### Phase 8: Mission Status Transition
+### Phase 8: Upstream Methodology Reporting
+
+The Methodology Feedback section is about Flight Control itself, not this project. Some of it is worth sending to the plugin's maintainers; most of it is not.
+
+Separate the two. A finding is a candidate for upstream reporting only if it reproduces from the methodology alone — an operator on a different stack and domain would hit it — and it cost something observable: rework, a re-run, a wrong artifact, a missed gate. Preference without a cost stays a local lesson.
+
+For each candidate, pull the **recurrence count** from the flight debriefs already read in Phase 1 — "hit in 3 of 5 flights" is the evidence that makes a report actionable, and this is the only point in the methodology where it is available. Record it in the debrief next to the finding.
+
+Then offer:
+
+> "These methodology findings look like plugin difficulties rather than project lessons: {list, with recurrence counts}. Report them upstream? `/mission-control:service-report` will search existing issues first, generalize each one so no project information leaves the repository, and file nothing without your approval of the exact text."
+
+On confirmation, hand off to `/mission-control:service-report`. **This skill does not file anything itself** — it nominates. Record the resulting report id or issue link next to the finding in the debrief so the trail stays connected; record a declined offer too, so the next mission debrief does not re-raise it.
+
+If the project's `ARTIFACTS.md` sets upstream reporting to `disabled`, skip this phase silently. The findings stay in the debrief.
+
+### Phase 9: Mission Status Transition
 
 If the mission is not already marked as `completed` or `aborted`, update the mission artifact's status to `completed`, and perform any transition-time handling the project's `.flightops/ARTIFACTS.md` defines for that transition (default: none).
 
@@ -165,7 +181,9 @@ Every lesson should have a "so what?" — how should future missions be differen
 When a mission-level insight identifies a behavior that should be pinned as a regression gate (especially needing real-environment observation), recommend authoring a **behavior test** spec. See `${SKILL_DIR}/../behavior-test/AUTHORING.md`. The spec gets written during the next mission's planning; the test runs via `/mission-control:behavior-test {slug}`.
 
 ### Methodology Feedback
-This is the best time to identify improvements to Flight Control itself.
+This is the best time to identify improvements to Flight Control itself — and the only point where a finding can be weighed against a full mission of flights rather than one afternoon. Flight debriefs collect the observations; this debrief decides which of them are real.
+
+Distinguish three destinations: a change to this project's `ARTIFACTS.md` or crew files (project-owned, fix it locally), a lesson for how this team runs missions (stays in the debrief), and a difficulty in the methodology itself (Phase 8).
 
 ### Interview Integration
 Weave interview insights throughout the debrief, not as a separate section. Crew perspectives should inform:
