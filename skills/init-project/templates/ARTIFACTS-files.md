@@ -350,7 +350,7 @@ The artifact is the local audit trail of exactly what left the project, and the 
 
 **Status**: draft | submitted | merged | withheld | accepted | declined | superseded
 **Reported**: {YYYY-MM-DD}
-**Occurrences**: {N} flights across {M} missions *(or "below threshold — operator override")*
+**Occurrences**: {N} distinct occurrences across {M} missions *(or "below threshold — operator override")*
 **Span**: {YYYY-MM} to {YYYY-MM}
 **Plugin versions**: {first seen}–{latest seen}
 **Upstream**: {issue URL, or —}
@@ -522,6 +522,7 @@ Chronological notes from work sessions.
 **Status**: {landed | aborted}
 **Duration**: {start} - {end}
 **Legs Completed**: {X of Y}
+**Plugin version**: {installed mission-control version}
 
 ## Outcome Assessment
 
@@ -554,6 +555,12 @@ Chronological notes from work sessions.
 ## Key Learnings
 {Insights for future flights}
 
+## Methodology Observations
+{Where Flight Control itself got in the way. Per observation: what the methodology did,
+what was expected instead, what it cost, and which skill and phase. Recorded, not judged —
+one flight cannot tell a defect from a bad afternoon. A later /mission-control:service-report
+sweep reads these across missions, and a vague entry is invisible to it.}
+
 ## Recommendations
 1. {Most impactful recommendation}
 2. {Second recommendation}
@@ -584,6 +591,7 @@ Chronological notes from work sessions.
 **Status**: {completed | aborted}
 **Duration**: {start} - {end}
 **Flights Completed**: {X of Y}
+**Plugin version**: {installed mission-control version}
 
 ## Outcome Assessment
 
@@ -611,9 +619,11 @@ Chronological notes from work sessions.
 
 ## Methodology Feedback
 {Improvements to Flight Control process itself. Per finding: what happened, what it
-cost, which skill and phase, how many flights it recurred in, and its destination —
-local fix, local lesson, or methodology observation. Observations are recorded here,
-not reported; a later /mission-control:service-report sweep reads them across missions.}
+cost, which skill and phase, the plugin version in use, how many of this mission's
+flights it occurred in, and its destination — local fix, local lesson, or methodology
+observation. Observations are recorded here, not reported; a later
+/mission-control:service-report sweep reads them across missions. Note that findings
+here restate flight-debrief observations — the sweep counts the occurrence once.}
 
 ## Action Items
 - [ ] {Follow-up work}

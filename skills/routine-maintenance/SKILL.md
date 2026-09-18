@@ -296,6 +296,12 @@ Persist the maintenance report following the conventions `.flightops/ARTIFACTS.m
 - Delegation effectiveness notes (for refining future inspections)
 - Recommendations
 
+**Methodology corpus notice**: this skill runs between missions, which is the one place in Flight Control that sees mission boundaries accumulate. Count the mission debriefs in the project. If there are three or more and the project has no service report artifacts — or its newest one predates the last two missions — add one line to the report:
+
+> "{N} missions of debriefs have accumulated and `/mission-control:service-report` has not been run against them. It sweeps flight and mission debriefs for methodology friction that turned out to be a recurring trend, and files it upstream. Operator-invoked; nothing runs it for you."
+
+**Recommend only — never invoke it, and never offer to.** The reporting skill is deliberately triggered by nothing; a handoff from here would reintroduce the cadence it exists to avoid. Skip the line entirely if the project's `ARTIFACTS.md` has upstream reporting disabled.
+
 **Regression-gate recommendations**: when a finding identifies a behavior worth pinning against future regression (especially one that requires real-environment observation — UI flow, multi-component interaction, AI agent behavior), recommend authoring a **behavior test** spec for it. The next planning conversation (or the scaffolded maintenance mission's flight design) writes the spec inline. See `${SKILL_DIR}/../behavior-test/AUTHORING.md` for when behavior tests fit and how to author one.
 
 ### Phase 8: Scaffold Maintenance Mission (conditional)

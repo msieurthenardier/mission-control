@@ -230,12 +230,18 @@ Signals and the review/commit cadence are methodology, not project customization
 
    Write this idempotently — check whether the guidance already asks for cost and recurrence before replacing it. Detection for this migration keys on the `Service Report` heading only, so this action gets no second chance to fire.
 
+5. Add a **methodology observations** block to the Flight Debrief artifact format in `ARTIFACTS.md`, and a plugin version field to both the Flight Debrief and Mission Debrief formats. Flight debriefs are the sweep's primary corpus, and without a place to record them, `/mission-control:flight-debrief` Phase 4's output has no destination. The version is what lets a later sweep tell whether a difficulty survived a plugin release; it cannot be reconstructed after the fact.
+
+   Per the skill–project boundary, suggest the heading rather than prescribing it — the project owns this file. Also idempotent, and covered by the same one-shot detection caveat as action 4.
+
+   Existing debriefs stay as they are. A sweep reading a corpus written before this migration reports `unrecorded before {version}` rather than inventing a version span.
+
 If the operator has heavily modified `ARTIFACTS.md` (e.g. a non-filesystem artifact backend), surface the proposed insertion and ask before writing. Defer to the operator on placement.
 
 No crew file ships with this migration. The Redaction Reviewer is spawned with instructions issued directly from the skill, deliberately — it is a disclosure control, and a project-modifiable file is the wrong place to keep one.
 
 **User message:**
-> Adding a `Service Report` artifact section to ARTIFACTS.md, plus a project-level upstream reporting switch. Service reports send recurring Flight Control **methodology** trends upstream as GitHub issues, found by sweeping your accumulated debriefs whenever you choose to run `/mission-control:service-report` — never anything about this project, and never without you approving the exact text first. Set the switch to `disabled` if this project must not post to public repositories. Existing artifacts unaffected.
+> Adding a `Service Report` artifact section to ARTIFACTS.md, a project-level upstream reporting switch, a methodology observations block in the Flight Debrief format, and a plugin version field on both debrief formats. Service reports send recurring Flight Control **methodology** trends upstream as GitHub issues, found by sweeping your accumulated debriefs whenever you choose to run `/mission-control:service-report` — never anything about this project, and never without you approving the exact text first. Set the switch to `disabled` if this project must not post to public repositories. Existing artifacts unaffected.
 
 ---
 

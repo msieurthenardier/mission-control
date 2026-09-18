@@ -137,9 +137,9 @@ Every completed squawk gets an independent Reviewer, however trivial the change.
 
 ## Service Reports — Feedback to the Methodology
 
-A squawk records a defect in *this* codebase. A **service report** records a defect in the *methodology* every project shares, and sends it upstream to the mission-control plugin as a GitHub issue. Filed via `/mission-control:service-report`; stored per `ARTIFACTS.md` (default `service-reports/{id}-{slug}.md`).
+A squawk records a defect in *this* codebase. A **service report** records a defect in the *methodology* every project shares, and sends it upstream to the mission-control plugin as a GitHub issue. Filed via `/mission-control:service-report`; stored per `ARTIFACTS.md` (default `service-reports/{id}-{report-slug}.md`).
 
-**Run it whenever you choose — typically after several missions.** Nothing invokes it automatically and no skill hands off to it. Flight and mission debriefs record methodology observations as they happen; this skill sweeps the whole accumulated corpus looking for the ones that turned out to be long-running patterns. A trend needs observations in at least three debriefs spanning at least two missions. Below that it is an event, and events are what flood a tracker.
+**Run it whenever you choose — typically after several missions.** Nothing invokes it automatically and no skill hands off to it. Flight and mission debriefs record methodology observations as they happen; this skill sweeps the whole accumulated corpus looking for the ones that turned out to be long-running patterns. A trend needs at least three **independent observations** — distinct occurrences, not documents mentioning them — spanning at least two missions. Mission debriefs restate their flight debriefs' observations, so the same occurrence appears twice in the corpus and counts once. Below the threshold it is an event, and events are what flood a tracker.
 
 **A trend is reportable only if all five hold:**
 

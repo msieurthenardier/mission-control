@@ -18,7 +18,9 @@ Two features of that model matter here. Operators report *difficulties*, not des
 
 That is the central design decision, and it follows from what the reports are for. A flight is far too small a sample: any one flight can go badly for reasons that have nothing to do with the methodology. A mission is better but still not enough, and reporting at mission cadence produces a steady drip of events — one project's bad stretch, filed as though it were a defect in the methodology. Multiply that by every project running the plugin and the tracker becomes unreadable, which is the same outcome as having no channel at all.
 
-What a maintainer can act on is a pattern: the same friction, in a working project, across missions, surviving plugin releases. So the threshold is **independent observations in at least three debriefs spanning at least two missions**. Below that, the observation stays in the corpus and the next sweep sees whether it kept happening.
+What a maintainer can act on is a pattern: the same friction, in a working project, across missions, surviving plugin releases. So the threshold is **at least three independent observations spanning at least two missions**. Below that, the observation stays in the corpus and the next sweep sees whether it kept happening.
+
+An *independent observation* is one distinct occurrence — a single time the methodology did the thing — not one document mentioning it. The distinction is load-bearing, because the corpus double-reports by construction: a mission debrief's methodology feedback is derived from its own flight debriefs, so the same occurrence appears in both. Counting documents would inflate every trend by roughly double and make two occurrences look like a pattern. Maintenance reports and escalated squawks corroborate but do not count toward the three; neither can be placed in the mission span the threshold measures.
 
 The division of labour:
 
@@ -74,11 +76,13 @@ What the reviewer *can* do is catch what a deny-list cannot: sentences that woul
 
 ## Approval
 
-Nothing is sent until the operator approves it: repository, target, and the full body verbatim, with a plain statement that this posts publicly under their GitHub account. Every outbound act is covered, not just the issue body — the **search query** is approved before it runs, because a query reaches GitHub and is attributable too, and a **reaction** gets the same question as a body despite having no text to show.
+Nothing that carries content is sent until the operator approves it: repository, target, and the full body verbatim, with a plain statement that this posts publicly under their GitHub account. That covers more than the issue body — the **search query** is approved before it runs, because the terms are content chosen from this project's corpus, and a **reaction** gets the same question as a body despite having no text to show.
+
+The line is drawn on content, not on HTTP method. A search query is a read and is still covered. Fetching the status of an issue this project already filed transmits nothing the project produced, so it is exempt; what protects a project that must make no calls at all is the opt-out switch, not a prompt on every status check.
 
 Projects that must not post to public repositories set the switch to disabled — and that switch fails closed. If the skill cannot determine that upstream reporting is affirmatively enabled, it stops and asks rather than assuming consent from an absent line.
 
-There is no summary approval, no batch approval, and no unattended path. The test is whether a human can be asked and can answer before work continues — not which skill did the calling. A spawned agent or a scheduled run stops at `draft`; an operator who arrived through the mission debrief's handoff is present, and reporting proceeds normally.
+There is no summary approval, no batch approval, and no unattended path. A sweep that surfaces five trends asks five times. The test is whether a human can be asked and can answer before work continues; a spawned agent or a scheduled run stops at `draft`. Nothing else calls this skill, so the present-operator case is the normal one.
 
 ## Joining Beats Filing
 
@@ -87,18 +91,31 @@ Opening a new issue is the last resort, not the default. Every report searches f
 | Outcome | Action |
 |---------|--------|
 | **New** | Draft an issue |
-| **Recurred** — this project reported it before and the trend continued | React `+1`, then comment the updated count and span |
+| **Recurred** — this project reported it before and it continued | React `+1`, then comment the updated count and span |
+| **Already reported, unchanged** — no new occurrences since | Nothing is sent at all |
+| **Previously withheld** — the operator declined to send it before | Treat as new, after telling them it was declined and when |
+| **Previously declined upstream** — the maintainer closed it `not_planned` | Do not re-file. Raise it only if the count has materially grown |
 | **Variant** — same root cause, different manifestation, someone else's issue | React `+1`, then comment the occurrence |
-| **Duplicate** — same root cause, nothing new to add | React `+1`. No comment |
+| **Duplicate** — someone else's issue, nothing to add | React `+1`. No comment |
 | **Already fixed** | Not an issue. Run `/mission-control:preflight-check` |
 
 The **Recurred** outcome is the one a periodic sweep produces that nothing else can. "Still happening, eight months and two releases later, now across five missions" is a different claim from the original report, and a much stronger one.
+
+## The Second Sweep
+
+Re-running is the normal case, not the exception, and it is where a sweep goes wrong.
+
+A sweep that rebuilt its clusters from nothing each run would draw slightly different boundaries every time, then try to fuzzy-match them against what it filed last year. So prior reports are read **first**, before any debrief, and the clusters they record seed the new pass: observations already assigned to a known trend stay assigned. Determinism and deduplication turn out to be the same problem, solved in the same place.
+
+The rest is about restraint. A trend that has not moved since it was reported sends nothing — no comment, no reaction, no approval prompt. A trend the operator *declined to send* is not quietly re-proposed at full ceremony on every subsequent sweep; the refusal is surfaced first, because a standing decision deserves to be remembered. A trend the **maintainer** declined is not re-filed at all unless it has materially grown, and then it is raised with the operator saying plainly that it was rejected and when.
+
+The worst output this skill can produce is not silence. It is a confident, quantified comment on a real issue claiming growth that is really a re-count.
 
 A hundred operators filing separate issues for one defect buries it. The same hundred adding occurrences to one issue specifies it. The reaction goes on both joining branches, not just the silent one — otherwise the count measures "operators with nothing to add" rather than operators affected, which is the opposite of a ranking signal.
 
 Choosing between them runs one test, out loud: **would a single change to the methodology fix both this occurrence and the existing issue?** Yes means variant or duplicate. No means new — and new gets filed, exception or not. Superficial similarity is not root-cause identity, and the failure mode of a join-biased design is a handful of magnet issues carrying eighty comments across four unrelated defects, unsplittable without reading all eighty. The operator who could have told them apart is long gone by then.
 
-An occurrence comment is short and structured, and its load-bearing line is **Differs**: each occurrence either matches the existing report exactly, or names the one dimension it varies on. That tightens an issue's scope as reports accumulate instead of scattering the same defect across near-duplicates — and it doubles as the split signal. When the `Differs` lines on an issue stop clustering, and start naming three or four unrelated dimensions, the issue is carrying more than one defect and wants splitting. Reports folded into the new issue are marked `superseded` locally on the next refresh.
+An occurrence comment is short and structured, and its load-bearing line is **Differs**: each occurrence either matches the existing report exactly, or names the one dimension it varies on. That tightens an issue's scope as reports accumulate instead of scattering the same defect across near-duplicates — and it doubles as the split signal. When the `Differs` lines on an issue stop clustering, and start naming three or four unrelated dimensions, the issue is carrying more than one defect and wants splitting. A report whose issue was transferred or replaced is marked `superseded` on the next refresh, which is visible because the refresh compares the issue number it gets back against the one it recorded.
 
 Issues and comments both end with a fixed trailer — plugin versions spanned, skill, phase, occurrence count, and date span — in an identical format. That is deliberate and load-bearing: it is the only thing that makes a corpus of reports countable. Without it the maintainer has prose, and prose does not aggregate into "which skill, which phase, which version, how often."
 

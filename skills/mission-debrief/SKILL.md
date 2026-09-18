@@ -156,6 +156,8 @@ Preference without a cost is a local lesson, not a methodology observation. Say 
 
 For each methodology observation, record what the methodology did, what was expected, what it cost, the skill and phase, the plugin version in use, and the **recurrence count** across this mission's flights — pulled from the flight debriefs already read in Phase 1. This is the only point where that count exists.
 
+These restate observations the flight debriefs already hold; they do not add to them. Say which flights each one came from, so a later sweep reading both artifacts counts the occurrence once rather than twice.
+
 **This phase records; it does not report.** Nothing here is sent anywhere. A single mission is too small a sample to tell a methodology defect from an awkward stretch, and reporting at mission cadence is what floods a tracker with events. The operator runs `/mission-control:service-report` when *they* choose — typically after several missions — and it sweeps every debrief in the project looking for observations that turned out to be patterns. What Phase 7 owes that sweep is a well-recorded observation, not a decision.
 
 ### Phase 8: Generate Debrief
