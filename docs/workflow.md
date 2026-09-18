@@ -316,7 +316,7 @@ The debrief skill will:
 - Capture process and methodology improvements
 - Interview participants for qualitative insights
 
-The mission debrief is the primary source for improving Flight Control itself.
+The mission debrief is the primary source for improving Flight Control itself. It records methodology observations and counts how often each recurred across the mission's flights — but it reports nothing. Whether an observation is a real methodology defect is a question about patterns across missions, and it is answered later by [service reports](service-reports.md): an operator-invoked sweep of the accumulated debriefs, run whenever you choose, that files the trends upstream.
 
 ### Mission State: `completed`
 

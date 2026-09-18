@@ -1,0 +1,126 @@
+name: Methodology report
+description: A Flight Control methodology difficulty observed while running the plugin on a project
+title: "[methodology] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report the **difficulty**, not the redesign — what happened and what it cost. Fixes get
+        designed against the whole fleet's reports, which no single operator can see.
+
+        Five things before you file:
+
+        1. **Report a pattern, not an event.** One bad flight is not a methodology defect. What a
+           maintainer can act on is the same friction recurring across missions, ideally surviving a
+           plugin release. If it happened once, wait and see whether it happens again.
+        2. **Search open and closed issues first.** Then apply the root-cause test: *would one change
+           to the methodology fix both your case and the existing issue?* If yes, add your occurrence
+           to that issue instead of filing (or just react 👍 if you have nothing to add). If no, file
+           here — superficial similarity is not the same defect, and two defects under one issue can't
+           be separated later.
+        3. **No project information.** Nothing about your codebase, employer, customers, paths, or
+           domain. If the difficulty cannot be described without them, it cannot be filed here.
+        4. **Keep it under 200 words.** Plain language, one difficulty per issue.
+        5. **Fill in the last five fields even if they feel like bookkeeping.** They are what makes a
+           thousand reports countable rather than a pile.
+
+        `/mission-control:service-report` produces this shape automatically by sweeping a project's
+        accumulated debriefs for recurring trends.
+
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happens
+      description: One sentence describing the pattern. What the skill, artifact, or protocol does.
+      placeholder: The flight-debrief skill asks for test metrics before any test suite exists.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What was expected
+      description: One sentence.
+    validations:
+      required: true
+
+  - type: textarea
+    id: cost
+    attributes:
+      label: Cost
+      description: What it has cost across occurrences — rework, re-runs, wrong artifacts, missed gates. Preference without a cost is not a report.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Repro
+      description: Two or three lines. One generic instance, minimal, in methodology terms — no project specifics.
+      placeholder: |
+        1. Run /mission-control:flight on a mission with no flights yet
+        2. Accept the default leg breakdown
+        3. The third leg's acceptance criteria reference an interface no leg defines
+    validations:
+      required: true
+
+  - type: input
+    id: plugin
+    attributes:
+      label: Plugin
+      description: The mission-control version(s) you saw it under. A range is better than a single version — it shows the difficulty survived a release.
+      placeholder: 0.9.2–1.0.1
+    validations:
+      required: true
+
+  - type: input
+    id: skill
+    attributes:
+      label: Skill
+      description: Which skill the difficulty showed up in.
+      placeholder: flight-debrief
+    validations:
+      required: true
+
+  - type: input
+    id: phase
+    attributes:
+      label: Phase
+      description: Which phase or step, if it is localized to one. Use — if not.
+      placeholder: phase 3
+    validations:
+      required: true
+
+  - type: input
+    id: occurrences
+    attributes:
+      label: Occurrences
+      description: How often it recurred. A pattern across missions is the evidence a maintainer can act on; a single occurrence usually is not.
+      placeholder: 7 flights across 3 missions
+    validations:
+      required: true
+
+  - type: input
+    id: span
+    attributes:
+      label: Span
+      description: When you first and last saw it. A difficulty that survived a release is a much stronger report than one that happened twice in a week.
+      placeholder: 2026-02 to 2026-09
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: gate
+    attributes:
+      label: Before filing
+      options:
+        - label: This contains no information about my project, employer, or customers
+          required: true
+        - label: I searched open and closed issues, and no existing issue shares this root cause
+          required: true
+        - label: This has recurred — roughly three or more distinct occurrences, across more than one mission
+          required: true
+        - label: This reproduces from the methodology alone — an operator on a different stack would hit it
+          required: true
+        - label: This is not friction in my own `ARTIFACTS.md` or crew files, which are mine to customize
+          required: true

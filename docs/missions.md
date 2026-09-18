@@ -220,7 +220,9 @@ Process and execution improvements.
 Insights to carry forward.
 
 ## Methodology Feedback
-Improvements to Flight Control itself.
+Improvements to Flight Control itself, with recurrence counts drawn from the flight
+debriefs. Recorded, not adjudicated — a later [service report](service-reports.md) sweep
+reads these across missions to find which were long-running trends.
 ```
 
 The debrief captures organizational learning and informs future missions.

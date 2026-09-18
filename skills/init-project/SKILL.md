@@ -86,6 +86,12 @@ cp "${SKILL_DIR}/templates/ARTIFACTS-files.md" ".flightops/ARTIFACTS.md"
 
 **If ARTIFACTS.md already exists**, do not modify it — it's project-specific and may have been customized.
 
+Then ask one question, for new projects only:
+
+> "Flight Control can send methodology feedback upstream to the mission-control plugin as GitHub issues. You run it when you choose — typically after several missions — and it sweeps your accumulated debriefs for recurring trends, generalized so no project information leaves this repository, and never sent without your approval of the exact text. Enable that channel for this project?"
+
+Set the upstream reporting value in the new `ARTIFACTS.md` to `enabled` or `disabled` accordingly. The template ships `unset` and the skill fails closed on it, so leaving this unanswered opts the project out — but ask rather than letting it default silently. This is the one moment the operator learns the channel exists.
+
 ### 6. Configure Project Crew
 
 Set up phase-specific crew definitions that control how the Flight Director interacts with project-side agents.

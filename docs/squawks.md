@@ -70,6 +70,7 @@ Anything the Reviewer notices beyond the diff becomes a new squawk. It does not 
 
 ## See Also
 
+- [Service Reports](service-reports.md) — the same idea pointed outward: defects in the methodology itself, reported upstream
 - [Missions](missions.md) — outcome-driven planning for work that does need a mission
 - [Flights](flights.md) — technical specifications
 - [Workflow](workflow.md) — end-to-end flow from mission to completion

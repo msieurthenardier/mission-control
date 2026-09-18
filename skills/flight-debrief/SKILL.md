@@ -111,7 +111,15 @@ Synthesize Developer input, Architect input, human input, and document analysis 
 
 ### Phase 4: Skill Effectiveness Analysis
 
-Evaluate whether the Flight Control skills (the mission-control plugin) could be improved:
+Evaluate whether the Flight Control skills (the mission-control plugin) could be improved.
+
+**This phase records; it does not report, and it does not judge.** One flight cannot tell a methodology defect from one awkward afternoon. What it can do is leave a good record.
+
+That record is read twice: by `/mission-control:mission-debrief`, which counts recurrence across the mission, and much later by `/mission-control:service-report`, which the operator runs when they choose — typically after several missions — to sweep every debrief in the project for observations that turned out to be long-running patterns. A vague entry here is invisible to both.
+
+So be concrete even when the observation feels minor, and especially then. For each one, note what the skill did, what was expected instead, what it cost — rework, a re-run, a wrong artifact, a missed gate — which skill and phase it happened in, and the **installed plugin version** (read `.claude-plugin/plugin.json` from the installed plugin, or take it from `claude plugin list`). The version is what later tells a sweep whether a difficulty survived a release, and it cannot be recovered afterwards.
+
+Record these where the project's flight debrief artifact keeps methodology observations. Two years of debriefs are only as useful as the worst-written entry in them.
 
 #### Mission Skill
 - Did the mission provide adequate context?

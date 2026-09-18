@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: How service reports work
+    url: https://github.com/msieurthenardier/mission-control/blob/main/docs/service-reports.md
+    about: Why reports are raised as trends across missions, how they are sanitized, and what makes one actionable.
+  - name: Methodology drift
+    url: https://github.com/msieurthenardier/mission-control/blob/main/skills/init-project/migrations.md
+    about: Behaving oddly after a plugin update? Run /mission-control:preflight-check first — most of these are drift, not defects.

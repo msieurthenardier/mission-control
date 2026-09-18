@@ -140,11 +140,31 @@ For each flight:
 - Does README need updates?
 - Are there new runbooks or guides needed?
 
-### Phase 7: Generate Debrief
+### Phase 7: Triage Methodology Findings
+
+Do this **before** persisting the debrief, so the artifact is complete when it is written and any create-time handling the project defines fires against finished content.
+
+The Methodology Feedback content is about Flight Control itself, not this project. Sort each finding into one of three destinations:
+
+| Destination | When |
+|-------------|------|
+| **Local fix** | It is friction in this project's own `ARTIFACTS.md` or crew files, which are the project's to customize |
+| **Local lesson** | It is real but does not reproduce from the methodology alone, or it cost nothing observable |
+| **Methodology observation** | It reproduces from the methodology alone *and* cost something observable — rework, a re-run, a wrong artifact, a missed gate |
+
+Preference without a cost is a local lesson, not a methodology observation. Say so rather than dressing it up.
+
+For each methodology observation, record what the methodology did, what was expected, what it cost, the skill and phase, the plugin version in use, and the **recurrence count** across this mission's flights — pulled from the flight debriefs already read in Phase 1. This is the only point where that count exists.
+
+These restate observations the flight debriefs already hold; they do not add to them. Say which flights each one came from, so a later sweep reading both artifacts counts the occurrence once rather than twice.
+
+**This phase records; it does not report.** Nothing here is sent anywhere. A single mission is too small a sample to tell a methodology defect from an awkward stretch, and reporting at mission cadence is what floods a tracker with events. The operator runs `/mission-control:service-report` when *they* choose — typically after several missions — and it sweeps every debrief in the project looking for observations that turned out to be patterns. What Phase 7 owes that sweep is a well-recorded observation, not a decision.
+
+### Phase 8: Generate Debrief
 
 Persist the mission debrief artifact following the conventions `.flightops/ARTIFACTS.md` defines for it, then perform any create-time handling it defines for that artifact (e.g., opening a ticket, posting a notification; default: none).
 
-### Phase 8: Mission Status Transition
+### Phase 9: Mission Status Transition
 
 If the mission is not already marked as `completed` or `aborted`, update the mission artifact's status to `completed`, and perform any transition-time handling the project's `.flightops/ARTIFACTS.md` defines for that transition (default: none).
 
@@ -165,7 +185,9 @@ Every lesson should have a "so what?" — how should future missions be differen
 When a mission-level insight identifies a behavior that should be pinned as a regression gate (especially needing real-environment observation), recommend authoring a **behavior test** spec. See `${SKILL_DIR}/../behavior-test/AUTHORING.md`. The spec gets written during the next mission's planning; the test runs via `/mission-control:behavior-test {slug}`.
 
 ### Methodology Feedback
-This is the best time to identify improvements to Flight Control itself.
+This is the best time to identify improvements to Flight Control itself, and the only point where a finding can be weighed against a full mission of flights rather than one afternoon.
+
+Record observations well; do not adjudicate them. Distinguish three destinations — a change to this project's `ARTIFACTS.md` or crew files (project-owned, fix it locally), a lesson for how this team runs missions, and an observation about the methodology itself (Phase 7). Whether a methodology observation is a real defect is a question about patterns across missions, which no single debrief can answer.
 
 ### Interview Integration
 Weave interview insights throughout the debrief, not as a separate section. Crew perspectives should inform:

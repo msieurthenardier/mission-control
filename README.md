@@ -28,6 +28,8 @@ Mission (human-optimized)
 
 Beside the hierarchy sits the **squawk** — a standalone artifact for work too small to plan. In aviation, a squawk is a defect logged in the aircraft's logbook and cleared by a mechanic, signed off by someone other than the reporter. Here it covers a single bug fix or routine servicing update: no mission, no flight, no leg, no debrief. See [Squawks](docs/squawks.md).
 
+Pointing the other way is the **service report**. Where a squawk records a defect in your codebase, a service report records a defect in the methodology every project shares, and sends it upstream to this repository as a GitHub issue. Run it when you choose — typically after several missions — and it sweeps your accumulated debriefs for the friction that turned out to be a long-running pattern, generalized until no project information remains and sent only on your approval of the exact text. See [Service Reports](docs/service-reports.md).
+
 ## Why Aviation?
 
 Aviation succeeds through layered planning and clear handoffs. Pilots follow flight plans but improvise when conditions demand it—weather, emergencies, ATC instructions. Structured planning enables effective improvisation by providing a baseline to deviate from and return to. Similarly, Flight Control separates strategic intent (missions) from tactical execution (legs), with flights serving as the translation layer.
@@ -84,8 +86,9 @@ If you used Flight Control before it was a plugin — a cloned `mission-control`
 4. **[Flight Logs](docs/flight-logs.md)** — Recording execution progress and decisions
 5. **[Legs](docs/legs.md)** — Structuring AI-optimized implementation steps
 6. **[Squawks](docs/squawks.md)** — Small standalone fixes that don't warrant a mission
-7. **[Workflow](docs/workflow.md)** — End-to-end flow from mission to completion
-8. **[Migrating to the plugin](docs/migrating-to-the-plugin.md)** — Moving from the pre-plugin checkout and `projects.md` registry
+7. **[Service Reports](docs/service-reports.md)** — Sweeping debriefs for methodology trends and reporting them upstream
+8. **[Workflow](docs/workflow.md)** — End-to-end flow from mission to completion
+9. **[Migrating to the plugin](docs/migrating-to-the-plugin.md)** — Moving from the pre-plugin checkout and `projects.md` registry
 
 ## Core Concepts
 
@@ -107,6 +110,7 @@ Each level tracks progress through defined states:
 - **Flights**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
 - **Legs**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
 - **Squawks**: `open` → `in-progress` → `completed` (or `deferred`, `escalated`) — a squawk has no planning phase, so it does not share the unified lifecycle
+- **Service reports**: `draft` → `submitted` / `merged` / `withheld`, then `accepted`, `declined`, or `superseded` once upstream responds
 
 ### Scaling
 
@@ -125,7 +129,8 @@ Mission
     ├── Flight Debrief
     └── Leg
 
-Squawk        (standalone — no parent, no debrief)
+Squawk         (standalone — no parent, no debrief)
+Service Report (standalone — the only artifact that leaves the project)
 ```
 
 By default, artifacts are stored as version-controlled markdown files in your project's repository. Each project's `.flightops/ARTIFACTS.md` describes where and how artifacts live — skills read this file to determine locations and formats. You can adapt it to other backends (Jira, Linear, GitHub Issues, hybrid setups) by editing this file directly; only the markdown-files template ships out of the box.
@@ -146,6 +151,7 @@ All skills are namespaced under the plugin and run from the project root:
 | `/mission-control:flight-debrief` | Post-flight analysis for continuous improvement |
 | `/mission-control:mission-debrief` | Post-mission retrospective for outcomes assessment |
 | `/mission-control:routine-maintenance` | Between-mission codebase health assessment |
+| `/mission-control:service-report` | Sweep accumulated debriefs for recurring methodology trends and report them upstream as GitHub issues — run when you choose, searched against existing issues, stripped of all project information, and sent only on your approval of the exact text |
 
 ## Plugin Layout
 
