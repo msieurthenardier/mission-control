@@ -245,11 +245,26 @@ No crew file ships with this migration. The Redaction Reviewer is spawned with i
 
 ---
 
+### 010 — Name the interactive session as the Flight Director
+
+The Flight Operations snippet installed by 007 told the Flight Director what to do when a leg is ready, but never said which session *is* the Flight Director. A session could read it as a role it switches into for execution, rather than the role it holds throughout. The current snippet states it outright: the session the human talks to is the Flight Director, and spawned agents are crew.
+
+**Detected by** `check-drift.sh` → `migration-pending:010`. Apply after 001–009. Never pending alongside 007, which installs the current snippet itself.
+
+**Actions:**
+
+1. In the project's `CLAUDE.md` Flight Operations section, replace the **Flight Director role** paragraph with the one in init-project's Step 7 snippet. Leave the rest of the section, including anything the project added, as it is. If the project has rewritten that paragraph, show the new opening sentences and ask where they belong.
+
+**User message:**
+> Updating the Flight Director paragraph in CLAUDE.md's Flight Operations section: it now states that this session is the Flight Director and spawned agents are crew. Nothing else in the section changes. Existing artifacts unaffected.
+
+---
+
 ## Adding Future Migrations
 
 To add a new migration:
 
-1. Assign the next sequential ID (e.g., `010`)
+1. Assign the next sequential ID (e.g., `011`)
 2. Add its detection to `check-drift.sh` — emit `migration-pending:{id}` when the migration is needed, and nothing once it's been applied (idempotent)
 3. Document it here: rationale, the **Actions** to perform (prefer `mv` over copy-and-delete to preserve file contents and git history), and a short **User message**
 4. Note ordering if it depends on an earlier migration having run

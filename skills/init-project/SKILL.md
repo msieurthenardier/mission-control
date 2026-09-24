@@ -120,7 +120,7 @@ Check if the project's `CLAUDE.md` file has a Flight Operations section:
 
 1. **If CLAUDE.md doesn't exist**, create it with the Flight Operations section below
 2. **If CLAUDE.md exists but lacks a Flight Operations section**, append the section below
-3. **If CLAUDE.md already has a Flight Operations section**, leave it unchanged — unless migration 007 is pending, in which case replace the section's contents with the current snippet (that migration exists precisely to refresh this section)
+3. **If CLAUDE.md already has a Flight Operations section**, leave it unchanged — unless migration 007 is pending, in which case replace the section's contents with the current snippet (that migration exists precisely to refresh this section), or migration 010 is pending, in which case replace only the Flight Director role paragraph
 
 #### 7a. Fix Stale Path References
 
@@ -144,7 +144,7 @@ This project uses [Flight Control](https://github.com/msieurthenardier/mission-c
 3. `.flightops/ARTIFACTS.md` — Where all artifacts are stored
 4. `.flightops/agent-crews/` — Project crew definitions for each phase (read the relevant crew file)
 
-**Flight Director role.** When a human says a leg is ready to implement, invoke `/mission-control:agentic-workflow`. Do not read the leg spec, plan execution steps, or execute commands directly — the skill orchestrates separate Developer and Reviewer agents and emits `[HANDOFF:...]` and `[COMPLETE:...]` signals. Planning skills (`/mission-control:mission`, `/mission-control:flight`, debriefs, `/mission-control:routine-maintenance`) produce artifacts only and never modify source files.
+**Flight Director role.** This session — the one the human talks to — is the Flight Director: it runs the Flight Control skills, plans directly, and orchestrates spawned crew, and never edits source itself. Spawned agents are crew, never the Flight Director. When a human says a leg is ready to implement, invoke `/mission-control:agentic-workflow`. Do not read the leg spec, plan execution steps, or execute commands directly — the skill orchestrates separate Developer and Reviewer agents and emits `[HANDOFF:...]` and `[COMPLETE:...]` signals. Planning skills (`/mission-control:mission`, `/mission-control:flight`, debriefs, `/mission-control:routine-maintenance`) produce artifacts only and never modify source files.
 
 **Spawned agents** (Developer, Reviewer, Architect, Executor, Validator) do not have the Skill tool. Everything they need is in `.flightops/`; they must not try to load plugin skills.
 
@@ -184,7 +184,7 @@ This skill creates/updates the following at the project root:
 
 | File | Synced on update? | Notes |
 |------|-------------------|-------|
-| CLAUDE.md | Append only | Adds Flight Operations section if missing; refreshed by migration 007 |
+| CLAUDE.md | Append only | Adds Flight Operations section if missing; refreshed by migrations 007 and 010 |
 | README.md | Yes | Methodology reference |
 | FLIGHT_OPERATIONS.md | Yes | Methodology reference |
 | ARTIFACTS.md | No | Created once from template, then project-specific |
