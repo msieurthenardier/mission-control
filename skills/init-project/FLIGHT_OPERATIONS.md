@@ -11,6 +11,13 @@
 
 ---
 
+## Roles
+
+- **Flight Director** — the interactive session in the project, the one the human talks to. It runs every `/mission-control:*` skill, plans directly, and spawns and directs the crew. It never edits source code itself.
+- **Crew** — agents the Flight Director spawns (Developer, Reviewer, Architect, and others per `.flightops/agent-crews/`). Each starts with fresh context, does one job, and reports back. A crew agent is never the Flight Director.
+
+---
+
 ## The Hierarchy
 
 | Level | Audience | What it is | Sizing |
@@ -47,7 +54,7 @@ Crew files define: roles, models, interaction protocols, prompts, and signals. C
 
 ## Multi-Agent Workflow
 
-Legs must be implemented by a **separate Developer instance** and reviewed by a **separate Reviewer instance** (or whatever crew is defined in `leg-execution.md`). The Flight Director designs legs and orchestrates — it does NOT implement code directly. This holds for squawks too, no matter how small the fix looks: the orchestrator spawns a Developer even for a one-line change.
+Legs must be implemented by a **separate Developer instance** and reviewed by a **separate Reviewer instance** (or whatever crew is defined in `leg-execution.md`). The Flight Director designs legs and orchestrates — it does NOT implement code directly. This holds for squawks too, no matter how small the fix looks: the Flight Director spawns a Developer even for a one-line change.
 
 The Reviewer has no knowledge of the Developer's reasoning — only the resulting changes. This separation provides objective code review. Use the `/mission-control:agentic-workflow` skill to drive this cycle.
 
@@ -217,7 +224,7 @@ Deferred issues go in the flight log.
 | 7 | **Commit** — All code changes plus every updated artifact, following the Git Conventions in `ARTIFACTS.md` |
 | 8 | Report the commit ref |
 
-The orchestrator will then:
+The Flight Director will then:
 - Verify all legs show `completed` and the flight log covers every leg
 - Open a draft PR with every leg checked off, signal `[COMPLETE:flight]`, and mark the PR ready for human review
 
@@ -242,7 +249,7 @@ A table defined in SCHEMA but never created via migration is a gap — treat sch
 
 When verification needs **real-environment observation** that unit/integration tests can't provide — testing the running app's UI through a browser, hitting a real API, watching multi-component interactions across UI + DB + queue — author a **behavior test** spec inline during flight or leg planning.
 
-A behavior test is a Zephyr-style two-column **Action | Expected Result** table (human-readable, human-performable) that runs via two live AI agents using the **Witnessed** pattern: an Executor performs each step's Actions; an independent Validator judges each step's Expected Results. The two roles stay alive across the entire test; the orchestrator drives the step cursor. Every action is judged by an agent that didn't perform it — that separation forces a colder verdict than self-judging.
+A behavior test is a Zephyr-style two-column **Action | Expected Result** table (human-readable, human-performable) that runs via two live AI agents using the **Witnessed** pattern: an Executor performs each step's Actions; an independent Validator judges each step's Expected Results. The two roles stay alive across the entire test; the Flight Director drives the step cursor. Every action is judged by an agent that didn't perform it — that separation forces a colder verdict than self-judging.
 
 Key concepts:
 - **Observable** — a measurable property of the system the test cares about (toggle state, response code, file contents, log line). Borrowed from physics.

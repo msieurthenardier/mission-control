@@ -172,6 +172,16 @@ if [[ -f "$PROJECT_CLAUDE_MD" ]] \
   echo "migration-pending:007"
 fi
 
+# 010 - plugin-era Flight Operations section that never binds the Flight Director
+# role to the interactive session. Requires the agentic-workflow reference so it
+# stays silent while 007 is pending; 007 installs the current snippet anyway.
+if [[ -f "$PROJECT_CLAUDE_MD" ]] \
+   && grep -q "^## Flight Operations" "$PROJECT_CLAUDE_MD" 2>/dev/null \
+   && grep -q "mission-control:agentic-workflow" "$PROJECT_CLAUDE_MD" 2>/dev/null \
+   && ! grep -q "never the Flight Director" "$PROJECT_CLAUDE_MD" 2>/dev/null; then
+  echo "migration-pending:010"
+fi
+
 # 008 - leg-execution crew file still speaks the per-leg review/commit protocol.
 # Signals are methodology, not project customization (the crew file says so
 # itself), so this is the one kind of crew-content drift that is a migration.
