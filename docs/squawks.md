@@ -23,9 +23,9 @@ Something is a squawk only if **all four** hold:
 3. **Bounded blast radius** — no shared-interface changes, no schema or migration changes, no lifecycle or state-machine changes, no security-sensitive surface
 4. **Verifiable** — an existing test covers it, or one new test does
 
-Fail any one and it is a flight or a mission, not a squawk.
+Fail any one and it is a sortie, a flight, or a mission, not a squawk.
 
-**The gate matters more than the criteria.** A squawk that turns out to need design work is marked `escalated` and handed to `/mission-control:flight` or `/mission-control:mission`, with its partial changes reverted. It is never expanded in place. Without that rule the lightweight path becomes a bypass for real work, and the methodology's value — that consequential decisions get planned and reviewed — leaks away one "quick fix" at a time.
+**The gate matters more than the criteria.** A squawk that turns out to need design work is marked `escalated` and handed to `/mission-control:sortie`, `/mission-control:flight`, or `/mission-control:mission`, with its partial changes reverted. It is never expanded in place. Without that rule the lightweight path becomes a bypass for real work, and the methodology's value — that consequential decisions get planned and reviewed — leaks away one "quick fix" at a time.
 
 ## Anatomy
 
@@ -62,7 +62,7 @@ Anything the Reviewer notices beyond the diff becomes a new squawk. It does not 
 
 ## What Squawks Are Not
 
-**Not a backlog.** This is a defect log, not a feature tracker. Anything that adds behavior a user would notice as new is a mission or a flight, however small it looks. If "is this broken?" is no and "is this upkeep?" is also no, it does not belong here.
+**Not a backlog.** This is a defect log, not a feature tracker. Anything that adds behavior a user would notice as new is a sortie, a flight, or a mission, however small it looks. If "is this broken?" is no and "is this upkeep?" is also no, it does not belong here.
 
 **Not a bundle.** Two unrelated defects are two squawks, even when completed in the same batch. The batch is an execution convenience; the artifact is the record, and a merged record cannot be individually deferred, escalated, or reverted.
 
@@ -70,6 +70,7 @@ Anything the Reviewer notices beyond the diff becomes a new squawk. It does not 
 
 ## See Also
 
+- [Sorties](sorties.md) — the vehicle above: one small outcome that needs a design call but not a mission
 - [Service Reports](service-reports.md) — the same idea pointed outward: defects in the methodology itself, reported upstream
 - [Missions](missions.md) — outcome-driven planning for work that does need a mission
 - [Flights](flights.md) — technical specifications

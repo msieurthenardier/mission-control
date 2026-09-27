@@ -7,10 +7,10 @@ An AI-first software development lifecycle methodology using aviation metaphors 
 Mission Control is the Claude Code **plugin** that ships Flight Control. Install it once and every project you open gets the same planning, execution, and debrief workflow, whatever its stack.
 
 - **Shared methodology** — Apply structured planning regardless of project differences
-- **Claude Code skills** — Interactive tools for mission, flight, leg, and squawk work, invoked as `/mission-control:<skill>`
+- **Claude Code skills** — Interactive tools for mission, sortie, flight, leg, and squawk work, invoked as `/mission-control:<skill>`
 - **Multi-agent execution** — A Flight Director session orchestrates separate Developer, Reviewer, and Architect agents
 
-Skills run from the project's own root. Artifacts (missions, flights, legs, squawks) live in the project, configured by its `.flightops/` directory. The plugin holds the methodology and skills; your project holds the work.
+Skills run from the project's own root. Artifacts (missions, sorties, flights, legs, squawks) live in the project, configured by its `.flightops/` directory. The plugin holds the methodology and skills; your project holds the work.
 
 ## The Aviation Model
 
@@ -27,6 +27,8 @@ Mission (human-optimized)
 - **Legs** provide structured, specific instructions optimized for AI consumption
 
 Beside the hierarchy sits the **squawk** — a standalone artifact for work too small to plan. In aviation, a squawk is a defect logged in the aircraft's logbook and cleared by a mechanic, signed off by someone other than the reporter. Here it covers a single bug fix or routine servicing update: no mission, no flight, no leg, no debrief. See [Squawks](docs/squawks.md).
+
+Between the two sits the **sortie** — a single flight with no parent mission. It covers work that needs a design call but not a mission: one outcome a user would notice, one cluster of design decisions, one flight. A short charter stands in for the mission; everything else is a flight — design review, legs, independent code review, debrief. See [Sorties](docs/sorties.md).
 
 Pointing the other way is the **service report**. Where a squawk records a defect in your codebase, a service report records a defect in the methodology every project shares, and sends it upstream to this repository as a GitHub issue. Run it when you choose — typically after several missions — and it sweeps your accumulated debriefs for the friction that turned out to be a long-running pattern, generalized until no project information remains and sent only on your approval of the exact text. See [Service Reports](docs/service-reports.md).
 
@@ -86,9 +88,10 @@ If you used Flight Control before it was a plugin — a cloned `mission-control`
 4. **[Flight Logs](docs/flight-logs.md)** — Recording execution progress and decisions
 5. **[Legs](docs/legs.md)** — Structuring AI-optimized implementation steps
 6. **[Squawks](docs/squawks.md)** — Small standalone fixes that don't warrant a mission
-7. **[Service Reports](docs/service-reports.md)** — Sweeping debriefs for methodology trends and reporting them upstream
-8. **[Workflow](docs/workflow.md)** — End-to-end flow from mission to completion
-9. **[Migrating to the plugin](docs/migrating-to-the-plugin.md)** — Moving from the pre-plugin checkout and `projects.md` registry
+7. **[Sorties](docs/sorties.md)** — Single standalone flights for small outcomes that need a design call but not a mission
+8. **[Service Reports](docs/service-reports.md)** — Sweeping debriefs for methodology trends and reporting them upstream
+9. **[Workflow](docs/workflow.md)** — End-to-end flow from mission to completion
+10. **[Migrating to the plugin](docs/migrating-to-the-plugin.md)** — Moving from the pre-plugin checkout and `projects.md` registry
 
 ## Core Concepts
 
@@ -109,6 +112,7 @@ Each level tracks progress through defined states:
 - **Missions**: `planning` → `active` → `completed` (or `aborted`)
 - **Flights**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
 - **Legs**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
+- **Sorties**: the flight lifecycle — a sortie is a flight with no parent mission
 - **Squawks**: `open` → `in-progress` → `completed` (or `deferred`, `escalated`) — a squawk has no planning phase, so it does not share the unified lifecycle
 - **Service reports**: `draft` → `submitted` / `merged` / `withheld`, then `accepted`, `declined`, or `superseded` once upstream responds
 
@@ -129,6 +133,12 @@ Mission
     ├── Flight Debrief
     └── Leg
 
+Sortie         (standalone flight — a charter in place of a mission)
+├── Flight Log
+├── Flight Briefing
+├── Flight Debrief
+└── Leg
+
 Squawk         (standalone — no parent, no debrief)
 Service Report (standalone — the only artifact that leaves the project)
 ```
@@ -144,13 +154,14 @@ All skills are namespaced under the plugin and run from the project root:
 | `/mission-control:init-project` | Initialize the current project for Flight Control; apply methodology migrations |
 | `/mission-control:preflight-check` | Full drift diagnosis of the current project against the installed plugin |
 | `/mission-control:mission` | Create outcome-driven missions through research and interview |
+| `/mission-control:sortie` | Plan a sortie — a single standalone flight for one small outcome with one cluster of design decisions, no mission required |
 | `/mission-control:flight` | Create technical flight specs from missions |
 | `/mission-control:agentic-workflow` | Drive multi-agent flight execution |
 | `/mission-control:squawk` | Log and complete small standalone fixes — one defect or one routine update, no mission required |
 | `/mission-control:behavior-test` | Run a behavior test — live two-agent execution (Executor + Validator) against real UI / API / shell / filesystem, Zephyr-style Action \| Expected Result spec. Specs are authored inline during planning conversations (see `skills/behavior-test/AUTHORING.md`). |
 | `/mission-control:flight-debrief` | Post-flight analysis for continuous improvement |
 | `/mission-control:mission-debrief` | Post-mission retrospective for outcomes assessment |
-| `/mission-control:routine-maintenance` | Between-mission codebase health assessment |
+| `/mission-control:routine-maintenance` | Between-mission (or after several sorties) codebase health assessment |
 | `/mission-control:service-report` | Sweep accumulated debriefs for recurring methodology trends and report them upstream as GitHub issues — run when you choose, searched against existing issues, stripped of all project information, and sent only on your approval of the exact text |
 
 ## Plugin Layout

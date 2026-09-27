@@ -260,11 +260,45 @@ The Flight Operations snippet installed by 007 told the Flight Director what to 
 
 ---
 
+### 011 — Install the Sortie artifact and conventions
+
+Work between a squawk and a mission had no proportional vehicle. A small feature — one outcome, one cluster of design decisions, one flight — fails the squawk gate (it adds behavior, touches an interface, or needs a design call), yet a mission's full interview, separate artifact, and mission debrief cost more than the work. The **sortie** — a flight with no parent mission, carrying a short charter in the mission's place, planned via `/mission-control:sortie` — fills that gap. Projects initialized before this change have nowhere to store one.
+
+No crew file is needed: sorties reuse the existing `flight-design.md`, `leg-execution.md`, and `flight-debrief.md` crews.
+
+**Detected by** `check-drift.sh` → `migration-pending:011`. Apply after 001–010.
+
+**Actions:**
+
+1. Append a `Sortie` artifact section to the project's `ARTIFACTS.md`, alongside the other core artifacts, before the `Squawk` section. The canonical section lives in `${SKILL_DIR}/templates/ARTIFACTS-files.md` — location `sorties/{NN}-{slug}/flight.md`, and a format that is the flight format with the mission link and contributing criteria replaced by a charter (outcome, why now, success criteria, constraints).
+
+2. Add a sortie number convention to the naming conventions section:
+
+   ```markdown
+   - **Sortie numbers**: Two-digit prefixes like missions (`01`, `02`, …), on their own project-wide sequence, widening past `99` as needed
+   ```
+
+3. Add sortie branch and commit naming to the `Git Conventions` section:
+
+   ```markdown
+   - **Sortie branch**: `sortie/{number}-{slug}` — created at sortie execution start
+   - **Sortie commit subject**: `sortie/{number}: {description}`
+   ```
+
+4. Add the `sorties/{NN}-{sortie-slug}/` subtree (same files as a flight directory) to the Directory Structure tree.
+
+   - If the operator has heavily modified ARTIFACTS.md (e.g. a non-filesystem artifact backend), surface the proposed insertions and ask before writing. Defer to the operator on placement and on how sorties map onto their backend — for a ticket-based backend, a sortie is typically a flight-level ticket with no parent epic.
+
+**User message:**
+> Adding a `Sortie` artifact section to ARTIFACTS.md, plus sortie numbering and branch/commit conventions. A sortie is a standalone flight with no parent mission — for one small outcome that needs a design call but not a mission — planned via `/mission-control:sortie`. It reuses your existing flight crews, so no new crew file. Existing artifacts unaffected.
+
+---
+
 ## Adding Future Migrations
 
 To add a new migration:
 
-1. Assign the next sequential ID (e.g., `011`)
+1. Assign the next sequential ID (e.g., `012`)
 2. Add its detection to `check-drift.sh` — emit `migration-pending:{id}` when the migration is needed, and nothing once it's been applied (idempotent)
 3. Document it here: rationale, the **Actions** to perform (prefer `mv` over copy-and-delete to preserve file contents and git history), and a short **User message**
 4. Note ordering if it depends on an earlier migration having run

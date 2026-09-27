@@ -10,16 +10,19 @@ Orchestrate multi-agent flight execution. You drive the full leg cycle — desig
 ## Prerequisites
 
 - Project must be initialized with `/mission-control:init-project` (`.flightops/ARTIFACTS.md` must exist)
-- A mission must exist and be `active`
+- A mission must exist and be `active` — or the flight is a sortie (a standalone flight with no parent mission, planned via `/mission-control:sortie`)
 - A flight must exist and be `ready` or `in-flight`
 
 ## Invocation
 
 ```
 /mission-control:agentic-workflow flight {number} mission {number}
+/mission-control:agentic-workflow sortie {number}
 ```
 
-Example: `/mission-control:agentic-workflow flight 03 mission 04`
+Examples: `/mission-control:agentic-workflow flight 03 mission 04`, `/mission-control:agentic-workflow sortie 07`
+
+A sortie runs exactly as any other flight. The only differences are where its outcome comes from (its charter, not a mission) and that there is no mission artifact to update at landing.
 
 ## Phase 1: Context Loading
 
@@ -27,7 +30,7 @@ Example: `/mission-control:agentic-workflow flight 03 mission 04`
 2. **Read `.flightops/agent-crews/leg-execution.md`** for project crew definitions, interaction protocol, and prompts (fall back to defaults at `${SKILL_DIR}/../init-project/defaults/agent-crews/leg-execution.md`)
    - **Validate structure**: The phase file MUST contain `## Crew`, `## Interaction Protocol`, and `## Prompts` sections. Each prompt subsection MUST have a fenced code block.
    - **If the file exists but is malformed**: STOP. Tell the user: "Phase file `leg-execution.md` is missing required sections. Either fix it manually or re-run `/mission-control:init-project` to reset to defaults." Do NOT improvise missing prompts — halt and get the file fixed.
-3. **Read the mission artifact** — outcomes, success criteria, constraints
+3. **Read the mission artifact** — outcomes, success criteria, constraints. For a sortie, read its charter instead, which carries the same three things
 4. **Read the flight artifact** — objective, design decisions, leg list
 5. **Read the flight log** — ground truth from prior execution
 6. **Count total legs** from the flight spec — track progress throughout
@@ -43,9 +46,9 @@ If resuming a flight already in progress, verify state consistency:
 
 Repeat for each leg in the flight.
 
-**Out-of-scope defects found mid-flight**: when you or a Developer finds something broken that this flight isn't chartered to fix, do not fold it into the leg in hand — that is how flights lose their shape. Log it as a squawk via the `/mission-control:squawk` skill and defer it, noting the id in the flight log. Two exceptions: a `grounding` defect sitting directly in this flight's path is completed before the flight continues; and anything that fails the squawk qualification gate (needs design, changes a shared interface or schema) is raised to the operator as a possible new flight instead.
+**Out-of-scope defects found mid-flight**: when you or a Developer finds something broken that this flight isn't chartered to fix, do not fold it into the leg in hand — that is how flights lose their shape. Log it as a squawk via the `/mission-control:squawk` skill and defer it, noting the id in the flight log. Two exceptions: a `grounding` defect sitting directly in this flight's path is completed before the flight continues; and anything that fails the squawk qualification gate (needs design, changes a shared interface or schema) is raised to the operator as a possible new flight or sortie instead.
 
-**Mid-execution scope changes**: if the work in this flight stops serving its original purpose (operator pivots, prior assumptions invalidated), don't rewrite the mission/flight artifacts in place. Preserve the original framing as commentary, record the pivot decision in the flight-log Flight Director Notes with rationale, and treat the new framing as the live spec going forward. If the pivot supersedes content in an upstream artifact (maintenance report, prior debrief), annotate at the artifact header rather than rewriting the body — inspection records are snapshots, not living plans.
+**Mid-execution scope changes**: if the work in this flight stops serving its original purpose (operator pivots, prior assumptions invalidated), don't rewrite the mission/flight artifacts in place. Preserve the original framing as commentary, record the pivot decision in the flight-log Flight Director Notes with rationale, and treat the new framing as the live spec going forward. If the pivot supersedes content in an upstream artifact (maintenance report, prior debrief), annotate at the artifact header rather than rewriting the body — inspection records are snapshots, not living plans. If the flight is a sortie and the discovered work is a second, independent cluster of decisions, the sortie does not grow to hold it: land or abort with what the charter covers, and raise the rest to the operator as a new sortie or mission (see the Escalate verb in `/mission-control:sortie`).
 
 ### 2a: Leg Design
 
@@ -131,7 +134,7 @@ After all autonomous legs are implemented (all uncommitted):
 2. **Verify flight log** has entries for all legs
 3. **Verify documentation** — check that CLAUDE.md, README, and other project docs reflect any new commands, endpoints, configuration, or APIs introduced during the flight. If not, spawn a Developer agent to update them.
 4. **Update flight status** to `landed`, performing any transition-time handling `.flightops/ARTIFACTS.md` defines for that transition (default: none)
-5. **Check off flight** in mission artifact
+5. **Check off flight** in mission artifact (sorties have none — skip)
 6. **Signal `[COMPLETE:flight]`**
 
 The flight debrief is a separate step run via `/mission-control:flight-debrief` after the flight lands. The debrief transitions the flight to `completed`.
@@ -179,7 +182,7 @@ Log orchestration decisions in the flight log under `### Flight Director Notes` 
 
 ## Git Workflow
 
-All agents work in the project root on a feature branch created at flight start. Branch naming and commit message format follow the project's **Git Conventions** in `.flightops/ARTIFACTS.md` — create the flight branch per that scheme at flight start.
+All agents work in the project root on a feature branch created at flight start. Branch naming and commit message format follow the project's **Git Conventions** in `.flightops/ARTIFACTS.md` — create the flight branch per that scheme at flight start (for a sortie, the sortie branch scheme).
 
 **PR lifecycle:**
 
@@ -195,7 +198,7 @@ All agents work in the project root on a feature branch created at flight start.
 
 {Flight objective — one paragraph}
 
-**Mission**: {Mission Title}
+**Mission**: {Mission Title}  *(for a sortie: **Sortie**: standalone — {charter outcome sentence})*
 
 ## Legs
 

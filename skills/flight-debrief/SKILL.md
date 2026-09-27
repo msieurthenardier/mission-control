@@ -14,6 +14,10 @@ Perform comprehensive post-flight analysis for continuous improvement.
 - Project must be initialized with `/mission-control:init-project` (`.flightops/ARTIFACTS.md` must exist)
 - A flight must have status `landed` before debriefing
 
+## Sorties
+
+A sortie (`/mission-control:flight-debrief sortie {number}`) is a flight with no parent mission, planned via `/mission-control:sortie`. It is debriefed exactly like any flight, and this debrief is the only one it gets — there is no mission debrief behind it. So for a sortie, this skill also does the small part of a mission debrief that applies: assess the charter's success criteria (Phase 3), ask whether a sortie was the right vehicle (Phase 4), and check whether routine maintenance is due (Phase 8). Wherever a step below refers to the mission, read the sortie's charter.
+
 ## Workflow
 
 ### Phase 1: Context Loading
@@ -27,7 +31,7 @@ Perform comprehensive post-flight analysis for continuous improvement.
    - Read `.flightops/ARTIFACTS.md` for how this project handles each artifact — its storage location, format, and any actions the project defines at create and transition time (e.g., transitioning a ticket, posting a notification)
 
 3. **Load flight documentation**
-   - Read the mission for overall context and success criteria
+   - Read the mission for overall context and success criteria (for a sortie, its charter)
    - Read the flight for objectives, design decisions, and checkpoints
    - Read ALL legs to understand the planned implementation
    - Read the complete flight log for ground truth on what happened
@@ -77,6 +81,7 @@ Synthesize Developer input, Architect input, human input, and document analysis 
 #### Outcome Analysis
 - Did the flight achieve its objective?
 - Which mission success criteria did this flight advance?
+- For a sortie: was each of the charter's success criteria met? Record met / not met with a note per criterion, the way a mission debrief assesses a mission's criteria, wherever the project's flight debrief format keeps its outcome assessment
 - Were all checkpoints met?
 - What value was delivered?
 
@@ -115,7 +120,7 @@ Evaluate whether the Flight Control skills (the mission-control plugin) could be
 
 **This phase records; it does not report, and it does not judge.** One flight cannot tell a methodology defect from one awkward afternoon. What it can do is leave a good record.
 
-That record is read twice: by `/mission-control:mission-debrief`, which counts recurrence across the mission, and much later by `/mission-control:service-report`, which the operator runs when they choose — typically after several missions — to sweep every debrief in the project for observations that turned out to be long-running patterns. A vague entry here is invisible to both.
+That record is read twice: by `/mission-control:mission-debrief`, which counts recurrence across the mission (a sortie has no mission debrief, so its record goes straight to the sweep), and much later by `/mission-control:service-report`, which the operator runs when they choose — typically after several missions — to sweep every debrief in the project for observations that turned out to be long-running patterns. A vague entry here is invisible to both.
 
 So be concrete even when the observation feels minor, and especially then. For each one, note what the skill did, what was expected instead, what it cost — rework, a re-run, a wrong artifact, a missed gate — which skill and phase it happened in, and the **installed plugin version** (read `.claude-plugin/plugin.json` from the installed plugin, or take it from `claude plugin list`). The version is what later tells a sweep whether a difficulty survived a release, and it cannot be recovered afterwards.
 
@@ -124,6 +129,10 @@ Record these where the project's flight debrief artifact keeps methodology obser
 #### Mission Skill
 - Did the mission provide adequate context?
 - Were success criteria clear and measurable?
+
+#### Sortie Skill (sorties only)
+- Did the charter provide adequate context, and were its criteria clear and measurable?
+- Was a sortie the right vehicle? Say so concretely if the work behaved like a squawk (no real design decisions) or like a mission (a second decision cluster surfaced, the legs outgrew the soft limit, or the charter kept being reinterpreted)
 
 #### Flight Skill
 - Did the flight structure support execution?
@@ -152,6 +161,16 @@ On confirmation, log each via the `/mission-control:squawk` skill (type `defect`
 ### Phase 7: Flight Status Transition
 
 Ask the user if the flight should be marked as `completed`. If confirmed, update the flight artifact's status from `landed` to `completed`, and perform any transition-time handling the project's `.flightops/ARTIFACTS.md` defines for that transition (default: none).
+
+### Phase 8: Maintenance Check (sorties only)
+
+`/mission-control:routine-maintenance` runs between missions. A project that runs only sorties never reaches a mission boundary, so nothing would ever suggest it.
+
+Count the sorties completed since the newest maintenance report (at the location `.flightops/ARTIFACTS.md` defines), including this one if it was just marked `completed`. If there are three or more, and no mission has completed since that report, add one line to your closing summary:
+
+> "{N} sorties have completed since the last maintenance inspection, with no mission in between. Consider `/mission-control:routine-maintenance` before the next one."
+
+**Recommend only — never invoke it.** If a mission has completed since that report, the mission boundary is already the natural point for maintenance; say nothing here.
 
 ## Guidelines
 

@@ -1,11 +1,11 @@
 ---
 name: routine-maintenance
-description: Between-mission codebase health assessment. Run after `/mission-control:mission-debrief`, never after an individual flight, to verify the codebase is flight-ready or scaffold a maintenance mission. Per-flight findings instead roll into the next flight, get logged as squawks via `/mission-control:squawk`, or accumulate into an end-of-mission maintenance flight — not into this skill.
+description: Between-mission codebase health assessment. Run after `/mission-control:mission-debrief`, or after several sorties in a project with no mission in between — never after an individual flight or sortie — to verify the codebase is flight-ready or scaffold a maintenance mission. Per-flight findings instead roll into the next flight, get logged as squawks via `/mission-control:squawk`, or accumulate into an end-of-mission maintenance flight — not into this skill.
 ---
 
 # Routine Maintenance
 
-Perform an exhaustive, aviation-style codebase inspection after a mission completes — not after individual flights. Produces a findings report and optionally scaffolds a maintenance mission for significant issues.
+Perform an exhaustive, aviation-style codebase inspection after a mission completes — not after individual flights. In a project running sorties (standalone flights, via `/mission-control:sortie`) with no mission in between, the equivalent boundary is several completed sorties; `/mission-control:flight-debrief` recommends it once three have accumulated since the last inspection. Produces a findings report and optionally scaffolds a maintenance mission for significant issues.
 
 ## Prerequisites
 
@@ -37,6 +37,7 @@ Perform an exhaustive, aviation-style codebase inspection after a mission comple
    - Read the most recently completed mission for outcome, success criteria, and known issues
    - Read its mission debrief for lessons learned and action items
    - Read its flight debriefs for per-flight technical debt and recommendations
+   - Also read the sorties completed since the last maintenance report, and their flight debriefs — a sortie has no mission debrief, so its debrief is the only record of the debt it left. When sorties are the whole trigger for this inspection, they replace the mission context above
    - This provides known-debt context so the inspection can distinguish new issues from acknowledged ones
 
 6. **Identify project stack**
@@ -296,7 +297,7 @@ Persist the maintenance report following the conventions `.flightops/ARTIFACTS.m
 - Delegation effectiveness notes (for refining future inspections)
 - Recommendations
 
-**Methodology corpus notice**: this skill runs between missions, which is the one place in Flight Control that sees mission boundaries accumulate. Count the mission debriefs in the project. If there are three or more and the project has no service report artifacts — or its newest one predates the last two missions — add one line to the report:
+**Methodology corpus notice**: this skill runs between missions, which is the one place in Flight Control that sees mission boundaries accumulate. Count the mission debriefs in the project, counting each debriefed sortie as a mission too (a sweep treats it as one). If there are three or more and the project has no service report artifacts — or its newest one predates the last two missions — add one line to the report:
 
 > "{N} missions of debriefs have accumulated and `/mission-control:service-report` has not been run against them. It sweeps flight and mission debriefs for methodology friction that turned out to be a recurring trend, and files it upstream. Operator-invoked; nothing runs it for you."
 
