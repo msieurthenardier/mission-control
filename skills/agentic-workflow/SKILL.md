@@ -104,6 +104,7 @@ Repeat for each leg in the flight.
    - Provide the "Implement" prompt from the leg-execution phase file's Prompts section
    - The Developer updates leg status to `in-flight`, implements to acceptance criteria
    - When done, the Developer updates leg status to `landed`, updates the flight log, and signals `[LAND:leg]` — it does not commit
+   - In your spawn prompt, state that these completion steps override any completion checklist carried in the leg file itself — legs planned under an older protocol may tell it to commit, mark the leg `completed`, or signal `[COMPLETE:leg]`
    - In your spawn prompt, instruct the Developer that whenever it changes the leg's status, it must also perform any transition-time handling the project's `.flightops/ARTIFACTS.md` defines for that transition (default: none). State this directly in the prompt — don't assume the crew file carries it.
 
 ### 2c: Leg Transition

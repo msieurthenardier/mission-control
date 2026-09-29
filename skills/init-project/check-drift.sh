@@ -164,6 +164,12 @@ if [[ -f "$ARTIFACTS" ]]; then
   if ! grep -q "^### Sortie" "$ARTIFACTS" 2>/dev/null; then
     echo "migration-pending:011"
   fi
+
+  # 012 - Leg format still carries the per-leg completion checklist, which 008
+  # left behind; it names the retired [COMPLETE:leg] signal
+  if grep -q "COMPLETE:leg" "$ARTIFACTS" 2>/dev/null; then
+    echo "migration-pending:012"
+  fi
 fi
 
 # 007 - pre-plugin Flight Operations section in the project's CLAUDE.md.
