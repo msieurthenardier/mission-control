@@ -18,6 +18,14 @@ This project stores Flight Control artifacts as markdown files in the repository
 │               ├── flight-debrief.md
 │               └── legs/
 │                   └── {NN}-{leg-slug}.md
+├── sorties/
+│   └── {NN}-{sortie-slug}/                 ← standalone flight, no parent mission
+│       ├── flight.md
+│       ├── flight-log.md
+│       ├── flight-briefing.md
+│       ├── flight-debrief.md
+│       └── legs/
+│           └── {NN}-{leg-slug}.md
 ├── maintenance/
 │   └── {YYYY-MM-DD}.md
 ├── squawks/
@@ -41,6 +49,7 @@ This project stores Flight Control artifacts as markdown files in the repository
 
 - **Slugs**: Lowercase, kebab-case, derived from title (e.g., "User Authentication" → `user-authentication`)
 - **Sequence numbers**: Missions, flights, and legs use two-digit prefixes (`01`, `02`, etc.) for ordering
+- **Sortie numbers**: Two-digit prefixes like missions (`01`, `02`, …), on their own project-wide sequence, widening past `99` as needed
 - **Squawk ids**: Monotonically increasing integers, project-wide, zero-padded to a minimum of four digits and widening past that as needed (`0001`, `0002`, … `9999`, `10000`, …). Unbounded by design — a long-lived project will pass any fixed width. Never reused, even after a squawk is completed or escalated.
 - **Service report ids**: Same scheme as squawk ids, on a separate sequence.
 
@@ -52,6 +61,8 @@ How flight work is named in version control. Skills read these — adjust them t
 
 - **Flight branch**: `flight/{number}-{slug}` — created at flight start (`git checkout -b flight/{number}-{slug}`)
 - **Commit subject**: `flight/{number}: {description}`, with a `Mission: {mission-number}` trailer
+- **Sortie branch**: `sortie/{number}-{slug}` — created at sortie execution start
+- **Sortie commit subject**: `sortie/{number}: {description}`
 - **Squawk branch**: `squawk/{id}-{slug}` for a single squawk; `squawk/turnaround-{YYYY-MM-DD}` when completing a batch of two or more
 - **Squawk commit subject**: `squawk/{id}: {description}` for a single squawk; `squawk: turnaround {YYYY-MM-DD}` for a batch, with a `Squawks: {id}, {id}` trailer listing every id completed
 
@@ -271,6 +282,48 @@ Completion steps — status transitions, flight-log update, checking off in the 
 
 ---
 
+### Sortie
+
+| Property | Value |
+|----------|-------|
+| Location | `sorties/{NN}-{slug}/flight.md` |
+| Created | During sortie planning |
+| Updated | Until status changes to `in-flight` |
+| Managed by | `/mission-control:sortie` (planning), then the flight skills |
+
+A sortie is a **flight with no parent mission**: one self-contained outcome with one cluster of design decisions, fitting one flight. Its directory holds the same files as a flight's — flight log, briefing, debrief, and `legs/` — in the same formats. The sortie artifact uses the Flight format above, with the mission link and contributing criteria replaced by a short **charter** that carries what the mission would have: outcome, why now, success criteria, constraints. Wherever the flight briefing or flight debrief format refers to the mission, the charter stands in.
+
+**Format:**
+
+```markdown
+# Sortie: {Title}
+
+**Status**: planning | ready | in-flight | landed | completed | aborted
+
+## Charter
+
+### Outcome
+One sentence, in human terms: what is different for the user when this lands.
+
+### Why Now
+What prompted this work.
+
+### Success Criteria
+- [ ] Criterion 1 (observable, binary)
+- [ ] Criterion 2
+
+### Constraints
+Non-negotiable boundaries, if any.
+
+---
+
+## Pre-Flight
+{Continues exactly as the Flight format: Objective, Open Questions, Design Decisions,
+Prerequisites, Pre-Flight Checklist, In-Flight, Post-Flight.}
+```
+
+---
+
 ### Squawk
 
 | Property | Value |
@@ -318,7 +371,7 @@ How the fix was confirmed — the command run, the test added, the observation m
 *(only for deferred or escalated squawks)*
 **Deferred**: {reason} — revisit when {trigger}
 **Escalated**: {which qualification criterion it failed and what was found} →
-[{Flight or Mission Title}]({path})
+[{Sortie, Flight, or Mission Title}]({path})
 ```
 
 ---

@@ -12,7 +12,7 @@ Create a technical flight spec from a mission.
 ## Prerequisites
 
 - Project must be initialized with `/mission-control:init-project` (`.flightops/ARTIFACTS.md` must exist)
-- A mission must exist before creating a flight
+- A mission must exist before creating a flight. For work with no parent mission — one self-contained outcome with one cluster of design decisions — use `/mission-control:sortie`, which qualifies the work, agrees a short charter, and then runs this skill's design phases
 
 ## Workflow
 
@@ -26,7 +26,7 @@ Create a technical flight spec from a mission.
 2. **Read the artifact configuration**
    - Read `.flightops/ARTIFACTS.md` for how this project handles each artifact — its storage location, format, and any actions the project defines at create and transition time (e.g., transitioning a ticket, posting a notification)
 
-3. **Read the parent mission**
+3. **Read the parent mission** (for a sortie, its charter)
    - Understand the outcome being pursued
    - Identify which success criteria this flight addresses
    - Note constraints that apply
@@ -186,7 +186,7 @@ Size flights by decision and risk scope, not effort or duration:
 - Resolves one coherent cluster of design decisions — open questions that can be settled in a single planning conversation
 - Breaks into 1-4 legs typically — each a coherent feature slice; often 1-2 plus an optional HAT leg
 - Has a clear, verifiable objective
-- Addresses specific mission criteria
+- Addresses specific mission criteria (for a sortie, the charter's criteria)
 
 **Too small**: No flight-level design decisions to resolve — a single obvious change
 **Too large**: Spans multiple independent design-decision clusters or risk domains that each warrant their own planning conversation and review gate — sheer volume of implementation work is not by itself too large

@@ -20,7 +20,7 @@ That is the central design decision, and it follows from what the reports are fo
 
 What a maintainer can act on is a pattern: the same friction, in a working project, across missions, surviving plugin releases. So the threshold is **at least three independent observations spanning at least two missions**. Below that, the observation stays in the corpus and the next sweep sees whether it kept happening.
 
-An *independent observation* is one distinct occurrence — a single time the methodology did the thing — not one document mentioning it. The distinction is load-bearing, because the corpus double-reports by construction: a mission debrief's methodology feedback is derived from its own flight debriefs, so the same occurrence appears in both. Counting documents would inflate every trend by roughly double and make two occurrences look like a pattern. Maintenance reports and escalated squawks corroborate but do not count toward the three; neither can be placed in the mission span the threshold measures.
+An *independent observation* is one distinct occurrence — a single time the methodology did the thing — not one document mentioning it. The distinction is load-bearing, because the corpus double-reports by construction: a mission debrief's methodology feedback is derived from its own flight debriefs, so the same occurrence appears in both. Counting documents would inflate every trend by roughly double and make two occurrences look like a pattern. A [sortie](sorties.md) — a flight with no parent mission — counts as its own mission for the span. Maintenance reports and escalated squawks corroborate but do not count toward the three; neither can be placed in the mission span the threshold measures.
 
 The division of labour:
 

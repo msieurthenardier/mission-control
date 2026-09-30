@@ -168,6 +168,8 @@ The test for "too small" is outcome, not flight count — a single-flight missio
 - Would a stakeholder recognize this as valuable?
 - Does it warrant its own success criteria?
 
+Work that is one self-contained outcome with a single cluster of design decisions, fitting one flight, may not need a mission at all. A [sortie](sorties.md) is a flight with no parent mission, carrying a short charter in its place.
+
 ### Too Vague
 
 Missions need boundaries. "Improve the product" isn't a mission—it's a direction. Missions should be:

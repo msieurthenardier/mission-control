@@ -50,6 +50,8 @@ Before asking structured questions, share a brief summary of what you learned du
 
 Use the user's response to inform and focus the interview questions that follow.
 
+If the work is already clearly sortie-sized (see Mission Sizing), say so now and offer `/mission-control:sortie` before running the full interview. The user decides; proceed with the mission if they prefer it.
+
 ### Phase 3: Interview
 
 Ask about outcomes, not tasks. Focus on:
@@ -121,6 +123,8 @@ Size missions by outcome coherence and risk, not effort or duration:
 - Complexity and risk set the flight count, not volume of work: each flight boundary must earn its place at a genuine decision or risk seam (see Flight Identification)
 
 **Too small**: A task, not an outcome — nothing a stakeholder would recognize as independently valuable. A single-flight mission is legitimate when the work shares one risk profile.
+
+**Sortie-sized**: One self-contained outcome with a single cluster of design decisions, not part of a larger initiative, fitting one flight. Recommend `/mission-control:sortie` instead — it keeps the flight's rigor and drops the mission ceremony. Offer it rather than insisting; a single-flight mission is still right when the outcome needs stakeholder framing, several success-criteria conversations, or room to add flights later.
 **Too large**: Bundles multiple independent outcomes, or success criteria are vague or numerous (>10)
 
 ### Flight Identification

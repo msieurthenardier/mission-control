@@ -56,13 +56,13 @@ Record the **installed plugin version** now, from `${SKILL_DIR}/../../.claude-pl
 Read every artifact in this project that records how the methodology behaved. Locate them per `ARTIFACTS.md`:
 
 - **Mission debriefs** — methodology feedback, process analysis, lessons learned
-- **Flight debriefs** — skill-effectiveness analysis, what could be improved, deviations
+- **Flight debriefs**, sorties' included — skill-effectiveness analysis, what could be improved, deviations
 - **Maintenance reports** — findings attributed to process rather than code
-- **Escalated squawks** — a squawk that failed its qualification gate often marks a place where the methodology mis-sorted the work
+- **Escalated squawks and sorties** — a squawk or sortie that failed its qualification gate often marks a place where the methodology mis-sorted the work
 
 **Do this in two passes.** A mature corpus does not fit in one context, and a partial read fails silently and directionally: it undercounts, the threshold is a count, and an undercount reads as "no trend here."
 
-1. **Extract.** Artifact by artifact, reduce each to its methodology observations, written to a working file **outside the project tree** (`mktemp -d`). Per observation: what the methodology did, what was expected, what it cost, the skill and phase, the flight and mission it belongs to, the date, and the plugin version if the artifact records one. Frame the extraction by intent — what you are looking for — rather than by section heading; project-owned artifacts do not owe you a fixed structure.
+1. **Extract.** Artifact by artifact, reduce each to its methodology observations, written to a working file **outside the project tree** (`mktemp -d`). Per observation: what the methodology did, what was expected, what it cost, the skill and phase, the flight and mission it belongs to (for a sortie, the sortie is both), the date, and the plugin version if the artifact records one. Frame the extraction by intent — what you are looking for — rather than by section heading; project-owned artifacts do not owe you a fixed structure.
 2. **Cluster over the extracts only**, never over the original artifacts.
 
 Count **artifacts found** against **artifacts read**. If they differ, say so plainly. **Do not make a threshold decision on an incomplete sweep** unless the operator is told the coverage and accepts it explicitly — a filing based on a partial corpus is a confidently quantified guess.
@@ -86,7 +86,9 @@ A cluster is a trend when it has **at least three independent observations spann
 
 **An independent observation is one distinct underlying occurrence** — a single time the methodology did the thing, attributed to the flight it happened in. It is *not* one artifact mentioning it. This matters because the corpus double-reports by construction: a mission debrief's methodology feedback is derived from its flight debriefs, so the same occurrence appears in both. **That is one observation, not two.** Count occurrences, never documents.
 
-Maintenance reports and escalated squawks are **corroborating only**. They strengthen a trend's description and its cost, and they do not count toward the three — a squawk has no parent flight or mission, and a maintenance report sits between missions, so neither can be placed in the span the threshold measures.
+**A sortie counts as its own mission** for the span. It is a standalone flight with no parent mission, planned and debriefed on its own, so its occurrences are as independent of any mission's as two missions' are of each other. Its flight debrief is its only debrief — there is no mission debrief restating it to de-duplicate.
+
+Maintenance reports and escalated squawks are **corroborating only**. They strengthen a trend's description and its cost, and they do not count toward the three — a squawk has no parent flight or mission, and a maintenance report sits between missions, so neither can be placed in the span the threshold measures. A sortie escalated to a mission during planning is corroborating in the same way: the escalation itself marks a place where the methodology mis-sorted the work.
 
 Below the threshold, a cluster is an event. Leave it in the corpus and say so — the next sweep will pick it up if it keeps happening.
 

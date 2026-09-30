@@ -18,7 +18,7 @@ A squawk is Flight Control's unit for work too small to be a mission. It is **no
 3. **Bounded blast radius** — no shared-interface changes, no schema/migration changes, no lifecycle or state-machine changes, no security-sensitive surface
 4. **Verifiable** — an existing test covers it, or one new test does
 
-If any one of these fails, it is not a squawk. Recommend `/mission-control:mission` (new outcome) or `/mission-control:flight` (new work under an active mission) instead, and say which criterion it failed.
+If any one of these fails, it is not a squawk. Recommend `/mission-control:sortie` (one self-contained outcome with one cluster of design decisions), `/mission-control:flight` (new work under an active mission), or `/mission-control:mission` (a larger outcome) instead, and say which criterion it failed.
 
 **Types:**
 
@@ -47,7 +47,7 @@ If any one of these fails, it is not a squawk. Recommend `/mission-control:missi
 /mission-control:squawk list                               List open, in-progress, and deferred squawks
 /mission-control:squawk complete {id} [{id} ...]         Complete one squawk or a batch
 /mission-control:squawk defer {id}                        Carry a squawk forward with a reason
-/mission-control:squawk escalate {id}                     Promote to a flight or mission
+/mission-control:squawk escalate {id}                     Promote to a sortie, flight, or mission
 ```
 
 ## Context Loading (all verbs)
@@ -59,7 +59,7 @@ If any one of these fails, it is not a squawk. Recommend `/mission-control:missi
 
 ## Verb: Log
 
-1. **Qualify it.** Check the four criteria above out loud. If it fails one, say which, recommend `/mission-control:mission` or `/mission-control:flight`, and stop — do not log a squawk as a workaround for scope.
+1. **Qualify it.** Check the four criteria above out loud. If it fails one, say which, recommend `/mission-control:sortie`, `/mission-control:flight`, or `/mission-control:mission`, and stop — do not log a squawk as a workaround for scope.
 2. **Interview briefly** — this is a lightweight artifact, so keep it to what's missing. At most:
    - For a `defect`: what was observed, where, and how to reproduce
    - For `servicing`: what needs updating and why now
@@ -143,8 +143,8 @@ When a squawk turns out to exceed its scope:
 
 1. Set status `escalated` and record which of the four criteria it failed and what was discovered
 2. Confirm no partial changes remain in the working tree
-3. Recommend the right vehicle — `/mission-control:flight` if an active mission covers it, `/mission-control:mission` if not
-4. Once the flight or mission exists, link it from the squawk
+3. Recommend the right vehicle — `/mission-control:flight` if an active mission covers it; `/mission-control:sortie` if it is one self-contained outcome with one cluster of design decisions (the usual case for a squawk that turned out to need a design call or touch an interface); `/mission-control:mission` if it is bigger than that
+4. Once the sortie, flight, or mission exists, link it from the squawk
 
 The escalation gate is what keeps this path from becoming a bypass for real work. Aviation has the same rule: open the panel, find something bigger, and the aircraft goes to the hangar.
 
@@ -173,7 +173,7 @@ Every completed squawk gets an independent Reviewer, however trivial the change.
 
 ### Squawks Are Not a Backlog
 
-This is a defect log, not a feature tracker. Anything that adds behavior a user would notice as new is a mission or a flight, no matter how small it looks. If the answer to "is this broken?" is no and the answer to "is this upkeep?" is also no, it does not belong here.
+This is a defect log, not a feature tracker. Anything that adds behavior a user would notice as new is a sortie, a flight, or a mission, no matter how small it looks. If the answer to "is this broken?" is no and the answer to "is this upkeep?" is also no, it does not belong here.
 
 ## Output
 

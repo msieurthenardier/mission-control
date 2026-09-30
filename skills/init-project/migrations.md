@@ -260,11 +260,68 @@ The Flight Operations snippet installed by 007 told the Flight Director what to 
 
 ---
 
+### 011 — Install the Sortie artifact and conventions
+
+Work between a squawk and a mission had no proportional vehicle. A small feature — one outcome, one cluster of design decisions, one flight — fails the squawk gate (it adds behavior, touches an interface, or needs a design call), yet a mission's full interview, separate artifact, and mission debrief cost more than the work. The **sortie** — a flight with no parent mission, carrying a short charter in the mission's place, planned via `/mission-control:sortie` — fills that gap. Projects initialized before this change have nowhere to store one.
+
+No crew file is needed: sorties reuse the existing `flight-design.md`, `leg-execution.md`, and `flight-debrief.md` crews.
+
+**Detected by** `check-drift.sh` → `migration-pending:011`. Apply after 001–010.
+
+**Actions:**
+
+1. Append a `Sortie` artifact section to the project's `ARTIFACTS.md`, alongside the other core artifacts, before the `Squawk` section. The canonical section lives in `${SKILL_DIR}/templates/ARTIFACTS-files.md` — location `sorties/{NN}-{slug}/flight.md`, and a format that is the flight format with the mission link and contributing criteria replaced by a charter (outcome, why now, success criteria, constraints).
+
+2. Add a sortie number convention to the naming conventions section:
+
+   ```markdown
+   - **Sortie numbers**: Two-digit prefixes like missions (`01`, `02`, …), on their own project-wide sequence, widening past `99` as needed
+   ```
+
+3. Add sortie branch and commit naming to the `Git Conventions` section:
+
+   ```markdown
+   - **Sortie branch**: `sortie/{number}-{slug}` — created at sortie execution start
+   - **Sortie commit subject**: `sortie/{number}: {description}`
+   ```
+
+4. Add the `sorties/{NN}-{sortie-slug}/` subtree (same files as a flight directory) to the Directory Structure tree.
+
+   - If the operator has heavily modified ARTIFACTS.md (e.g. a non-filesystem artifact backend), surface the proposed insertions and ask before writing. Defer to the operator on placement and on how sorties map onto their backend — for a ticket-based backend, a sortie is typically a flight-level ticket with no parent epic.
+
+**User message:**
+> Adding a `Sortie` artifact section to ARTIFACTS.md, plus sortie numbering and branch/commit conventions. A sortie is a standalone flight with no parent mission — for one small outcome that needs a design call but not a mission — planned via `/mission-control:sortie`. It reuses your existing flight crews, so no new crew file. Existing artifacts unaffected.
+
+---
+
+### 012 — Retire the per-leg completion checklist from the Leg format
+
+Migration 008 moved leg execution to the flight-end review and commit but only rewrote the crew file. The old protocol has a second carrier: projects initialized before the skill/ARTIFACTS.md boundary split still have a per-leg completion checklist in the Leg format of `.flightops/ARTIFACTS.md` — mark the leg `completed`, check it off in `flight.md`, land the flight and check it off in `mission.md` on the final leg, commit, signal `[COMPLETE:leg]`. `/mission-control:flight` copies that format into every new leg, and the Developer reads the leg, so each leg hands the Developer instructions that contradict its prompt: commit one leg on its own, emit a signal the Flight Director is not waiting for, and set statuses the flight-end review exists to gate.
+
+The current template replaces the checklist with a one-line note that completion steps are protocol. The protocol itself lives in `FLIGHT_OPERATIONS.md`, which re-syncs, so it cannot drift again. Like 008, this is a migration rather than informational drift because signals and the commit cadence are methodology, not project customization.
+
+**Detected by** `check-drift.sh` → `migration-pending:012`, when `ARTIFACTS.md` names the retired `[COMPLETE:leg]` signal. Apply after 001–011. Apply between flights: a flight already in progress under the old checklist should land first.
+
+**Actions:**
+
+1. In `.flightops/ARTIFACTS.md`, find the leg completion checklist in the Leg format — the one that names `[COMPLETE:leg]` — and replace it with the current template's note from `${SKILL_DIR}/templates/ARTIFACTS-files.md`: completion steps (status transitions, flight-log update, checking off in the parent flight, commit) are Flight Control protocol, driven by the execution workflow, and are not repeated in the leg. Keep the project's heading for it if it has one.
+   - Do not rewrite the checklist to match the new protocol: a copy in a file that never re-syncs is what drifted.
+   - If the project added its own items to the checklist, show them to the operator and keep any that are project convention rather than protocol.
+
+2. Find leg artifacts (per `ARTIFACTS.md`) whose status is `planning` or `ready` and that carry the old checklist — they will be executed under the new protocol. List them for the operator and, on confirmation, make the same replacement in each. Leave legs at `in-flight` or later alone: they are records of flights run under the old protocol.
+
+3. Re-run `check-drift.sh`; `migration-pending:012` must no longer fire.
+
+**User message:**
+> Replacing the leg completion checklist in `.flightops/ARTIFACTS.md` with a pointer to the protocol in `FLIGHT_OPERATIONS.md`. The old checklist told the Developer to commit each leg and signal `[COMPLETE:leg]`, which contradicts the flight-end review and commit. Legs not yet started get the same change with your confirmation; legs already flown are left as they are.
+
+---
+
 ## Adding Future Migrations
 
 To add a new migration:
 
-1. Assign the next sequential ID (e.g., `011`)
+1. Assign the next sequential ID (e.g., `013`)
 2. Add its detection to `check-drift.sh` — emit `migration-pending:{id}` when the migration is needed, and nothing once it's been applied (idempotent)
 3. Document it here: rationale, the **Actions** to perform (prefer `mv` over copy-and-delete to preserve file contents and git history), and a short **User message**
 4. Note ordering if it depends on an earlier migration having run

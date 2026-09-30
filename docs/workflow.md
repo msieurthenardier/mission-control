@@ -389,6 +389,17 @@ Sometimes missions should be cancelled:
 
 Document the reason for future reference.
 
+## The Short Path: Sorties
+
+Not every outcome needs Phase 1. When the work is one self-contained outcome with a single cluster of design decisions, fitting one flight, a [sortie](sorties.md) skips the mission and starts at Phase 2:
+
+1. **Qualify and charter** — `/mission-control:sortie` checks the qualification gate, then agrees a short charter (outcome, why now, success criteria, constraints) in place of the mission. The charter is the phase gate: it must be agreed before the flight is designed.
+2. **Design the flight** — Phases 2 and 3 above, with the charter standing in for the mission.
+3. **Execute** — Phases 4 and 5, via `/mission-control:agentic-workflow sortie {NN}`. There is no mission to check off.
+4. **Debrief** — `/mission-control:flight-debrief sortie {NN}` is the only debrief. It also assesses the charter's criteria — the part of Phase 6 that applies.
+
+If flight design surfaces a second, independent cluster of decisions, the sortie escalates to a mission and becomes its first flight. It never widens in place.
+
 ## State Summary
 
 ### All States in One View
@@ -415,6 +426,7 @@ planning ──► ready ──► in-flight ──► landed ──► complete
 ### Create New
 
 - **Mission**: New outcome needed
+- **Sortie**: New outcome needed that fits one flight with one cluster of design decisions
 - **Flight**: New area of work identified
 - **Leg**: Requirements changed after `in-flight`
 

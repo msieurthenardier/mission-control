@@ -30,9 +30,10 @@
 - **Missions**: `planning` → `active` → `completed` (or `aborted`)
 - **Flights**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
 - **Legs**: `planning` → `ready` → `in-flight` → `landed` → `completed` (or `aborted`)
+- **Sorties**: the flight lifecycle — a sortie is a flight with no parent mission, see below
 - **Squawks**: `open` → `in-progress` → `completed` (or `deferred` / `escalated`) — outside the hierarchy, see below
 
-**Phase gates require confirmation.** A mission must be fully agreed with the human before any flight is designed; a flight must be fully agreed before any leg is designed. Never skip ahead — get explicit confirmation at each transition. Squawks sit outside these gates by design; their equivalent control is the qualification gate in the Squawks section.
+**Phase gates require confirmation.** A mission must be fully agreed with the human before any flight is designed; a flight must be fully agreed before any leg is designed. For a sortie, the charter takes the mission's place and must be agreed before the flight is designed. Never skip ahead — get explicit confirmation at each transition. Squawks sit outside these gates by design; their equivalent control is the qualification gate in the Squawks section.
 
 ---
 
@@ -119,6 +120,25 @@ Emit at the end of your response, on its own line:
 
 ---
 
+## Sorties — One Flight, No Mission
+
+Some work needs a flight but not a mission: one outcome a user would notice, one cluster of design decisions, one flight. A **sortie** is a flight with no parent mission. It carries a short **charter** — outcome, why now, success criteria, constraints — in the mission's place, and is otherwise a flight in every respect: same artifact, same lifecycle, same crews, same execution and debrief. Planned via `/mission-control:sortie`; executed via `/mission-control:agentic-workflow sortie {NN}`; debriefed via `/mission-control:flight-debrief sortie {NN}`. Stored per `ARTIFACTS.md` (default `sorties/{NN}-{slug}/`).
+
+**It's a sortie only if all four hold:**
+
+1. One self-contained outcome — new or changed behavior, statable in one sentence, not a step toward a larger outcome
+2. One cluster of design decisions, settled in one planning conversation
+3. Fits one flight — typically 1-2 legs plus an optional HAT leg
+4. No new subsystem and no cross-cutting architecture change
+
+No design decisions and nothing new? It's a squawk. More than one decision cluster, or part of a larger initiative? It's a mission. Unlike a squawk, a sortie **may** touch a shared interface, a schema, or a security-sensitive surface — it gets the full flight review.
+
+**A sortie never grows in place.** If flight design surfaces a second, independent cluster of decisions, the sortie is escalated to a mission and becomes its first flight. Once in flight, it lands or aborts with what its charter covers, and the rest becomes a new sortie or mission.
+
+The flight debrief is a sortie's only debrief, so it also assesses the charter's success criteria and whether a sortie was the right vehicle.
+
+---
+
 ## Squawks — Small Fixes Outside the Hierarchy
 
 Not every fix deserves a mission. A **squawk** is a standalone artifact for work too small to plan: one defect, or one routine servicing update. It has no parent mission, no flight, no leg, and no debrief. Logged and completed via `/mission-control:squawk`; stored per `ARTIFACTS.md` (default `squawks/{id}-{slug}.md`).
@@ -130,7 +150,7 @@ Not every fix deserves a mission. A **squawk** is a standalone artifact for work
 3. Bounded blast radius — no shared-interface, schema/migration, lifecycle, or security-sensitive changes
 4. Verifiable by an existing test, or one new one
 
-Fail any one, and it's a flight or a mission. **This gate is the whole point** — a squawk that starts growing is marked `escalated` and handed to `/mission-control:flight` or `/mission-control:mission`, never quietly expanded. If you are implementing a squawk and the fix spreads beyond the reported surface, stop, revert, and emit `[BLOCKED:exceeds-squawk-scope]`.
+Fail any one, and it's a sortie, a flight, or a mission. **This gate is the whole point** — a squawk that starts growing is marked `escalated` and handed to `/mission-control:sortie`, `/mission-control:flight`, or `/mission-control:mission`, never quietly expanded. If you are implementing a squawk and the fix spreads beyond the reported surface, stop, revert, and emit `[BLOCKED:exceeds-squawk-scope]`.
 
 **Types**: `defect` (something is broken) | `servicing` (dependency bump, config, lint rule, doc fix).
 **Severity**: `grounding` (complete before further work in that area) | `routine` (carry to the next turnaround).
@@ -219,7 +239,7 @@ Deferred issues go in the flight log.
 | 2 | **Mark legs completed** — Check off acceptance criteria and set every leg's status to `completed` |
 | 3 | **Update flight** — Check off every leg in flight.md; add a flight completion entry to the flight log |
 | 4 | **Update flight status** — Set `**Status**: landed` in flight.md |
-| 5 | **Update mission** — Check off this flight in mission.md |
+| 5 | **Update mission** — Check off this flight in mission.md (a sortie has no mission — skip) |
 | 6 | **Update project docs** — Ensure CLAUDE.md, README, and other docs reflect any new commands, endpoints, configuration, or APIs introduced during the flight |
 | 7 | **Commit** — All code changes plus every updated artifact, following the Git Conventions in `ARTIFACTS.md` |
 | 8 | Report the commit ref |

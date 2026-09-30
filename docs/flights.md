@@ -383,6 +383,8 @@ Flights serve missions. Each flight should clearly link to:
 
 This traceability ensures flights aren't orphaned work—they connect to meaningful outcomes.
 
+A [sortie](sorties.md) is the one flight with no parent mission. It is still connected to an outcome: its **charter** — outcome, why now, success criteria, constraints — stands in for the mission link, and the flight contributes to all of the charter's criteria.
+
 ## Connecting to Child Legs
 
 Flights generate legs. The flight defines *what* needs to happen; legs define the *exact* implementation steps.
