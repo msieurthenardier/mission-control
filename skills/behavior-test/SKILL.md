@@ -97,6 +97,8 @@ The argument is the spec's slug (no path, no extension). The skill resolves the 
 6. Compute run timestamp `YYYY-MM-DD-HH-MM-SS` (UTC).
 7. Compute the ephemeral evidence directory: `/tmp/behavior-tests/<project-slug>/<slug>/<ts>/`. Create it. **This is never under the project tree.** Evidence files (screenshots, snapshots, eval JSON, log captures) are local-only and not committed — they may contain PII (operator-visible chat, sidebar member lists, env-derived IDs) and are cheap to regenerate by re-running the spec. The only behavior-test artifacts that ever live in the project tree are the spec (`{behavior-test-dir}/<slug>.md`) and the run log (`{behavior-test-dir}/<slug>/runs/<ts>.md`).
 
+**Crew models**: every spawn in this skill — Executor, Validator, any specialized validator, and each per-checkpoint re-spawn — uses the model the crew file assigns to that role, passed as the spawn's `model` parameter (`haiku`, `sonnet`, or `opus`). An omitted `model` runs the agent on this session's model, usually the most expensive one available; omit it only when the crew file assigns the role no model.
+
 ### Phase 2: Spawn Executor (live)
 
 Spawn via `Agent` tool with `subagent_type: general-purpose`, using the **Executor: Initial** prompt from `.flightops/agent-crews/behavior-tests-execution.md` (fall back to the skill's shipped defaults if the project's crew file is missing). The initial prompt:

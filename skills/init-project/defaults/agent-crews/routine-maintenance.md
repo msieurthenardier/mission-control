@@ -8,7 +8,9 @@ for severity assessment and roundtable moderation.
 
 ### Inspector
 - **Context**: project root (current working directory)
-- **Model**: Sonnet
+- **Model**: Haiku (raise to Sonnet where a missed finding is costly — the
+  Architect re-assesses every finding the Inspector reports, but never sees
+  one it missed)
 - **Role**: Performs broad read-only codebase inspection across all applicable
   categories. Runs test suites, linters, type checkers, audit commands, and
   manual code review. Returns structured findings without modifying any files.

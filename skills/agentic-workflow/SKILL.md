@@ -161,7 +161,7 @@ The Flight Director (you) orchestrates according to this skill. Project crew com
 
 **Separation is mandatory.** Project crew agents run in the project and load its CLAUDE.md and conventions. The Reviewer has no knowledge of the Developer's reasoning — only the resulting changes. This provides objective review.
 
-**Model selection:** Follow the model preferences in the phase file. MC may use Opus for complex planning. Never use Opus for the Reviewer.
+**Model selection:** Spawn each crew agent with the model the phase file assigns to its role, passed as the spawn's `model` parameter (`haiku`, `sonnet`, or `opus`). An omitted `model` runs the agent on this session's model, usually the most expensive one available; omit it only when the phase file assigns the role no model. MC may use Opus for complex planning. Never use Opus for the Reviewer.
 
 ## Handoff Signals
 
