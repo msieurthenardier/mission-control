@@ -30,7 +30,7 @@ skills/init-project/            # Also carries the synced methodology files (FLI
                                 # README.md), templates/, defaults/agent-crews/, migrations.md,
                                 # and check-drift.sh
 hooks/hooks.json                # SessionStart hook wiring (uses ${CLAUDE_PLUGIN_ROOT})
-hooks/check-project-drift.sh    # One-line drift notice for the current project
+hooks/check-project-drift.sh    # One-line drift notice for the current project, plus a daily plugin update check
 docs/                           # Methodology documentation
 .github/ISSUE_TEMPLATE/         # Receiving end for service reports filed by plugin consumers
 ```
@@ -55,6 +55,8 @@ Projects carry copies of the synced methodology files, crew defaults, and an `AR
 - A change that needs edits to project-owned files (`ARTIFACTS.md`, `CLAUDE.md`, crew files) needs a new migration: add detection to `skills/init-project/check-drift.sh` (the single source of detection) and an entry in `skills/init-project/migrations.md`. See "Adding Future Migrations" there.
 
 The SessionStart hook surfaces drift in one line and recommends `/mission-control:preflight-check` or `/mission-control:init-project`. Hooks and skills recommend only; `init-project` owns applying migrations, with confirmation.
+
+The same hook tells the operator when a newer plugin version is published, because Claude Code does not refresh third-party marketplaces with auto-update off. It reads `version` from `.claude-plugin/plugin.json` on the default branch of the manifest's `repository`, at most once a day, caching the result in the plugin's data directory. A merged version bump is therefore what announces a release; bumping on a branch announces nothing.
 
 ## Skill–Project Boundary
 

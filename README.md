@@ -78,6 +78,8 @@ All steps run in Claude Code from your project's root directory.
 
 When the plugin updates, projects initialized against an older version drift. A SessionStart hook prints a one-line notice in any project that is behind; run `/mission-control:preflight-check` for the full report and `/mission-control:init-project` to apply migrations and re-sync methodology files.
 
+Claude Code only refreshes third-party marketplaces that have auto-update turned on, so the same hook also checks, at most once a day, whether a newer plugin version has been published, and says so in Flight Control projects. Turn on auto-update for the marketplace (`/plugin` → Marketplaces) to stay current without it. The check is skipped when `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` is set.
+
 If you used Flight Control before it was a plugin — a cloned `mission-control` checkout with a `projects.md` registry — see [Migrating to the plugin](docs/migrating-to-the-plugin.md).
 
 ## Documentation
@@ -174,7 +176,7 @@ skills/<name>/SKILL.md   # One directory per skill; init-project also carries th
                          # synced methodology files, templates, crew defaults,
                          # migrations registry, and drift detector
 hooks/
-├── hooks.json           # SessionStart drift notice
+├── hooks.json           # SessionStart drift and update notice
 └── check-project-drift.sh
 docs/                    # Methodology documentation
 ```
