@@ -23,7 +23,10 @@ a colder verdict.
 
 ### Executor
 - **Context**: project root (current working directory) — loads the project's CLAUDE.md.
-- **Model**: Sonnet (override per-project if needed).
+- **Model**: Haiku (override per-project if needed). The Executor acts and
+  reports raw state without judging it, and it is spawned per checkpoint;
+  the independent Validator turns a fumbled action into FAIL or
+  INCONCLUSIVE, never a false PASS.
 - **Lifetime**: Re-spawned per checkpoint by default; alive across all
   checkpoints when live `SendMessage` continuation is available.
 - **Role**: Performs the Actions for each step the Orchestrator sends.

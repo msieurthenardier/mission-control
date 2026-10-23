@@ -56,6 +56,7 @@ If any one of these fails, it is not a squawk. Recommend `/mission-control:sorti
    - **If ARTIFACTS.md has no squawk conventions**: STOP and tell the user to run `/mission-control:init-project` to apply migration 006.
 2. **Read `.flightops/agent-crews/leg-execution.md`** for crew definitions and prompts (fall back to defaults at `${SKILL_DIR}/../init-project/defaults/agent-crews/leg-execution.md`). Squawks reuse the leg-execution crew — Developer and Reviewer — rather than defining their own.
    - **If the file exists but is malformed** (missing `## Crew`, `## Interaction Protocol`, or `## Prompts` with fenced code blocks): STOP and tell the user to fix it or re-run `/mission-control:init-project`. Do not improvise missing prompts.
+   - **Crew models**: spawn each crew agent with the model the crew file assigns to its role, passed as the spawn's `model` parameter (`haiku`, `sonnet`, or `opus`). An omitted `model` runs the agent on this session's model, usually the most expensive one available; omit it only when the crew file assigns the role no model.
 
 ## Verb: Log
 

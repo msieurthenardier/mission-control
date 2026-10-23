@@ -165,6 +165,8 @@ Read `.flightops/agent-crews/routine-maintenance.md` for crew definitions and pr
 
 **Validate structure**: The crew file MUST contain `## Crew`, `## Interaction Protocol`, and `## Prompts` sections with fenced code blocks. If the file exists but is malformed, STOP and tell the user: "Crew file `routine-maintenance.md` is missing required sections. Either fix it manually or re-run `/mission-control:init-project` to reset to defaults."
 
+**Crew models**: spawn each crew agent with the model the crew file assigns to its role, passed as the spawn's `model` parameter (`haiku`, `sonnet`, or `opus`). An omitted `model` runs the agent on this session's model, usually the most expensive one available; omit it only when the crew file assigns the role no model.
+
 Execute the delegation plan from Phase 3, wave by wave. Spawn all agents within a wave in parallel (up to 4 concurrent). Wait for a wave to complete before starting the next. Every reviewer is strictly **read-only** — they may run test suites, linters, type checkers, and audit commands, but must NEVER modify source files, configuration, or dependencies.
 
 Each agent receives:
@@ -211,7 +213,7 @@ If the Inspector was partitioned into multiple agents, merge their findings into
 
 #### 5a: Initial Assessment
 
-1. **Spawn an Architect agent** (Opus) with all reviewer findings + debrief context (Agent tool, `subagent_type: "general-purpose"`)
+1. **Spawn an Architect agent** with all reviewer findings + debrief context (Agent tool, `subagent_type: "general-purpose"`)
    - Provide the "Assess Findings" prompt from the crew file's Prompts section
    - Include: all reviewer findings, known debt items (if available from debriefs)
    - The Architect assigns an initial severity to each finding and raises challenges or questions directed at specific reviewers where findings seem incorrect, overlapping, or missing context
