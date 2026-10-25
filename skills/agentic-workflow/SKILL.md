@@ -139,7 +139,7 @@ After all autonomous legs are implemented (all uncommitted):
 6. **Signal `[COMPLETE:flight]`**
 7. **Hand off to the operator** — The PR is ready for review. Recommend `/mission-control:flight-debrief` next, on the flight branch before merging, so the debrief joins this PR; merging first is the operator's call.
 
-The flight debrief is a separate step run via `/mission-control:flight-debrief` after the flight lands. The debrief transitions the flight to `completed`.
+The debrief transitions the flight to `completed`.
 
 ## Behavior Tests as Acceptance Verification
 
