@@ -1,6 +1,6 @@
 ---
 name: flight-debrief
-description: Post-flight analysis for continuous improvement. Use after a flight is completed to capture lessons learned and improve the methodology.
+description: Post-flight analysis for continuous improvement. Use after a flight has landed to capture lessons learned and improve the methodology.
 ---
 
 # Flight Debrief
