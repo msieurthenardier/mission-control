@@ -251,6 +251,8 @@ Manual test completed:
 
 **Run `/mission-control:flight-debrief` to capture learnings.** This is a required step, not optional.
 
+Debrief before or after merging — the PR is ready for review at landing either way. Debriefing on the flight branch keeps the debrief in the flight's PR; debriefing after the merge needs a separate one. The debrief writes its artifacts and leaves committing them to you.
+
 The debrief skill will:
 - Analyze what went well and what could improve
 - Identify process and technical lessons

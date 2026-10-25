@@ -248,7 +248,7 @@ The Flight Director will then:
 - Verify all legs show `completed` and the flight log covers every leg
 - Open a draft PR with every leg checked off, signal `[COMPLETE:flight]`, and mark the PR ready for human review
 
-The flight debrief is a separate step run via `/mission-control:flight-debrief`, which transitions the flight from `landed` to `completed`.
+The flight debrief is a separate step run via `/mission-control:flight-debrief`, which transitions the flight from `landed` to `completed`. The PR is ready for review at landing, so the operator chooses the order: debrief on the flight branch before merging, so the debrief lands in the flight's PR, or merge first and debrief afterward.
 
 ---
 
