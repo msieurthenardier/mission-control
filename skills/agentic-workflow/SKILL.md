@@ -137,6 +137,7 @@ After all autonomous legs are implemented (all uncommitted):
 4. **Update flight status** to `landed`, performing any transition-time handling `.flightops/ARTIFACTS.md` defines for that transition (default: none)
 5. **Check off flight** in mission artifact (sorties have none — skip)
 6. **Signal `[COMPLETE:flight]`**
+7. **Hand off to the operator** — The PR is ready for review. Recommend `/mission-control:flight-debrief` next, on the flight branch before merging, so the debrief joins this PR; merging first is the operator's call.
 
 The flight debrief is a separate step run via `/mission-control:flight-debrief` after the flight lands. The debrief transitions the flight to `completed`.
 
