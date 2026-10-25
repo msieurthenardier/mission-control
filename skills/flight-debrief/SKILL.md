@@ -1,6 +1,6 @@
 ---
 name: flight-debrief
-description: Post-flight analysis for continuous improvement. Use after a flight is completed to capture lessons learned and improve the methodology.
+description: Post-flight analysis for continuous improvement. Use after a flight has landed to capture lessons learned and improve the methodology.
 ---
 
 # Flight Debrief
@@ -30,17 +30,22 @@ A sortie (`/mission-control:flight-debrief sortie {number}`) is a flight with no
 2. **Read the artifact configuration**
    - Read `.flightops/ARTIFACTS.md` for how this project handles each artifact — its storage location, format, and any actions the project defines at create and transition time (e.g., transitioning a ticket, posting a notification)
 
-3. **Load flight documentation**
+3. **Check where the debrief will land**
+   - The debrief writes artifacts — the debrief itself, any squawks logged in Phase 6, and the flight's status change — and leaves committing them to the operator. Before writing any of them, determine whether the flight's PR has merged
+   - **Not merged**: the debrief belongs on the flight branch, in the flight's PR
+   - **Merged**: the debrief belongs on a new branch. Tell the operator before writing anything
+
+4. **Load flight documentation**
    - Read the mission for overall context and success criteria (for a sortie, its charter)
    - Read the flight for objectives, design decisions, and checkpoints
    - Read ALL legs to understand the planned implementation
    - Read the complete flight log for ground truth on what happened
 
-4. **Load project context**
+5. **Load project context**
    - Read the project's `README.md` and `CLAUDE.md`
    - Identify key implementation files from leg outputs and flight log
 
-5. **Examine actual implementation**
+6. **Examine actual implementation**
    - Read files created or modified during the flight
    - Compare intended vs actual implementation
    - Note deviations, workarounds, or unexpected discoveries
