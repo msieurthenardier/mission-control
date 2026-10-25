@@ -138,7 +138,7 @@ After all autonomous legs are implemented (all uncommitted):
 5. **Check off flight** in mission artifact (sorties have none — skip)
 6. **Signal `[COMPLETE:flight]`**
 
-The flight debrief is a separate step run via `/mission-control:flight-debrief` after the flight lands. The debrief transitions the flight to `completed`. The PR is ready for review at landing, so the operator chooses the order: debrief on the flight branch before merging, so the debrief lands in the flight's PR, or merge first and debrief afterward.
+The flight debrief is a separate step run via `/mission-control:flight-debrief` after the flight lands. The debrief transitions the flight to `completed`.
 
 ## Behavior Tests as Acceptance Verification
 
