@@ -74,7 +74,7 @@ How flight work is named in version control. Skills read these — adjust them t
 
 | Property | Value |
 |----------|-------|
-| Location | `missions/{NN}-{slug}/mission-control:mission.md` |
+| Location | `missions/{NN}-{slug}/mission.md` |
 | Created | During mission planning |
 | Updated | Until status changes to `active` |
 
@@ -130,7 +130,7 @@ Emergent blockers and issues discovered during execution. Add items here as flig
 
 | Property | Value |
 |----------|-------|
-| Location | `missions/{mission}/flights/{NN}-{slug}/mission-control:flight.md` |
+| Location | `missions/{mission}/flights/{NN}-{slug}/flight.md` |
 | Created | During flight planning |
 | Updated | Until status changes to `in-flight` |
 
@@ -561,7 +561,7 @@ Chronological notes from work sessions.
 
 | Property | Value |
 |----------|-------|
-| Location | `missions/{mission}/flights/{flight}/mission-control:flight-debrief.md` |
+| Location | `missions/{mission}/flights/{flight}/flight-debrief.md` |
 | Created | After flight lands or diverts |
 | Purpose | Post-flight analysis and lessons learned |
 
@@ -630,7 +630,7 @@ sweep reads these across missions, and a vague entry is invisible to it.}
 
 | Property | Value |
 |----------|-------|
-| Location | `missions/{NN}-{mission}/mission-control:mission-debrief.md` |
+| Location | `missions/{NN}-{mission}/mission-debrief.md` |
 | Created | After mission completes or aborts |
 | Purpose | Post-mission retrospective and methodology improvements |
 
@@ -699,7 +699,7 @@ here restate flight-debrief observations — the sweep counts the occurrence onc
 # Maintenance Report: {YYYY-MM-DD}
 
 **Date**: {report date}
-**Triggered by**: [{Mission Title}](missions/{NN}-{slug}/mission-control:mission.md) *(optional — omit if ad-hoc)*
+**Triggered by**: [{Mission Title}](missions/{NN}-{slug}/mission.md) *(optional — omit if ad-hoc)*
 **Assessment**: {Flight Ready | Maintenance Required}
 
 ## Categories Inspected

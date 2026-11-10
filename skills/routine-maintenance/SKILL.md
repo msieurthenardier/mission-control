@@ -41,7 +41,7 @@ Perform an exhaustive, aviation-style codebase inspection after a mission comple
    - This provides known-debt context so the inspection can distinguish new issues from acknowledged ones
 
 6. **Identify project stack**
-   - Read `README.md`, `CLAUDE.md`, and package files (`package.json`, `Cargo.toml`, `go.mod`, etc.)
+   - Read `README.md`, `CLAUDE.md` (at the root or in `.claude/`), and package files (`package.json`, `Cargo.toml`, `go.mod`, etc.)
    - Determine language, framework, test runner, linter, formatter, type checker, and dependency audit tool
 
 ### Phase 2: Scoping Interview

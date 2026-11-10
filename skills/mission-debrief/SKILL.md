@@ -33,7 +33,7 @@ Perform comprehensive post-mission retrospective and methodology assessment.
    - Read flight logs for execution details
 
 4. **Load project context**
-   - Read the project's `README.md` and `CLAUDE.md`
+   - Read the project's `README.md` and `CLAUDE.md` (at the root or in `.claude/`)
    - Understand what was built during this mission
 
 ### Phase 2: Crew Debrief Interviews

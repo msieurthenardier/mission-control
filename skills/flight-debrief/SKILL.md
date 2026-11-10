@@ -42,7 +42,7 @@ A sortie (`/mission-control:flight-debrief sortie {number}`) is a flight with no
    - Read the complete flight log for ground truth on what happened
 
 5. **Load project context**
-   - Read the project's `README.md` and `CLAUDE.md`
+   - Read the project's `README.md` and `CLAUDE.md` (at the root or in `.claude/`)
    - Identify key implementation files from leg outputs and flight log
 
 6. **Examine actual implementation**

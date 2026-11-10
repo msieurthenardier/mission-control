@@ -126,7 +126,7 @@ You are done when all of the following hold:
 
 **Skills do not autocomplete.** The plugin is installed but not enabled, or the session predates the install. Run `claude plugin enable mission-control@flight-control` and start a new session.
 
-**The hook keeps reporting migration 007.** The Flight Operations section in the project's `CLAUDE.md` still lacks the plugin-era instructions — usually because the migration was declined. Run `/mission-control:init-project` again and accept it. If you maintain that section by hand, make sure it references `/mission-control:agentic-workflow`; the drift detector keys on that string.
+**The hook keeps reporting migration 007.** The Flight Operations section in the project's `CLAUDE.md` (or `.claude/CLAUDE.md`) still lacks the plugin-era instructions — usually because the migration was declined. Run `/mission-control:init-project` again and accept it. If you maintain that section by hand, make sure it references `/mission-control:agentic-workflow`; the drift detector keys on that string.
 
 **A session asks for `projects.md` or suggests `/init-mission-control`.** Either the session is running from an old checkout (retire it, Step 2), or the project's `CLAUDE.md` still carries the pre-plugin Flight Operations section (apply migration 007, Step 3).
 
