@@ -170,26 +170,48 @@ if [[ -f "$ARTIFACTS" ]]; then
   if grep -q "COMPLETE:leg" "$ARTIFACTS" 2>/dev/null; then
     echo "migration-pending:012"
   fi
+
+  # 013 - Maintenance Report artifact section not present (projects initialized
+  # before routine-maintenance shipped)
+  if ! grep -q "^### Maintenance Report" "$ARTIFACTS" 2>/dev/null; then
+    echo "migration-pending:013"
+  fi
+
+  # 014 - artifact file names carrying the skill namespace (e.g.
+  # mission-control:mission.md), left by the plugin reshape's find/replace
+  if grep -Eq 'mission-control:[A-Za-z0-9_-]+\.md' "$ARTIFACTS" 2>/dev/null; then
+    echo "migration-pending:014"
+  fi
 fi
 
-# 007 - pre-plugin Flight Operations section in the project's CLAUDE.md.
-# Fires only when a Flight Operations section exists but lacks the plugin-era
-# Flight Director instructions; a project with no section yet gets the current
-# snippet from init-project step 7 without a migration.
-PROJECT_CLAUDE_MD="$(dirname "$EFFECTIVE_TARGET")/CLAUDE.md"
-if [[ -f "$PROJECT_CLAUDE_MD" ]] \
-   && grep -q "^## Flight Operations" "$PROJECT_CLAUDE_MD" 2>/dev/null \
-   && ! grep -q "mission-control:agentic-workflow" "$PROJECT_CLAUDE_MD" 2>/dev/null; then
+# The project's CLAUDE.md may live at the project root or in .claude/ — Claude
+# Code loads either as project instructions. Every candidate that carries a
+# Flight Operations section is checked; a project with no section in any of them
+# gets the current snippet from init-project step 7 without a migration.
+PROJECT_ROOT="$(dirname "$EFFECTIVE_TARGET")"
+CLAUDE_MD_CANDIDATES=("$PROJECT_ROOT/CLAUDE.md" "$PROJECT_ROOT/.claude/CLAUDE.md")
+PENDING_007=false
+PENDING_010=false
+
+for CLAUDE_MD in "${CLAUDE_MD_CANDIDATES[@]}"; do
+  if [[ ! -f "$CLAUDE_MD" ]] || ! grep -q "^## Flight Operations" "$CLAUDE_MD" 2>/dev/null; then
+    continue
+  fi
+  # 007 - pre-plugin Flight Operations section: lacks the plugin-era Flight
+  # Director instructions.
+  if ! grep -q "mission-control:agentic-workflow" "$CLAUDE_MD" 2>/dev/null; then
+    PENDING_007=true
+  # 010 - plugin-era section that never binds the Flight Director role to the
+  # interactive session.
+  elif ! grep -q "never the Flight Director" "$CLAUDE_MD" 2>/dev/null; then
+    PENDING_010=true
+  fi
+done
+
+if $PENDING_007; then
   echo "migration-pending:007"
-fi
-
-# 010 - plugin-era Flight Operations section that never binds the Flight Director
-# role to the interactive session. Requires the agentic-workflow reference so it
-# stays silent while 007 is pending; 007 installs the current snippet anyway.
-if [[ -f "$PROJECT_CLAUDE_MD" ]] \
-   && grep -q "^## Flight Operations" "$PROJECT_CLAUDE_MD" 2>/dev/null \
-   && grep -q "mission-control:agentic-workflow" "$PROJECT_CLAUDE_MD" 2>/dev/null \
-   && ! grep -q "never the Flight Director" "$PROJECT_CLAUDE_MD" 2>/dev/null; then
+# 010 stays silent while 007 is pending; 007 installs the current snippet anyway.
+elif $PENDING_010; then
   echo "migration-pending:010"
 fi
 

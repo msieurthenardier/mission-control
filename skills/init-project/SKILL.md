@@ -116,15 +116,16 @@ Set up phase-specific crew definitions that control how the Flight Director inte
 
 ### 7. Update CLAUDE.md
 
-Check if the project's `CLAUDE.md` file has a Flight Operations section:
+The project's `CLAUDE.md` may be at the project root (`CLAUDE.md`) or in `.claude/` (`.claude/CLAUDE.md`). Claude Code loads either as project instructions, so check both before deciding anything. Never create a second `CLAUDE.md` next to one the project already has. `CLAUDE.local.md` holds personal, uncommitted instructions and is never a destination.
 
-1. **If CLAUDE.md doesn't exist**, create it with the Flight Operations section below
-2. **If CLAUDE.md exists but lacks a Flight Operations section**, append the section below
-3. **If CLAUDE.md already has a Flight Operations section**, leave it unchanged — unless migration 007 is pending, in which case replace the section's contents with the current snippet (that migration exists precisely to refresh this section), or migration 010 is pending, in which case replace only the Flight Director role paragraph
+1. **If either file already has a Flight Operations section**, that file is the target. Leave the section unchanged unless migration 007 is pending, in which case replace the section's contents with the current snippet (that migration exists precisely to refresh this section), or migration 010 is pending, in which case replace only the Flight Director role paragraph. If both files have the section, Claude Code loads it twice: tell the operator, and ask which copy to keep before applying anything to it
+2. **If a CLAUDE.md exists in exactly one location but has no Flight Operations section**, append the section below to that file
+3. **If both files exist and neither has the section**, ask the operator which file should carry it
+4. **If neither file exists**, create `CLAUDE.md` at the project root with the Flight Operations section below
 
 #### 7a. Fix Stale Path References
 
-If migrations were applied in Step 2, scan the project's `CLAUDE.md` for stale path references within the Flight Operations section and fix them:
+If migrations were applied in Step 2, scan the `CLAUDE.md` that carries the Flight Operations section for stale path references within the Flight Operations section and fix them:
 
 - Replace `.flight-ops/` → `.flightops/`
 - Replace `phases/` → `agent-crews/` (only within Flight Operations context)
@@ -165,7 +166,7 @@ This skill creates/updates the following at the project root:
 
 ```
 {project-root}/
-├── CLAUDE.md                  # Updated with Flight Operations section
+├── CLAUDE.md                  # Updated with Flight Operations section (or .claude/CLAUDE.md)
 └── .flightops/               # Hidden directory for Flight Control
     ├── README.md              # Explains the directory purpose
     ├── FLIGHT_OPERATIONS.md   # Quick reference for implementation (synced)
@@ -184,7 +185,7 @@ This skill creates/updates the following at the project root:
 
 | File | Synced on update? | Notes |
 |------|-------------------|-------|
-| CLAUDE.md | Append only | Adds Flight Operations section if missing; refreshed by migrations 007 and 010 |
+| CLAUDE.md | Append only | At the root or in `.claude/`, wherever the project keeps it. Adds Flight Operations section if missing; refreshed by migrations 007 and 010 |
 | README.md | Yes | Methodology reference |
 | FLIGHT_OPERATIONS.md | Yes | Methodology reference |
 | ARTIFACTS.md | No | Created once from template, then project-specific |

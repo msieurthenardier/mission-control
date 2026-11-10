@@ -175,7 +175,7 @@ Flight Control used to run from a separate mission-control checkout that held a 
 
 **Actions:**
 
-1. In the project's `CLAUDE.md`, replace the contents of the existing Flight Operations section with the current snippet from init-project's Step 7. Preserve anything the project added to that section that is not in the old default (extra reading order entries, project-specific notes) by carrying it below the snippet.
+1. In the project's `CLAUDE.md` — whichever of `CLAUDE.md` or `.claude/CLAUDE.md` carries the Flight Operations section — replace the contents of that section with the current snippet from init-project's Step 7. Preserve anything the project added to that section that is not in the old default (extra reading order entries, project-specific notes) by carrying it below the snippet.
 
 2. Crew files under `.flightops/agent-crews/` from before this change describe `{project-slug}` as coming from `projects.md` and give spawned agents a `{target-project}/` context. Both are informational — the slug is now the repository directory name (or the name from the git remote), and agents inherit the project root as their working directory. Offer to refresh them via init-project Step 6's review-against-defaults path; do not rewrite customized crew files silently.
 
@@ -253,7 +253,7 @@ The Flight Operations snippet installed by 007 told the Flight Director what to 
 
 **Actions:**
 
-1. In the project's `CLAUDE.md` Flight Operations section, replace the **Flight Director role** paragraph with the one in init-project's Step 7 snippet. Leave the rest of the section, including anything the project added, as it is. If the project has rewritten that paragraph, show the new opening sentences and ask where they belong.
+1. In the project's `CLAUDE.md` Flight Operations section (at the root or in `.claude/`, wherever check-drift found it), replace the **Flight Director role** paragraph with the one in init-project's Step 7 snippet. Leave the rest of the section, including anything the project added, as it is. If the project has rewritten that paragraph, show the new opening sentences and ask where they belong.
 
 **User message:**
 > Updating the Flight Director paragraph in CLAUDE.md's Flight Operations section: it now states that this session is the Flight Director and spawned agents are crew. Nothing else in the section changes. Existing artifacts unaffected.
@@ -317,11 +317,62 @@ The current template replaces the checklist with a one-line note that completion
 
 ---
 
+### 013 — Install the Maintenance Report artifact section
+
+`/mission-control:routine-maintenance` defers entirely to `ARTIFACTS.md` for where maintenance reports live and what they contain: it reads prior reports to carry deferred findings forward, writes a new one, and links a scaffolded maintenance mission back into it. The `Maintenance Report` section was added to the template when that skill shipped, without a migration, so projects initialized before then have no such section. In those projects the skill has no location to read prior reports from and no format to write, and each run guesses both.
+
+No crew file is needed: the `routine-maintenance.md` crew is installed by init-project's missing-crew path (`crew-missing:routine-maintenance.md`).
+
+**Detected by** `check-drift.sh` → `migration-pending:013`. Apply after 001–012.
+
+**Actions:**
+
+1. Append a `Maintenance Report` artifact section to the project's `ARTIFACTS.md`, alongside the other supporting artifacts (after the Mission Debrief section in the default layout). The canonical section lives in `${SKILL_DIR}/templates/ARTIFACTS-files.md`: location `maintenance/{YYYY-MM-DD}.md`, and a format with the Flight Ready / Maintenance Required assessment, findings by category, a severity summary, known debt carried forward, recommendations, and the section reserved for a link to a scaffolded maintenance mission.
+
+2. Add `maintenance/{YYYY-MM-DD}.md` to the Directory Structure tree.
+
+3. If the project already has maintenance reports somewhere (for example a `maintenance/` directory written by an earlier run that guessed), point the new section's location at where they actually are, rather than moving them, and tell the operator what was found.
+
+   - If the operator has heavily modified ARTIFACTS.md (e.g. a non-filesystem artifact backend), surface the proposed insertion and ask before writing. Defer to the operator on placement and on how a maintenance report maps onto their backend.
+
+**User message:**
+> Adding a `Maintenance Report` artifact section to ARTIFACTS.md. `/mission-control:routine-maintenance` reads earlier reports and writes new ones at the location and in the format this section defines; without it, each run guesses both. Existing artifacts unaffected.
+
+---
+
+### 014 — Remove the skill namespace from artifact file names
+
+When Flight Control became a plugin, skill names were namespaced as `/mission-control:<skill>` by a find/replace that also caught file paths. The `ARTIFACTS.md` template shipped to new projects then gave the mission, flight, flight debrief, and mission debrief locations as `mission-control:mission.md`, `mission-control:flight.md`, `mission-control:flight-debrief.md`, and `mission-control:mission-debrief.md`, and the Maintenance Report's mission link pointed at the same wrong name. Skills follow those locations, so a project initialized from that template may have artifacts under names with a colon. A colon is invalid in Windows file names, and other skills, tools, and links that expect `mission.md` will not find them.
+
+**Detected by** `check-drift.sh` → `migration-pending:014`, when `ARTIFACTS.md` names a file `mission-control:<name>.md`. Apply after 001–013.
+
+**Actions:**
+
+1. In `.flightops/ARTIFACTS.md`, remove the `mission-control:` prefix from every file name, leaving `/mission-control:<skill>` skill references untouched (they never end in `.md`):
+   ```bash
+   sed -i -E 's#mission-control:([A-Za-z0-9_-]+\.md)#\1#g' ".flightops/ARTIFACTS.md"
+   ```
+
+2. Find artifacts already created under the wrong names, at the locations `ARTIFACTS.md` defines (typically under `missions/`):
+   ```bash
+   find . -path ./.git -prune -o -name 'mission-control:*.md' -print
+   ```
+   List them for the operator and, on confirmation, rename each to its name without the prefix, using `git mv` when the file is tracked. If a file with the target name already exists next to it, do not rename: show both to the operator and let them decide which to keep.
+
+3. Update links inside artifacts that point at a renamed file (for example a flight's link to its mission, or a maintenance report's "triggered by" link), using the same substitution as action 1, limited to the artifact directories.
+
+4. Re-run `check-drift.sh`; `migration-pending:014` must no longer fire.
+
+**User message:**
+> Fixing artifact file names in ARTIFACTS.md: mission, flight, and debrief locations read `mission-control:mission.md` and similar, left over from the plugin's skill renaming. Any artifacts already created under those names are renamed with your confirmation, and links to them updated. Skill references like `/mission-control:flight` are unaffected.
+
+---
+
 ## Adding Future Migrations
 
 To add a new migration:
 
-1. Assign the next sequential ID (e.g., `013`)
+1. Assign the next sequential ID (e.g., `015`)
 2. Add its detection to `check-drift.sh` — emit `migration-pending:{id}` when the migration is needed, and nothing once it's been applied (idempotent)
 3. Document it here: rationale, the **Actions** to perform (prefer `mv` over copy-and-delete to preserve file contents and git history), and a short **User message**
 4. Note ordering if it depends on an earlier migration having run
