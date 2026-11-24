@@ -256,6 +256,7 @@ The debrief skill will:
 - Identify process and technical lessons
 - Recommend methodology improvements
 - Update project documentation if needed
+- Offer to log small, concrete follow-ups as [squawks](squawks.md), so they are tracked with ids instead of left as bullets
 
 The debrief artifact becomes part of the flight record and informs future flights.
 
@@ -360,6 +361,10 @@ When circumstances change:
 - The discovered work is independent of the current flight's goal
 - The new work serves different mission success criteria
 
+**Log a squawk when:**
+- The discovery is a defect or upkeep item outside the flight's charter that passes the [squawk](squawks.md) gate
+- Log it and defer it, noting its id in the flight log, rather than folding it into the leg in hand. A `grounding` squawk directly in the flight's path is completed before the flight continues
+
 ### In-Flight Modifications
 
 Flights can be modified while `in-flight` — for example, when planned legs need to change due to discoveries during execution. Update the flight artifact and record the change and rationale in the flight log.
@@ -400,6 +405,16 @@ Not every outcome needs Phase 1. When the work is one self-contained outcome wit
 
 If flight design surfaces a second, independent cluster of decisions, the sortie escalates to a mission and becomes its first flight. It never widens in place.
 
+## Beside the Hierarchy: Squawks
+
+A single bug fix or routine servicing update skips every phase above. A [squawk](squawks.md) has no mission, flight, legs, or debrief — it qualifies through a gate instead of a phase: one coherent item, no design decisions, bounded blast radius (no shared interfaces, schemas, lifecycles, or security surface), and verifiable by an existing test or one new one.
+
+1. **Log** — `/mission-control:squawk {description}` records the report: observation, evidence, type (`defect` or `servicing`), and severity (`grounding` or `routine`). Squawks also arrive from mid-flight discoveries, flight debriefs, and routine maintenance.
+2. **Complete** — `/mission-control:squawk complete {id} [{id} ...]` has a Developer implement the fix and an independent Reviewer sign off on the diff. Several open squawks are completed in one batch with one branch, one review, and one commit.
+3. **Track** — `/mission-control:squawk list` reports open counts and flags stale squawks.
+
+If a squawk turns out to need design work, its partial changes are reverted and it is marked `escalated` and handed to a sortie, flight, or mission. Like a sortie, it never widens in place. Anything the Reviewer notices beyond the diff becomes a new squawk.
+
 ## State Summary
 
 ### All States in One View
@@ -419,7 +434,13 @@ LEG STATES
 planning ──► ready ──► in-flight ──► landed ──► completed
                            │
                            └──► aborted
+
+SQUAWK STATES (outside the unified lifecycle)
+open ──► in-progress ──► completed
+   or deferred (carried with a revisit trigger) / escalated
 ```
+
+A sortie uses the flight states.
 
 ## When to Create vs. Modify
 
@@ -429,6 +450,7 @@ planning ──► ready ──► in-flight ──► landed ──► complete
 - **Sortie**: New outcome needed that fits one flight with one cluster of design decisions
 - **Flight**: New area of work identified
 - **Leg**: Requirements changed after `in-flight`
+- **Squawk**: One defect or routine update that passes the qualification gate
 
 ### Modify Existing
 
